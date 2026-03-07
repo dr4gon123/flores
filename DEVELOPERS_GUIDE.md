@@ -47,7 +47,7 @@ fortigate_scraper_config.yaml
 FortiGateLogScraper.__init__()
   ├─ _load_config()          — YAML → dict
   ├─ requests.Session()      — shared HTTP session with browser User-Agent
-  └─ sets: versions, output_dir, base_delay, force_rescrape, dry_run
+  └─ sets: versions, output_dir, base_delay, max_retries, retry_backoff, force_rescrape, dry_run
         │
         ▼
 run()
@@ -117,6 +117,8 @@ Fetches the Fortinet Log Message Reference for each configured FortiOS version, 
 |-----|---------|-------------|
 | `versions` | (required) | List of FortiOS versions to scrape, e.g. `"7.6.4"` |
 | `settings.base_delay` | `1.0` | Seconds to sleep between HTTP requests |
+| `settings.max_retries` | `3` | Number of additional attempts per URL after an error (0 = no retries) |
+| `settings.retry_backoff` | `2.0` | Exponential backoff multiplier: wait = `base_delay × (retry_backoff ^ attempt)` + jitter |
 | `settings.force_rescrape` | `false` | If true, re-scrape versions that already have CSV files |
 | `settings.dry_run` | `false` | If true, print the plan without making any HTTP requests |
 | `settings.output_dir` | `"."` | Root output directory for scraped data |
@@ -126,6 +128,15 @@ The config file is located relative to the script file, not the working director
 ### Class: FortiGateLogScraper
 
 Single-class design — all scraping logic lives here. A `requests.Session` is reused across all requests for HTTP connection pooling and shared headers. Rate limiting is enforced inside `get_page_content()` via `time.sleep(self.base_delay)` after every successful fetch.
+
+### Rate Limiting and Retry Behavior
+
+`get_page_content()` retries transient failures with exponential backoff and jitter:
+
+- **Retry loop**: `max_retries + 1` total attempts per URL. Set `max_retries: 0` to disable retries entirely.
+- **429 Rate Limited**: If the server responds with HTTP 429, the scraper reads the `Retry-After` response header (if present) or falls back to `base_delay × (retry_backoff ^ attempt)`. It then retries without counting this as an error.
+- **Other HTTP / network errors**: On each failure before the last attempt, the scraper waits `base_delay × (retry_backoff ^ attempt) + random.uniform(0, 1)` seconds (jitter prevents thundering-herd on parallel runs). On the final attempt, the error is logged and `None` is returned.
+- **Successful fetch**: `time.sleep(base_delay)` is applied before returning to pace requests regardless of retry history.
 
 ### Version Skip Logic
 
@@ -162,7 +173,7 @@ This covers three URL keyword variants Fortinet uses across different FortiOS ve
 | `_get_versions_to_scrape()` | Filters version list based on `force_rescrape` flag |
 | `get_version_directories()` | Splits `"7.6.4"` into `("output/7.6", "output/7.6/7.6.4")` |
 | `get_version_url()` | Generates `docs.fortinet.com` URL for a given version string |
-| `get_page_content()` | Fetches URL → BeautifulSoup; sleeps `base_delay`; returns None on error |
+| `get_page_content()` | Fetches URL → BeautifulSoup with retry/backoff (up to `max_retries`); handles 429; returns None after all attempts fail |
 | `extract_logid_links()` | Finds all `<a href>` matching the LOGID URL pattern; returns `{text: full_url}` |
 | `extract_log_metadata()` | Regexes page text for Message ID, Type, Category, Severity, etc. |
 | `extract_log_table()` | Finds `<table>` with log-field headers; returns DataFrame with metadata columns appended |
@@ -398,13 +409,13 @@ To add a new FortiOS version:
 
 | Method | Script | What it does |
 |--------|--------|-------------|
-| `FortiGateLogScraper.__init__()` | scraper | Loads config, creates HTTP session, sets base_delay, force_rescrape, dry_run |
+| `FortiGateLogScraper.__init__()` | scraper | Loads config, creates HTTP session, sets base_delay, max_retries, retry_backoff, force_rescrape, dry_run |
 | `_load_config()` | scraper | Reads YAML from script's own directory; raises on missing file or parse error |
 | `_version_exists()` | scraper | Returns True if minor version dir exists and contains ≥1 CSV file |
 | `_get_versions_to_scrape()` | scraper | Filters version list: all if force_rescrape, else only missing versions |
 | `get_version_directories()` | scraper | Splits `"7.6.4"` into `(output/7.6, output/7.6/7.6.4)` paths |
 | `get_version_url()` | scraper | Constructs `docs.fortinet.com` URL for a FortiOS version |
-| `get_page_content()` | scraper | Fetches URL → BeautifulSoup; applies rate-limit sleep; returns None on HTTP error |
+| `get_page_content()` | scraper | Fetches URL → BeautifulSoup with retry/backoff; handles 429; returns None after all attempts fail |
 | `extract_logid_links()` | scraper | Regex-scans all `<a href>` for LOGID URL pattern; returns `{text: url}` dict |
 | `extract_log_metadata()` | scraper | Regex-extracts Message ID, Type, Category, Severity from page text |
 | `extract_log_table()` | scraper | Finds first `<table>` with log-field headers; returns DataFrame with metadata columns |

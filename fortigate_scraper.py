@@ -9,6 +9,7 @@ Requirements:
     pip install requests beautifulsoup4 pandas lxml pyyaml
 """
 
+import random
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -43,6 +44,8 @@ class FortiGateLogScraper:
         
         # Use provided base_delay or fall back to config file value
         self.base_delay = base_delay if base_delay is not None else config.get('settings', {}).get('base_delay', 1.0)
+        self.max_retries = config.get('settings', {}).get('max_retries', 3)
+        self.retry_backoff = config.get('settings', {}).get('retry_backoff', 2.0)
 
         # Load FortiOS versions from configuration file
         self.versions = config.get('versions', [])
@@ -61,6 +64,7 @@ class FortiGateLogScraper:
         logger.info(f"Loaded {len(self.versions)} versions from configuration file")
         logger.info(f"Force rescrape: {self.force_rescrape}")
         logger.info(f"Dry run mode: {self.dry_run}")
+        logger.info(f"Max retries: {self.max_retries}, retry backoff: {self.retry_backoff}")
     
     def _load_config(self, config_file: str) -> dict:
         """
@@ -153,27 +157,42 @@ class FortiGateLogScraper:
 
     def get_page_content(self, url: str) -> Optional[BeautifulSoup]:
         """
-        Fetch and parse a web page
+        Fetch and parse a web page, with configurable retry and exponential backoff.
 
         Args:
             url: URL to fetch
 
         Returns:
-            BeautifulSoup object or None if failed
+            BeautifulSoup object or None if all attempts failed
         """
-        try:
-            logger.info(f"Fetching: {url}")
-            response = self.session.get(url, timeout=30)
-            response.raise_for_status()
+        for attempt in range(self.max_retries + 1):
+            try:
+                logger.info(f"Fetching: {url}")
+                response = self.session.get(url, timeout=30)
 
-            # Rate limiting
-            time.sleep(self.base_delay)
+                if response.status_code == 429:
+                    wait = int(response.headers.get('Retry-After',
+                               self.base_delay * (self.retry_backoff ** attempt)))
+                    logger.warning(f"Rate limited (429). Waiting {wait}s "
+                                   f"(attempt {attempt + 1}/{self.max_retries + 1})")
+                    time.sleep(wait)
+                    continue
 
-            return BeautifulSoup(response.content, 'html.parser')
+                response.raise_for_status()
+                time.sleep(self.base_delay)
+                return BeautifulSoup(response.content, 'html.parser')
 
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Error fetching {url}: {e}")
-            return None
+            except requests.exceptions.RequestException as e:
+                if attempt < self.max_retries:
+                    wait = self.base_delay * (self.retry_backoff ** attempt) + random.uniform(0, 1)
+                    logger.warning(f"Error fetching {url}: {e}. "
+                                   f"Retrying in {wait:.1f}s "
+                                   f"(attempt {attempt + 1}/{self.max_retries + 1})")
+                    time.sleep(wait)
+                else:
+                    logger.error(f"Failed to fetch {url} after {self.max_retries + 1} attempts: {e}")
+
+        return None
 
     def get_version_url(self, version: str) -> str:
         """
