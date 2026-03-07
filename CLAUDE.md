@@ -70,6 +70,10 @@ All scripts expect to run from the repo root (they resolve paths relative to `os
 
 **Scraper skips existing versions** unless `force_rescrape: true`. A version is considered existing if its minor version directory contains at least one CSV file.
 
+## Reference
+
+For internal design, data flow diagrams, and full method documentation, see `DEVELOPERS_GUIDE.md`.
+
 ## Dependencies
 
 ```bash
