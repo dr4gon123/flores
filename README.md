@@ -1,6 +1,6 @@
 # FLORES - FortiGate Log Message Reference Scraper
 
-Tools for extracting FortiGate log field documentation from Fortinet's official documentation site and generating Elasticsearch field mappings.
+Tools for extracting FortiGate log field documentation from Fortinet's official documentation site.
 
 ## Files
 
