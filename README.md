@@ -1,4 +1,4 @@
-# FLORES - FortiGate Log Message Reference Scraper
+# FLORES — FortiGate Log Message Reference Scraper
 
 Tools for extracting FortiGate log field documentation from Fortinet's official documentation site.
 
@@ -91,7 +91,7 @@ Processes all scraped CSV files within each major version and consolidates uniqu
 python3 fortigate_fields.py
 ```
 
-**Output:** Creates `<major>/unique_fields/` with:
+**Output:** Creates `<major>/field_descriptions/` with:
 
 - `traffic_fields_<version>.csv`
 - `event_fields_<version>.csv`
@@ -104,10 +104,11 @@ python3 fortigate_fields.py
 <major>/                          # e.g., 7.6/
 ├── <minor>/                      # e.g., 7.6.4/ — one CSV per LOGID
 │   └── <LOGID_description>.csv
-└── unique_fields/
-    ├── unique_log_fields_data_types_traffic_<ver>.csv
-    ├── unique_log_fields_data_types_event_<ver>.csv
-    ├── unique_log_fields_data_types_utm_<ver>.csv
+├── unique_fields/
+│   ├── unique_log_fields_data_types_traffic_<ver>.csv
+│   ├── unique_log_fields_data_types_event_<ver>.csv
+│   └── unique_log_fields_data_types_utm_<ver>.csv
+└── field_descriptions/
     ├── traffic_fields_<ver>.csv
     ├── event_fields_<ver>.csv
     ├── utm_fields_<ver>.csv

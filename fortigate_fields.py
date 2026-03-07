@@ -16,10 +16,13 @@ Excludes: GTP (only present in FortiGate Carrier)
 
 import glob
 import os
+import re
 from collections import defaultdict
 
 import pandas as pd
 
+MAJOR_VERSION_DIR_RE = re.compile(r'^\d+\.\d+$')
+VERSION_DIR_RE = re.compile(r'^\d+\.\d+\.\d+$')
 
 # Types to exclude from all processing
 EXCLUDED_TYPES = {'GTP'}
@@ -198,8 +201,7 @@ def process_log_type(all_files, log_type_name, config):
 
                 if special_action and field_name == 'action':
                     # Special handling for action field in UTM
-                    if desc_str:
-                        action_descriptions[subtype].append(desc_str)
+                    action_descriptions[subtype].append(desc_str)
                 else:
                     field_descriptions[field_name][subtype].append(desc_str)
 
@@ -259,9 +261,10 @@ def process_major_version(major_version_path, major_version_name):
     print(f"{'='*80}")
 
     # Get all minor version folders (exclude special folders)
+    # Get all minor version folders (X.Y.Z format only)
     minor_version_folders = [d for d in os.listdir(major_version_path)
                             if os.path.isdir(os.path.join(major_version_path, d))
-                            and not d.startswith(('elasticsearch', 'unique'))]
+                            and VERSION_DIR_RE.match(d)]
 
     if not minor_version_folders:
         print(f"No minor version folders found in {major_version_path}")
@@ -284,7 +287,7 @@ def process_major_version(major_version_path, major_version_name):
     print(f"\nTotal CSV files to process: {len(all_files)}")
 
     # Prepare results folder
-    results_folder = os.path.join(major_version_path, "unique_fields")
+    results_folder = os.path.join(major_version_path, "field_descriptions")
     if not os.path.exists(results_folder):
         os.makedirs(results_folder)
         print(f"\nCreated results folder: {results_folder}")
@@ -351,18 +354,12 @@ def process_major_version(major_version_path, major_version_name):
 
 def main():
     """Main function to process all major versions."""
-    # Define the main Fortigate folder
-    main_folder = "Fortigate"
+    main_folder = "."
 
-    if not os.path.exists(main_folder):
-        print(f"Error: Main folder '{main_folder}' not found!")
-        print(f"Please ensure the script is in the same directory as the Fortigate folder,")
-        print(f"or update the 'main_folder' variable with the correct path.")
-        return
-
-    # Get all major version folders (e.g., 7.2, 7.4, 7.6)
+    # Get all major version folders (X.Y format, e.g., 7.2, 7.4, 7.6)
     major_versions = [d for d in os.listdir(main_folder)
-                     if os.path.isdir(os.path.join(main_folder, d))]
+                     if os.path.isdir(os.path.join(main_folder, d))
+                     and MAJOR_VERSION_DIR_RE.match(d)]
 
     if not major_versions:
         print(f"No version folders found in {main_folder}")

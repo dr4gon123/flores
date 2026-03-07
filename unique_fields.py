@@ -8,9 +8,13 @@ unique combinations of "Log Field Name" and "Data Type" per "Type".
 
 import glob
 import os
+import re
 import pandas as pd
 
 INTEGER_TYPES = ['uint64', 'uint32', 'uint16', 'uint8', 'int8', 'int32', 'int64']
+
+MAJOR_VERSION_DIR_RE = re.compile(r'^\d+\.\d+$')
+VERSION_DIR_RE = re.compile(r'^\d+\.\d+\.\d+$')
 
 
 def process_major_version(major_version_path, major_version_name):
@@ -25,10 +29,10 @@ def process_major_version(major_version_path, major_version_name):
     print(f"Processing Major Version: {major_version_name}")
     print(f"{'='*80}")
 
-    # Get all minor version folders (exclude output dirs)
+    # Get all minor version folders (X.Y.Z format only)
     minor_version_folders = [d for d in os.listdir(major_version_path)
                             if os.path.isdir(os.path.join(major_version_path, d))
-                            and not d.startswith(('elasticsearch', 'unique'))]
+                            and VERSION_DIR_RE.match(d)]
 
     if not minor_version_folders:
         print(f"No minor version folders found in {major_version_path}")
@@ -137,18 +141,12 @@ def process_major_version(major_version_path, major_version_name):
 
 def main():
     """Main function to process all major versions."""
-    # Define the main Fortigate folder
-    main_folder = "Fortigate"
+    main_folder = "."
 
-    if not os.path.exists(main_folder):
-        print(f"Error: Main folder '{main_folder}' not found!")
-        print(f"Please ensure the script is in the same directory as the Fortigate folder,")
-        print(f"or update the 'main_folder' variable with the correct path.")
-        return
-
-    # Get all major version folders (e.g., 7.2, 7.4, 7.6)
+    # Get all major version folders (X.Y format, e.g., 7.2, 7.4, 7.6)
     major_versions = [d for d in os.listdir(main_folder)
-                     if os.path.isdir(os.path.join(main_folder, d))]
+                     if os.path.isdir(os.path.join(main_folder, d))
+                     and MAJOR_VERSION_DIR_RE.match(d)]
 
     if not major_versions:
         print(f"No version folders found in {main_folder}")

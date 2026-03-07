@@ -42,10 +42,11 @@ All scripts expect to run from the repo root (they resolve paths relative to `os
 <major>/                          # e.g., 7.6/
 ├── <minor>/                      # e.g., 7.6.4/ — one CSV per LOGID
 │   └── <LOGID_description>.csv
-└── unique_fields/
-    ├── unique_log_fields_data_types_traffic_<ver>.csv   # unique_fields.py output
-    ├── unique_log_fields_data_types_event_<ver>.csv
-    ├── unique_log_fields_data_types_utm_<ver>.csv
+├── unique_fields/
+│   ├── unique_log_fields_data_types_traffic_<ver>.csv   # unique_fields.py output
+│   ├── unique_log_fields_data_types_event_<ver>.csv
+│   └── unique_log_fields_data_types_utm_<ver>.csv
+└── field_descriptions/
     ├── traffic_fields_<ver>.csv                          # fortigate_fields.py output
     ├── event_fields_<ver>.csv
     ├── utm_fields_<ver>.csv
