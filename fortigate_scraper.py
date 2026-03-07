@@ -299,12 +299,13 @@ class FortiGateLogScraper:
 
         for table in tables:
             # Check if this table contains log field information
-            headers = [th.get_text(strip=True).lower() for th in table.find_all('th')]
+            th_elements = table.find_all('th')
+            headers_lower = [th.get_text(strip=True).lower() for th in th_elements]
 
             # Common header patterns for log field tables
             expected_headers = ['field', 'description', 'type', 'length', 'data type', 'field name']
 
-            if any(header in ' '.join(headers) for header in expected_headers):
+            if any(header in ' '.join(headers_lower) for header in expected_headers):
                 try:
                     # Extract table data
                     data = []
@@ -313,7 +314,7 @@ class FortiGateLogScraper:
                     if not rows:
                         continue
 
-                    # Get headers
+                    # Get headers (first row, including td cells for tables without th)
                     header_row = rows[0]
                     headers = [th.get_text(strip=True) for th in header_row.find_all(['th', 'td'])]
 

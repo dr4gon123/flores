@@ -10,6 +10,9 @@ import glob
 import os
 import pandas as pd
 
+INTEGER_TYPES = ['uint64', 'uint32', 'uint16', 'uint8', 'int8', 'int32', 'int64']
+
+
 def process_major_version(major_version_path, major_version_name):
     """
     Process all CSV files in all minor version folders within a major version.
@@ -22,9 +25,10 @@ def process_major_version(major_version_path, major_version_name):
     print(f"Processing Major Version: {major_version_name}")
     print(f"{'='*80}")
 
-    # Get all minor version folders
+    # Get all minor version folders (exclude output dirs)
     minor_version_folders = [d for d in os.listdir(major_version_path)
-                            if os.path.isdir(os.path.join(major_version_path, d))]
+                            if os.path.isdir(os.path.join(major_version_path, d))
+                            and not d.startswith(('elasticsearch', 'unique'))]
 
     if not minor_version_folders:
         print(f"No minor version folders found in {major_version_path}")
@@ -66,8 +70,7 @@ def process_major_version(major_version_path, major_version_name):
     print(f"Total unique combinations: {len(consolidated_df)}")
 
     # Normalize integer data types to 'number'
-    integer_types = ['uint64', 'uint32', 'uint16', 'uint8', 'int8', 'int32', 'int64']
-    consolidated_df['Data Type'] = consolidated_df['Data Type'].replace(integer_types, 'number')
+    consolidated_df['Data Type'] = consolidated_df['Data Type'].replace(INTEGER_TYPES, 'number')
 
     # Split into different log types
     df_traffic = consolidated_df[consolidated_df['Type'] == 'Traffic'].copy()

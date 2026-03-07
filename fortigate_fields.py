@@ -24,6 +24,15 @@ import pandas as pd
 # Types to exclude from all processing
 EXCLUDED_TYPES = {'GTP'}
 
+# Integer type variants normalized to 'number'
+INTEGER_TYPES = {'uint64', 'uint32', 'uint16', 'uint8', 'int8', 'int32', 'int64'}
+
+
+def resolve_data_type(raw_types):
+    """Normalize a collection of raw data types to a single resolved type."""
+    normalized = {'number' if dt in INTEGER_TYPES else dt for dt in raw_types}
+    return 'string' if len(normalized) > 1 else (next(iter(normalized)) if normalized else 'string')
+
 # Log type definitions with their subtype column
 LOG_TYPE_CONFIG = {
     'Traffic': {
@@ -194,14 +203,11 @@ def process_log_type(all_files, log_type_name, config):
                 else:
                     field_descriptions[field_name][subtype].append(desc_str)
 
-        except Exception:
-            pass  # Silently skip files that don't have the expected structure
+        except Exception as e:
+            print(f"Error processing {file_path}: {e}")
 
     if not field_descriptions and not (special_action and action_descriptions):
         return None, None, subtypes_found
-
-    # Normalize integer data types to 'number'
-    integer_types = ['uint64', 'uint32', 'uint16', 'uint8', 'int8', 'int32', 'int64']
 
     # Process each field
     unique_fields = []
@@ -209,21 +215,9 @@ def process_log_type(all_files, log_type_name, config):
     labeled_fields = 0
 
     for field_name in sorted(field_descriptions.keys()):
-        # Process data types
-        data_types = list(set(field_data_types.get(field_name, ['string'])))
-        # Normalize integer types
-        normalized_types = set()
-        for dt in data_types:
-            if dt in integer_types:
-                normalized_types.add('number')
-            else:
-                normalized_types.add(dt)
-
-        if len(normalized_types) > 1:
-            final_data_type = 'string'
+        final_data_type = resolve_data_type(field_data_types.get(field_name, ['string']))
+        if final_data_type == 'string' and len(set(field_data_types.get(field_name, []))) > 1:
             inconsistent_types += 1
-        else:
-            final_data_type = list(normalized_types)[0] if normalized_types else 'string'
 
         # Process descriptions
         subtype_descs = field_descriptions[field_name]
@@ -240,18 +234,7 @@ def process_log_type(all_files, log_type_name, config):
 
     # Handle action field for UTM
     if special_action:
-        # Add action field with empty description
-        action_data_types = list(set(field_data_types.get('action', ['string'])))
-        normalized_action_types = set()
-        for dt in action_data_types:
-            if dt in integer_types:
-                normalized_action_types.add('number')
-            else:
-                normalized_action_types.add(dt)
-
-        action_data_type = 'string' if len(normalized_action_types) > 1 else (
-            list(normalized_action_types)[0] if normalized_action_types else 'string'
-        )
+        action_data_type = resolve_data_type(field_data_types.get('action', ['string']))
 
         unique_fields.append({
             'Log Field Name': 'action',
