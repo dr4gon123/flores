@@ -8,6 +8,7 @@ Tools for extracting FortiGate log field documentation from Fortinet's official 
 - **`fortigate_scraper_config.yaml`** - Configuration file with versions and settings
 - **`unique_fields.py`** - Consolidates scraped fields into unique field/data-type combinations
 - **`fortigate_fields.py`** - Consolidates fields with full descriptions per log subtype
+- **`DEVELOPERS_GUIDE.md`** - Internal architecture, data flow diagrams, and method reference
 
 ## Workflow
 
