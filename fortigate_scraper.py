@@ -92,46 +92,6 @@ class FortiGateLogScraper:
             logger.error(f"Error parsing YAML configuration: {e}")
             raise
     
-    def _version_exists(self, version: str) -> bool:
-        """
-        Check if a version has already been scraped
-        
-        Args:
-            version: Version string like '7.6.4'
-            
-        Returns:
-            True if the version directory exists and contains files, False otherwise
-        """
-        major_version_dir, minor_version_dir = self.get_version_directories(version)
-        
-        # Check if the minor version directory exists and has CSV files
-        if os.path.exists(minor_version_dir):
-            csv_files = [f for f in os.listdir(minor_version_dir) if f.endswith('.csv')]
-            if csv_files:
-                logger.info(f"Version {version} already exists with {len(csv_files)} files")
-                return True
-        
-        return False
-    
-    def _get_versions_to_scrape(self) -> List[str]:
-        """
-        Get the list of versions to scrape based on force_rescrape flag
-        
-        Returns:
-            List of version strings to scrape
-        """
-        if self.force_rescrape:
-            logger.info("Force rescrape enabled - will scrape all versions")
-            return self.versions
-        
-        # Filter out existing versions
-        versions_to_scrape = [v for v in self.versions if not self._version_exists(v)]
-        
-        existing_count = len(self.versions) - len(versions_to_scrape)
-        logger.info(f"Found {existing_count} existing versions, {len(versions_to_scrape)} new versions to scrape")
-        
-        return versions_to_scrape
-
     def get_version_directories(self, version: str) -> tuple:
         """
         Get the major and minor version directory paths
@@ -406,10 +366,26 @@ class FortiGateLogScraper:
             logger.warning(f"No LOGID links found for version {version}")
             return result
 
-        logger.info(f"Found {len(logid_links)} LOGID links for version {version}")
+        if not self.force_rescrape:
+            missing = [d for d in logid_links if not os.path.exists(
+                os.path.join(minor_version_dir, re.sub(r'[^\w\-_\.]', '_', str(d)) + '.csv'))]
+            logger.info(f"Version {version}: {len(logid_links)} LOGIDs total, "
+                        f"{len(logid_links) - len(missing)} already scraped, "
+                        f"{len(missing)} to fetch")
+        else:
+            logger.info(f"Version {version}: {len(logid_links)} LOGIDs total (force_rescrape=true)")
 
         # Process each LOGID and save immediately
         for logid_description, url in logid_links.items():
+            safe_logid = re.sub(r'[^\w\-_\.]', '_', str(logid_description))
+            filename = f"{safe_logid}.csv"
+            filepath = os.path.join(minor_version_dir, filename)
+
+            if not self.force_rescrape and os.path.exists(filepath):
+                logger.info(f"Skipping {logid_description} (already exists)")
+                result['successful'] += 1
+                continue
+
             logger.info(f"Processing LOGID: {logid_description}")
 
             logid_soup = self.get_page_content(url)
@@ -425,9 +401,7 @@ class FortiGateLogScraper:
             df['Version'] = version
 
             # Save immediately to CSV in the minor version directory
-            safe_logid = re.sub(r'[^\w\-_\.]', '_', str(logid_description))
-            filename = f"{safe_logid}.csv"
-            filepath = os.path.join(minor_version_dir, filename)
+            # (safe_logid, filename, filepath already computed above)
 
             try:
                 df.to_csv(filepath, index=False)
@@ -455,8 +429,9 @@ class FortiGateLogScraper:
             versions_to_scrape = specific_versions
             logger.info(f"Using {len(specific_versions)} specific versions provided by caller")
         else:
-            # Otherwise, use the smart filtering based on force_rescrape flag
-            versions_to_scrape = self._get_versions_to_scrape()
+            # All versions are always checked; individual LOGIDs are skipped if already scraped
+            versions_to_scrape = self.versions
+            logger.info(f"Will check {len(versions_to_scrape)} versions for missing LOGIDs")
 
         logger.info(f"Starting scrape for {len(versions_to_scrape)} versions")
         

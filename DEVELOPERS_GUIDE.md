@@ -52,10 +52,9 @@ FortiGateLogScraper.__init__()
         ▼
 run()
   ├─ [dry_run=true]  → print plan and exit
-  └─ _get_versions_to_scrape()
-       ├─ [force_rescrape=true]  → all versions
-       └─ [force_rescrape=false] → filter with _version_exists()
-              │                    (checks minor_version_dir has *.csv files)
+  └─ [specific_versions provided] → use them directly
+     [otherwise]                  → use self.versions (all configured versions)
+              │
               ▼
         for each version:
           scrape_version(version)
@@ -65,6 +64,7 @@ run()
             ├─ extract_logid_links()   → {description: full_url}
             │     regex: r'/(\d{1,6})-(logid|log-id|mesgid)-[^/]*$'
             └─ for each LOGID link:
+                 [force_rescrape=false] → skip if <minor_dir>/<safe_logid>.csv exists
                  get_page_content(logid_url)
                  ├─ extract_log_metadata() → Message_ID, Type, Category, Severity, ...
                  └─ extract_log_table()    → DataFrame (fields + metadata columns)
@@ -138,9 +138,17 @@ Single-class design — all scraping logic lives here. A `requests.Session` is r
 - **Other HTTP / network errors**: On each failure before the last attempt, the scraper waits `base_delay × (retry_backoff ^ attempt) + random.uniform(0, 1)` seconds (jitter prevents thundering-herd on parallel runs). On the final attempt, the error is logged and `None` is returned.
 - **Successful fetch**: `time.sleep(base_delay)` is applied before returning to pace requests regardless of retry history.
 
-### Version Skip Logic
+### LOGID-Level Resume
 
-Before scraping, `_get_versions_to_scrape()` checks each version with `_version_exists()`. A version is considered "done" if its minor version directory exists **and** contains at least one `.csv` file. This prevents re-scraping on interrupted runs. Setting `force_rescrape: true` bypasses this check entirely.
+Every run always fetches the index page for each configured version to get the full LOGID list. Before fetching each LOGID page, the scraper checks whether its output CSV already exists on disk:
+
+```
+<minor_version_dir>/<safe_logid>.csv
+```
+
+If the file exists and `force_rescrape` is false, the LOGID is skipped (counted as successful in the summary). Only missing files are fetched. This means an interrupted run can be resumed safely — the scraper picks up exactly where it left off at LOGID granularity.
+
+Setting `force_rescrape: true` bypasses all skip checks and re-fetches every LOGID.
 
 ### Directory Structure Created
 
@@ -169,8 +177,6 @@ This covers three URL keyword variants Fortinet uses across different FortiOS ve
 |--------|-------------|
 | `__init__()` | Loads config, creates `requests.Session`, sets all instance state |
 | `_load_config()` | Reads YAML from script directory; raises on missing file or parse error |
-| `_version_exists()` | Returns True if minor version dir has ≥1 CSV file |
-| `_get_versions_to_scrape()` | Filters version list based on `force_rescrape` flag |
 | `get_version_directories()` | Splits `"7.6.4"` into `("output/7.6", "output/7.6/7.6.4")` |
 | `get_version_url()` | Generates `docs.fortinet.com` URL for a given version string |
 | `get_page_content()` | Fetches URL → BeautifulSoup with retry/backoff (up to `max_retries`); handles 429; returns None after all attempts fail |
@@ -411,8 +417,6 @@ To add a new FortiOS version:
 |--------|--------|-------------|
 | `FortiGateLogScraper.__init__()` | scraper | Loads config, creates HTTP session, sets base_delay, max_retries, retry_backoff, force_rescrape, dry_run |
 | `_load_config()` | scraper | Reads YAML from script's own directory; raises on missing file or parse error |
-| `_version_exists()` | scraper | Returns True if minor version dir exists and contains ≥1 CSV file |
-| `_get_versions_to_scrape()` | scraper | Filters version list: all if force_rescrape, else only missing versions |
 | `get_version_directories()` | scraper | Splits `"7.6.4"` into `(output/7.6, output/7.6/7.6.4)` paths |
 | `get_version_url()` | scraper | Constructs `docs.fortinet.com` URL for a FortiOS version |
 | `get_page_content()` | scraper | Fetches URL → BeautifulSoup with retry/backoff; handles 429; returns None after all attempts fail |
