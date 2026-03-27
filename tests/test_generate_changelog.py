@@ -247,6 +247,16 @@ class TestDiffVersions:
         result = diff_versions(prev, curr)
         assert 'IPS' in result.utmtype_removed
 
+    def test_gtp_logid_excluded(self):
+        prev = _make_vdict({'10_G': ([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}], 'GTP')})
+        curr = _make_vdict({
+            '10_G': ([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}], 'GTP'),
+            '20_G': ([{'name': 'y', 'type': 'string', 'length': '8', 'desc': 'n'}], 'GTP'),
+        })
+        result = diff_versions(prev, curr)
+        assert '10_G' not in result.logid_diffs
+        assert '20_G' not in result.added_logids
+
 
 from generate_changelog import _truncate, _render_version_pair, LogidDiff, VersionDiff
 

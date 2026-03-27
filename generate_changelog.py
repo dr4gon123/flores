@@ -262,11 +262,25 @@ def diff_versions(
     prev_stems = set(prev.keys())
     curr_stems = set(curr.keys())
 
-    added_logids = {s: classify_dataset(curr[s]) for s in sorted(curr_stems - prev_stems)}
-    removed_logids = {s: classify_dataset(prev[s]) for s in sorted(prev_stems - curr_stems)}
+    # Filter out excluded types (e.g. GTP) from all collections
+    def is_excluded(df: pd.DataFrame) -> bool:
+        return classify_dataset(df) in EXCLUDED_TYPES
+
+    added_logids = {
+        s: classify_dataset(curr[s])
+        for s in sorted(curr_stems - prev_stems)
+        if not is_excluded(curr[s])
+    }
+    removed_logids = {
+        s: classify_dataset(prev[s])
+        for s in sorted(prev_stems - curr_stems)
+        if not is_excluded(prev[s])
+    }
 
     logid_diffs: dict[str, tuple[str, LogidDiff]] = {}
     for s in sorted(prev_stems & curr_stems):
+        if is_excluded(curr[s]):
+            continue
         d = diff_logid(prev[s], curr[s])
         if d.has_changes():
             logid_diffs[s] = (classify_dataset(curr[s]), d)

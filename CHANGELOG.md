@@ -4,7 +4,7 @@
 
 ### 7.2.0 → 7.2.1
 
-**Summary:** 29 LOGID added, 39 removed | 145 fields added, 17 removed | 0 type changed | 0 descriptions changed | 325 lengths changed
+**Summary:** 29 LOGID added, 39 removed | 143 fields added, 17 removed | 0 type changed | 0 descriptions changed | 325 lengths changed
 
 #### Traffic
 
@@ -876,12 +876,6 @@
 
 ##### 30261_-_LOGID_WAF_URL_ACCESS_BLOCK
 - Length changed: `group` 64 → 512
-
-##### 41221_-_LOGID_GTP_TRAFFIC_COUNT
-- Field added: `clashtunnelidx` (uint32, len: 10) — ""
-
-##### 41228_-_LOGID_GTPV2_TRAFFIC_COUNT
-- Field added: `clashtunnelidx` (uint32, len: 10) — ""
 
 ##### 54000_-_LOG_ID_DNS_QUERY
 - Length changed: `group` 64 → 512
@@ -2539,7 +2533,7 @@
 
 ### 7.2.3 → 7.2.4
 
-**Summary:** 16 LOGID added, 13 removed | 129 fields added, 0 removed | 14 type changed | 1 descriptions changed | 56 lengths changed
+**Summary:** 16 LOGID added, 13 removed | 115 fields added, 0 removed | 0 type changed | 1 descriptions changed | 42 lengths changed
 
 #### Traffic
 
@@ -2861,76 +2855,6 @@
 
 ##### 13682_-_LOG_ID_VIDEOFILTER_CHANNEL_ALLOW
 - Field added: `poluuid` (string, len: 37) — ""
-
-##### 41216_-_LOGID_GTP_FORWARD
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41217_-_LOGID_GTP_DENY
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41218_-_LOGID_GTP_RATE_LIMIT
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41219_-_LOGID_GTP_STATE_INVALID
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41220_-_LOGID_GTP_TUNNEL_LIMIT
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41223_-_LOGID_GTPV2_FORWARD
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41224_-_LOGID_GTPV2_DENY
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41225_-_LOGID_GTPV2_RATE_LIMIT
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41226_-_LOGID_GTPV2_STATE_INVALID
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41227_-_LOGID_GTPV2_TUNNEL_LIMIT
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41229_-_LOGID_GTPU_FORWARD
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41230_-_LOGID_GTPU_DENY
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41231_-_LOGID_PFCP_FORWARD
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
-
-##### 41232_-_LOGID_PFCP_DENY
-- Field added: `msgtypename` (string, len: 50) — ""
-- Type changed: `msg-type` `string` → `uint8`
-- Length changed: `msg-type` 50 → 3
 
 ##### 60000_-_LOG_ID_ICAP_SERVER_ERROR
 - Field added: `violations` (string, len: 256) — ""
@@ -3816,7 +3740,7 @@
 
 ### 7.2.8 → 7.2.9
 
-**Summary:** 2 LOGID added, 0 removed | 48 fields added, 0 removed | 0 type changed | 0 descriptions changed | 0 lengths changed
+**Summary:** 2 LOGID added, 0 removed | 42 fields added, 0 removed | 0 type changed | 0 descriptions changed | 0 lengths changed
 
 #### Traffic
 
@@ -3912,17 +3836,7 @@
 
 #### UTM
 
-##### 41231_-_LOGID_PFCP_FORWARD
-- Field added: `end-usr-address` (ip, len: 39) — "End user IP Address"
-- Field added: `endusraddress6` (ip, len: 39) — ""
-
-##### 41232_-_LOGID_PFCP_DENY
-- Field added: `end-usr-address` (ip, len: 39) — "End user IP Address"
-- Field added: `endusraddress6` (ip, len: 39) — ""
-
-##### 41233_-_LOGID_PFCP_TRAFFIC_COUNT
-- Field added: `end-usr-address` (ip, len: 39) — "End user IP Address"
-- Field added: `endusraddress6` (ip, len: 39) — ""
+*(no changes)*
 
 ---
 
@@ -5161,7 +5075,7 @@
 
 ### 7.4.4 → 7.4.5
 
-**Summary:** 8 LOGID added, 0 removed | 6 fields added, 0 removed | 0 type changed | 0 descriptions changed | 0 lengths changed
+**Summary:** 8 LOGID added, 0 removed | 0 fields added, 0 removed | 0 type changed | 0 descriptions changed | 0 lengths changed
 
 #### Traffic
 
@@ -5186,18 +5100,6 @@
 ##### 61014_-_LOG_ID_SSH_UNSUPPORT_PROTO_BLOCK *(new)*
 
 ##### 61015_-_LOG_ID_SSH_UNSUPPORT_PROTO_PASS *(new)*
-
-##### 41231_-_LOGID_PFCP_FORWARD
-- Field added: `end-usr-address` (ip, len: 39) — "End user IP Address"
-- Field added: `endusraddress6` (ip, len: 39) — ""
-
-##### 41232_-_LOGID_PFCP_DENY
-- Field added: `end-usr-address` (ip, len: 39) — "End user IP Address"
-- Field added: `endusraddress6` (ip, len: 39) — ""
-
-##### 41233_-_LOGID_PFCP_TRAFFIC_COUNT
-- Field added: `end-usr-address` (ip, len: 39) — "End user IP Address"
-- Field added: `endusraddress6` (ip, len: 39) — ""
 
 ---
 
