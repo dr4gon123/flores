@@ -151,3 +151,38 @@ def diff_logid(prev_df: pd.DataFrame, curr_df: pd.DataFrame) -> LogidDiff:
         desc_changes=desc_changes,
         length_changes=length_changes,
     )
+
+
+def _utm_types(version_dict: dict[str, pd.DataFrame]) -> set[str]:
+    """Return the set of UTM subtype labels present in a version."""
+    return {
+        classify_dataset(df)
+        for df in version_dict.values()
+        if classify_dataset(df) not in ('Traffic', 'Event', 'GTP', 'Unknown')
+    }
+
+
+def diff_versions(
+    prev: dict[str, pd.DataFrame],
+    curr: dict[str, pd.DataFrame],
+) -> VersionDiff:
+    """Compare two loaded minor versions, returning all changes."""
+    prev_stems = set(prev.keys())
+    curr_stems = set(curr.keys())
+
+    added_logids = {s: classify_dataset(curr[s]) for s in sorted(curr_stems - prev_stems)}
+    removed_logids = {s: classify_dataset(prev[s]) for s in sorted(prev_stems - curr_stems)}
+
+    logid_diffs: dict[str, tuple[str, LogidDiff]] = {}
+    for s in sorted(prev_stems & curr_stems):
+        d = diff_logid(prev[s], curr[s])
+        if d.has_changes():
+            logid_diffs[s] = (classify_dataset(curr[s]), d)
+
+    return VersionDiff(
+        added_logids=added_logids,
+        removed_logids=removed_logids,
+        logid_diffs=logid_diffs,
+        utmtype_added=_utm_types(curr) - _utm_types(prev),
+        utmtype_removed=_utm_types(prev) - _utm_types(curr),
+    )

@@ -181,3 +181,68 @@ class TestDiffLogid:
         df = pd.DataFrame(rows)
         result = diff_logid(df, df.copy())
         assert not result.has_changes()
+
+
+from generate_changelog import diff_versions
+
+def _make_vdict(specs):
+    """specs: dict of {stem: (list_of_fields, type_val)}"""
+    result = {}
+    for stem, (fields, type_val) in specs.items():
+        result[stem] = make_logid_df(fields, type_val=type_val)
+    return result
+
+class TestDiffVersions:
+    def test_added_logid(self):
+        prev = _make_vdict({'10_T': ([{'name': 'a', 'type': 'string', 'length': '32', 'desc': 'd'}], 'Traffic')})
+        curr = _make_vdict({
+            '10_T': ([{'name': 'a', 'type': 'string', 'length': '32', 'desc': 'd'}], 'Traffic'),
+            '20_N': ([{'name': 'b', 'type': 'ip', 'length': '64', 'desc': 'n'}], 'Traffic'),
+        })
+        result = diff_versions(prev, curr)
+        assert '20_N' in result.added_logids
+        assert result.added_logids['20_N'] == 'Traffic'
+        assert not result.removed_logids
+
+    def test_removed_logid(self):
+        prev = _make_vdict({
+            '10_T': ([{'name': 'a', 'type': 'string', 'length': '32', 'desc': 'd'}], 'Traffic'),
+            '20_O': ([{'name': 'b', 'type': 'ip', 'length': '64', 'desc': 'o'}], 'Event'),
+        })
+        curr = _make_vdict({'10_T': ([{'name': 'a', 'type': 'string', 'length': '32', 'desc': 'd'}], 'Traffic')})
+        result = diff_versions(prev, curr)
+        assert '20_O' in result.removed_logids
+        assert result.removed_logids['20_O'] == 'Event'
+
+    def test_field_change_captured_with_dataset_label(self):
+        prev = _make_vdict({'10_T': ([{'name': 'srcip', 'type': 'string', 'length': '32', 'desc': 'IP'}], 'Traffic')})
+        curr = _make_vdict({'10_T': ([{'name': 'srcip', 'type': 'ip', 'length': '32', 'desc': 'IP'}], 'Traffic')})
+        result = diff_versions(prev, curr)
+        assert '10_T' in result.logid_diffs
+        label, d = result.logid_diffs['10_T']
+        assert label == 'Traffic'
+        assert 'srcip' in d.type_changes
+
+    def test_unchanged_logid_not_in_diffs(self):
+        spec = {'10_T': ([{'name': 'a', 'type': 'string', 'length': '32', 'desc': 'd'}], 'Traffic')}
+        result = diff_versions(_make_vdict(spec), _make_vdict(spec))
+        assert not result.has_changes()
+
+    def test_utm_subtype_added(self):
+        prev = _make_vdict({'10_W': ([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}], 'Webfilter')})
+        curr = _make_vdict({
+            '10_W': ([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}], 'Webfilter'),
+            '20_I': ([{'name': 'y', 'type': 'string', 'length': '8', 'desc': 'd'}], 'IPS'),
+        })
+        result = diff_versions(prev, curr)
+        assert 'IPS' in result.utmtype_added
+        assert 'Webfilter' not in result.utmtype_added
+
+    def test_utm_subtype_removed(self):
+        prev = _make_vdict({
+            '10_W': ([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}], 'Webfilter'),
+            '20_I': ([{'name': 'y', 'type': 'string', 'length': '8', 'desc': 'd'}], 'IPS'),
+        })
+        curr = _make_vdict({'10_W': ([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}], 'Webfilter')})
+        result = diff_versions(prev, curr)
+        assert 'IPS' in result.utmtype_removed
