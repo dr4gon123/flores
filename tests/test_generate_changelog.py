@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 from pathlib import Path
-from generate_changelog import discover_versions
+from generate_changelog import discover_versions, load_version
 
 # helpers shared across tests
 def make_logid_df(fields, type_val='Traffic', category='forward'):
@@ -62,3 +62,33 @@ class TestDiscoverVersions:
         (tmp_path / '7.2').mkdir()
         result = discover_versions(tmp_path)
         assert result[0][1] == []
+
+
+class TestLoadVersion:
+    def test_returns_dict_keyed_by_stem(self, tmp_path):
+        df = make_logid_df([{'name': 'action', 'type': 'string', 'length': '32', 'desc': 'Act'}])
+        df.to_csv(tmp_path / '10_-_LOG_ID_TRAFFIC_FORWARD.csv', index=False)
+
+        result = load_version(tmp_path)
+
+        assert '10_-_LOG_ID_TRAFFIC_FORWARD' in result
+        assert len(result) == 1
+        assert list(result['10_-_LOG_ID_TRAFFIC_FORWARD']['Log Field Name']) == ['action']
+
+    def test_loads_multiple_csvs(self, tmp_path):
+        for stem in ['10_TRAFFIC', '20_EVENT']:
+            df = make_logid_df([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}])
+            df.to_csv(tmp_path / f'{stem}.csv', index=False)
+
+        result = load_version(tmp_path)
+        assert set(result.keys()) == {'10_TRAFFIC', '20_EVENT'}
+
+    def test_empty_dir_returns_empty_dict(self, tmp_path):
+        assert load_version(tmp_path) == {}
+
+    def test_skips_unreadable_csv(self, tmp_path):
+        (tmp_path / 'bad.csv').write_text('not,valid\ncsv,data\n,,broken')
+        # Should not raise, just skip or load partially
+        result = load_version(tmp_path)
+        # bad.csv has no expected LOGID columns; we just verify no exception is raised
+        assert isinstance(result, dict)

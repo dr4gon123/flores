@@ -58,3 +58,15 @@ def discover_versions(root: Path) -> list[tuple[str, list[Path]]]:
         )
         result.append((entry.name, minor_dirs))
     return result
+
+
+def load_version(minor_dir: Path) -> dict[str, pd.DataFrame]:
+    """Load all CSV files from a minor version directory, keyed by filename stem."""
+    result = {}
+    for csv_file in sorted(minor_dir.glob('*.csv')):
+        try:
+            df = pd.read_csv(csv_file)
+            result[csv_file.stem] = df
+        except Exception:
+            pass
+    return result
