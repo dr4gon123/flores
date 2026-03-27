@@ -112,3 +112,72 @@ class TestClassifyDataset:
 
     def test_empty_dataframe(self):
         assert classify_dataset(pd.DataFrame()) == 'Unknown'
+
+
+from generate_changelog import diff_logid
+
+class TestDiffLogid:
+    def _df(self, fields, **kw):
+        return make_logid_df(fields, **kw)
+
+    def test_added_field(self):
+        prev = self._df([{'name': 'action', 'type': 'string', 'length': '32', 'desc': 'Act'}])
+        curr = self._df([
+            {'name': 'action', 'type': 'string', 'length': '32', 'desc': 'Act'},
+            {'name': 'newfield', 'type': 'ip', 'length': '64', 'desc': 'New'},
+        ])
+        result = diff_logid(prev, curr)
+        assert len(result.added_fields) == 1
+        assert result.added_fields[0] == ('newfield', 'ip', '64', 'New')
+        assert result.removed_fields == []
+
+    def test_removed_field(self):
+        prev = self._df([
+            {'name': 'action', 'type': 'string', 'length': '32', 'desc': 'Act'},
+            {'name': 'old', 'type': 'string', 'length': '16', 'desc': 'Old'},
+        ])
+        curr = self._df([{'name': 'action', 'type': 'string', 'length': '32', 'desc': 'Act'}])
+        result = diff_logid(prev, curr)
+        assert len(result.removed_fields) == 1
+        assert result.removed_fields[0][0] == 'old'
+
+    def test_type_changed(self):
+        prev = self._df([{'name': 'srcip', 'type': 'string', 'length': '32', 'desc': 'IP'}])
+        curr = self._df([{'name': 'srcip', 'type': 'ip', 'length': '32', 'desc': 'IP'}])
+        result = diff_logid(prev, curr)
+        assert result.type_changes == {'srcip': ('string', 'ip')}
+        assert not result.added_fields
+        assert not result.removed_fields
+
+    def test_desc_changed(self):
+        prev = self._df([{'name': 'action', 'type': 'string', 'length': '32', 'desc': 'Old desc'}])
+        curr = self._df([{'name': 'action', 'type': 'string', 'length': '32', 'desc': 'New desc'}])
+        result = diff_logid(prev, curr)
+        assert result.desc_changes == {'action': ('Old desc', 'New desc')}
+
+    def test_length_changed(self):
+        prev = self._df([{'name': 'filename', 'type': 'string', 'length': '255', 'desc': 'File'}])
+        curr = self._df([{'name': 'filename', 'type': 'string', 'length': '512', 'desc': 'File'}])
+        result = diff_logid(prev, curr)
+        assert result.length_changes == {'filename': ('255', '512')}
+
+    def test_no_changes(self):
+        df = self._df([{'name': 'action', 'type': 'string', 'length': '32', 'desc': 'Act'}])
+        result = diff_logid(df, df.copy())
+        assert not result.has_changes()
+
+    def test_deduplicates_field_names(self):
+        """If a field appears twice in a CSV, take last occurrence."""
+        rows = [
+            {'Log Field Name': 'action', 'Data Type': 'string', 'Length': '32',
+             'Description': 'first', 'Type': 'Traffic', 'Category': 'forward',
+             'LOGID': '10', 'Message_ID': '10', 'Message_Description': 'T',
+             'Message_Meaning': 'T', 'Severity': 'Notice', 'Version': '7.2.0'},
+            {'Log Field Name': 'action', 'Data Type': 'string', 'Length': '32',
+             'Description': 'second', 'Type': 'Traffic', 'Category': 'forward',
+             'LOGID': '10', 'Message_ID': '10', 'Message_Description': 'T',
+             'Message_Meaning': 'T', 'Severity': 'Notice', 'Version': '7.2.0'},
+        ]
+        df = pd.DataFrame(rows)
+        result = diff_logid(df, df.copy())
+        assert not result.has_changes()
