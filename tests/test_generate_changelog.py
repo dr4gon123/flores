@@ -341,3 +341,45 @@ class TestRenderVersionPair:
         output = _render_version_pair('7.2.0', '7.2.1', diff)
         assert output.index('#### Traffic') < output.index('10_T')
         assert output.index('#### Event') < output.index('20_E')
+
+
+from generate_changelog import discover_versions, load_version, diff_versions, _render_version_pair
+
+class TestIntegration:
+    def test_end_to_end_diff_pipeline(self, tmp_path):
+        # Set up two minor versions under a fake major
+        v1_dir = tmp_path / '7.2' / '7.2.0'
+        v2_dir = tmp_path / '7.2' / '7.2.1'
+        v1_dir.mkdir(parents=True)
+        v2_dir.mkdir(parents=True)
+
+        # v1: LOGID 10, field 'action' typed string
+        df1 = make_logid_df([{'name': 'action', 'type': 'string', 'length': '32', 'desc': 'Act'}])
+        df1.to_csv(v1_dir / '10_-_LOG_ID_TRAFFIC_FORWARD.csv', index=False)
+
+        # v2: LOGID 10 with type changed; new LOGID 20 added
+        df2 = make_logid_df([{'name': 'action', 'type': 'ip', 'length': '32', 'desc': 'Act'}])
+        df2.to_csv(v2_dir / '10_-_LOG_ID_TRAFFIC_FORWARD.csv', index=False)
+        df_new = make_logid_df([{'name': 'srcip', 'type': 'ip', 'length': '64', 'desc': 'Src'}])
+        df_new.to_csv(v2_dir / '20_-_LOG_ID_TRAFFIC_NEW.csv', index=False)
+
+        # Run pipeline
+        groups = discover_versions(tmp_path)
+        assert len(groups) == 1
+        major, minors = groups[0]
+        assert major == '7.2'
+        assert len(minors) == 2
+
+        prev = load_version(minors[0])
+        curr = load_version(minors[1])
+        diff = diff_versions(prev, curr)
+
+        assert '20_-_LOG_ID_TRAFFIC_NEW' in diff.added_logids
+        assert '10_-_LOG_ID_TRAFFIC_FORWARD' in diff.logid_diffs
+        _, d = diff.logid_diffs['10_-_LOG_ID_TRAFFIC_FORWARD']
+        assert d.type_changes == {'action': ('string', 'ip')}
+
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert '20_-_LOG_ID_TRAFFIC_NEW *(new)*' in output
+        assert 'Type changed: `action` `string` → `ip`' in output
+        assert '**Summary:** 1 LOGID added, 0 removed' in output

@@ -278,3 +278,37 @@ def diff_versions(
         utmtype_added=_utm_types(curr) - _utm_types(prev),
         utmtype_removed=_utm_types(prev) - _utm_types(curr),
     )
+
+
+def main() -> None:
+    root = Path(__file__).parent
+    version_groups = discover_versions(root)
+
+    if not version_groups:
+        print('No version directories found. Run fortigate_scraper.py first.')
+        return
+
+    major_sections: list[str] = []
+
+    for major_label, minor_dirs in version_groups:
+        pairs = list(zip(minor_dirs, minor_dirs[1:]))
+        if not pairs:
+            continue
+
+        section_lines = [f'## {major_label}', '']
+        for prev_dir, curr_dir in pairs:
+            prev = load_version(prev_dir)
+            curr = load_version(curr_dir)
+            diff = diff_versions(prev, curr)
+            section_lines.append(_render_version_pair(prev_dir.name, curr_dir.name, diff))
+
+        major_sections.append('\n'.join(section_lines))
+
+    changelog = '# FortiGate Log Field Changelog\n\n' + '\n\n'.join(major_sections) + '\n'
+    output_path = root / 'CHANGELOG.md'
+    output_path.write_text(changelog, encoding='utf-8')
+    print(f'Written: {output_path} ({output_path.stat().st_size:,} bytes)')
+
+
+if __name__ == '__main__':
+    main()
