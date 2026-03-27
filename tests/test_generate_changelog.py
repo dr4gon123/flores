@@ -246,3 +246,98 @@ class TestDiffVersions:
         curr = _make_vdict({'10_W': ([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}], 'Webfilter')})
         result = diff_versions(prev, curr)
         assert 'IPS' in result.utmtype_removed
+
+
+from generate_changelog import _truncate, _render_version_pair, LogidDiff, VersionDiff
+
+class TestTruncate:
+    def test_short_string_unchanged(self):
+        assert _truncate('hello') == 'hello'
+
+    def test_long_string_truncated(self):
+        result = _truncate('x' * 200)
+        assert len(result) == 121  # 120 chars + ellipsis
+        assert result.endswith('…')
+
+    def test_newlines_replaced_with_spaces(self):
+        assert '\n' not in _truncate('line1\nline2')
+
+class TestRenderVersionPair:
+    def _no_change_diff(self):
+        return VersionDiff({}, {}, {}, set(), set())
+
+    def _logid_diff(self, **kw):
+        defaults = dict(added_fields=[], removed_fields=[], type_changes={},
+                        desc_changes={}, length_changes={})
+        defaults.update(kw)
+        return LogidDiff(**defaults)
+
+    def test_no_changes_emits_no_changes_note(self):
+        output = _render_version_pair('7.2.0', '7.2.1', self._no_change_diff())
+        assert '### 7.2.0 → 7.2.1' in output
+        assert '*(no changes)*' in output
+
+    def test_summary_counts_added_logid(self):
+        diff = VersionDiff(
+            added_logids={'10_T': 'Traffic'}, removed_logids={},
+            logid_diffs={}, utmtype_added=set(), utmtype_removed=set(),
+        )
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert '1 LOGID added, 0 removed' in output
+        assert '10_T *(new)*' in output
+
+    def test_summary_counts_removed_logid(self):
+        diff = VersionDiff(
+            added_logids={}, removed_logids={'20_E': 'Event'},
+            logid_diffs={}, utmtype_added=set(), utmtype_removed=set(),
+        )
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert '0 LOGID added, 1 removed' in output
+        assert '20_E *(removed)*' in output
+
+    def test_field_added_rendered(self):
+        d = self._logid_diff(added_fields=[('newf', 'ip', '64', 'New field desc')])
+        diff = VersionDiff({}, {}, {'10_T': ('Traffic', d)}, set(), set())
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert 'Field added: `newf` (ip, len: 64)' in output
+        assert 'New field desc' in output
+
+    def test_type_change_rendered(self):
+        d = self._logid_diff(type_changes={'action': ('string', 'ip')})
+        diff = VersionDiff({}, {}, {'10_T': ('Traffic', d)}, set(), set())
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert 'Type changed: `action` `string` → `ip`' in output
+
+    def test_desc_change_rendered(self):
+        d = self._logid_diff(desc_changes={'action': ('Old', 'New')})
+        diff = VersionDiff({}, {}, {'10_T': ('Traffic', d)}, set(), set())
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert 'Description changed: `action`' in output
+        assert 'Before: "Old"' in output
+        assert 'After:  "New"' in output
+
+    def test_length_change_rendered(self):
+        d = self._logid_diff(length_changes={'filename': ('255', '512')})
+        diff = VersionDiff({}, {}, {'10_T': ('Traffic', d)}, set(), set())
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert 'Length changed: `filename` 255 → 512' in output
+
+    def test_utm_subtypes_shown(self):
+        diff = VersionDiff(
+            added_logids={'10_I': 'IPS'}, removed_logids={},
+            logid_diffs={}, utmtype_added={'IPS'}, utmtype_removed=set(),
+        )
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert 'new subtypes: IPS' in output
+
+    def test_dataset_grouping(self):
+        d_t = self._logid_diff(added_fields=[('x', 'string', '8', 'desc')])
+        d_e = self._logid_diff(added_fields=[('y', 'string', '8', 'desc')])
+        diff = VersionDiff(
+            {}, {},
+            {'10_T': ('Traffic', d_t), '20_E': ('Event', d_e)},
+            set(), set(),
+        )
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert output.index('#### Traffic') < output.index('10_T')
+        assert output.index('#### Event') < output.index('20_E')

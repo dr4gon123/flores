@@ -162,6 +162,98 @@ def _utm_types(version_dict: dict[str, pd.DataFrame]) -> set[str]:
     }
 
 
+def _truncate(text: str, max_len: int = DESC_TRUNCATE) -> str:
+    """Flatten newlines and truncate to max_len chars, appending '…' if cut."""
+    text = str(text).replace('\n', ' ').strip()
+    return text if len(text) <= max_len else text[:max_len] + '…'
+
+
+def _render_logid_diff(d: LogidDiff) -> list[str]:
+    """Return bullet lines describing all changes in a single LOGID diff."""
+    lines = []
+    for name, typ, length, desc in d.added_fields:
+        lines.append(f'- Field added: `{name}` ({typ}, len: {length}) — "{_truncate(desc)}"')
+    for name, typ, _length, _desc in d.removed_fields:
+        lines.append(f'- Field removed: `{name}` ({typ})')
+    for f, (old, new) in sorted(d.type_changes.items()):
+        lines.append(f'- Type changed: `{f}` `{old}` → `{new}`')
+    for f, (old, new) in sorted(d.desc_changes.items()):
+        lines.append(f'- Description changed: `{f}`')
+        lines.append(f'  - Before: "{_truncate(old)}"')
+        lines.append(f'  - After:  "{_truncate(new)}"')
+    for f, (old, new) in sorted(d.length_changes.items()):
+        lines.append(f'- Length changed: `{f}` {old} → {new}')
+    return lines
+
+
+def _dataset_bucket(label: str) -> str:
+    """Map a dataset label to one of three top-level buckets."""
+    if label in ('Traffic', 'Event'):
+        return label
+    return 'UTM'
+
+
+def _render_version_pair(v_prev: str, v_curr: str, diff: VersionDiff) -> str:
+    """Render the ### section for one version-pair diff."""
+    lines = [f'### {v_prev} → {v_curr}', '']
+
+    if not diff.has_changes():
+        lines += ['*(no changes)*', '', '---', '']
+        return '\n'.join(lines)
+
+    # Summary counts (fields from changed LOGIDs only)
+    n_la = len(diff.added_logids)
+    n_lr = len(diff.removed_logids)
+    n_fa = sum(len(d.added_fields) for _, d in diff.logid_diffs.values())
+    n_fr = sum(len(d.removed_fields) for _, d in diff.logid_diffs.values())
+    n_tc = sum(len(d.type_changes) for _, d in diff.logid_diffs.values())
+    n_dc = sum(len(d.desc_changes) for _, d in diff.logid_diffs.values())
+    n_lc = sum(len(d.length_changes) for _, d in diff.logid_diffs.values())
+
+    lines.append(
+        f'**Summary:** {n_la} LOGID added, {n_lr} removed | '
+        f'{n_fa} fields added, {n_fr} removed | '
+        f'{n_tc} type changed | {n_dc} descriptions changed | {n_lc} lengths changed'
+    )
+    lines.append('')
+
+    # Bucket all changes by dataset
+    by_bucket: dict[str, list] = {'Traffic': [], 'Event': [], 'UTM': []}
+
+    for stem, label in sorted(diff.added_logids.items()):
+        by_bucket[_dataset_bucket(label)].append(('added', stem, label, None))
+    for stem, label in sorted(diff.removed_logids.items()):
+        by_bucket[_dataset_bucket(label)].append(('removed', stem, label, None))
+    for stem, (label, d) in sorted(diff.logid_diffs.items()):
+        by_bucket[_dataset_bucket(label)].append(('changed', stem, label, d))
+
+    for bucket in ['Traffic', 'Event', 'UTM']:
+        entries = by_bucket[bucket]
+        header = f'#### {bucket}'
+        if bucket == 'UTM' and (diff.utmtype_added or diff.utmtype_removed):
+            added_str = ', '.join(sorted(diff.utmtype_added)) or '*(none)*'
+            removed_str = ', '.join(sorted(diff.utmtype_removed)) or '*(none)*'
+            header += f' — new subtypes: {added_str} | removed subtypes: {removed_str}'
+        lines += [header, '']
+
+        if not entries:
+            lines += ['*(no changes)*', '']
+            continue
+
+        for kind, stem, _label, d in entries:
+            if kind == 'added':
+                lines += [f'##### {stem} *(new)*', '']
+            elif kind == 'removed':
+                lines += [f'##### {stem} *(removed)*', '']
+            else:
+                lines.append(f'##### {stem}')
+                lines += _render_logid_diff(d)
+                lines.append('')
+
+    lines += ['---', '']
+    return '\n'.join(lines)
+
+
 def diff_versions(
     prev: dict[str, pd.DataFrame],
     curr: dict[str, pd.DataFrame],
