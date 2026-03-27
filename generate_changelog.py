@@ -44,3 +44,17 @@ class VersionDiff:
             self.added_logids or self.removed_logids or self.logid_diffs
             or self.utmtype_added or self.utmtype_removed
         )
+
+
+def discover_versions(root: Path) -> list[tuple[str, list[Path]]]:
+    """Return sorted list of (major_label, [minor_dirs]) for all versions found under root."""
+    result = []
+    for entry in sorted(root.iterdir()):
+        if not entry.is_dir() or not MAJOR_RE.match(entry.name):
+            continue
+        minor_dirs = sorted(
+            [d for d in entry.iterdir() if d.is_dir() and MINOR_RE.match(d.name)],
+            key=lambda d: tuple(int(x) for x in d.name.split('.')),
+        )
+        result.append((entry.name, minor_dirs))
+    return result
