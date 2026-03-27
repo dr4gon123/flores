@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 from pathlib import Path
-from generate_changelog import discover_versions, load_version
+from generate_changelog import discover_versions, load_version, classify_dataset
 
 # helpers shared across tests
 def make_logid_df(fields, type_val='Traffic', category='forward'):
@@ -92,3 +92,23 @@ class TestLoadVersion:
         result = load_version(tmp_path)
         # bad.csv has no expected LOGID columns; we just verify no exception is raised
         assert isinstance(result, dict)
+
+
+class TestClassifyDataset:
+    def test_traffic(self):
+        assert classify_dataset(make_logid_df([{'name': 'x'}], type_val='Traffic')) == 'Traffic'
+
+    def test_event(self):
+        assert classify_dataset(make_logid_df([{'name': 'x'}], type_val='Event')) == 'Event'
+
+    def test_gtp_excluded(self):
+        assert classify_dataset(make_logid_df([{'name': 'x'}], type_val='GTP')) == 'GTP'
+
+    def test_utm_webfilter(self):
+        assert classify_dataset(make_logid_df([{'name': 'x'}], type_val='Webfilter')) == 'Webfilter'
+
+    def test_utm_ips(self):
+        assert classify_dataset(make_logid_df([{'name': 'x'}], type_val='IPS')) == 'IPS'
+
+    def test_empty_dataframe(self):
+        assert classify_dataset(pd.DataFrame()) == 'Unknown'

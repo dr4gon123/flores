@@ -70,3 +70,15 @@ def load_version(minor_dir: Path) -> dict[str, pd.DataFrame]:
         except Exception:
             pass
     return result
+
+
+def classify_dataset(df: pd.DataFrame) -> str:
+    """Return dataset bucket: 'Traffic', 'Event', 'GTP', 'Unknown', or UTM subtype name."""
+    if df.empty or 'Type' not in df.columns:
+        return 'Unknown'
+    type_val = str(df['Type'].iloc[0])
+    if type_val in ('Traffic', 'Event'):
+        return type_val
+    if type_val in EXCLUDED_TYPES:
+        return 'GTP'
+    return type_val  # UTM subtype (Webfilter, IPS, APP-CTRL, etc.)
