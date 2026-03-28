@@ -14,9 +14,6 @@ import pandas as pd
 
 MAJOR_RE = re.compile(r'^\d+\.\d+$')
 MINOR_RE = re.compile(r'^\d+\.\d+\.\d+$')
-DESC_TRUNCATE = 120
-
-
 @dataclass
 class LogidDiff:
     added_fields: list[tuple[str, str, str, str]]    # (name, type, length, desc)
@@ -190,12 +187,6 @@ def _utm_types(version_dict: dict[str, pd.DataFrame]) -> set[str]:
     }
 
 
-def _truncate(text: str, max_len: int = DESC_TRUNCATE) -> str:
-    """Flatten newlines and truncate to max_len chars, appending '…' if cut."""
-    text = ' '.join(str(text).splitlines()).strip()
-    return text if len(text) <= max_len else text[:max_len] + '…'
-
-
 def _cell_desc(text: str) -> str:
     """Render a description for a Markdown table cell.
 
@@ -204,37 +195,8 @@ def _cell_desc(text: str) -> str:
     """
     if not text:
         return '*(empty)*'
-    lines = str(text).splitlines()
+    lines = text.splitlines()
     return '<br>'.join(line.rstrip() for line in lines)
-
-
-def _render_logid_diff(d: LogidDiff) -> list[str]:
-    """Return bullet lines describing all changes in a single LOGID diff."""
-    lines = []
-    if d.severity_change:
-        old, new = d.severity_change
-        lines.append(f'- Severity changed: `{old}` → `{new}`')
-    if d.message_desc_change:
-        old, new = d.message_desc_change
-        lines.append(f'- Message description changed:')
-        lines.append(f'  - Before: "{_truncate(old)}"')
-        lines.append(f'  - After:  "{_truncate(new)}"')
-    if d.category_change:
-        old, new = d.category_change
-        lines.append(f'- Category changed: `{old}` → `{new}`')
-    for name, typ, length, desc in d.added_fields:
-        lines.append(f'- Field added: `{name}` ({typ}, len: {length}) — "{_truncate(desc)}"')
-    for name, typ, _length, _desc in d.removed_fields:
-        lines.append(f'- Field removed: `{name}` ({typ})')
-    for f, (old, new) in sorted(d.type_changes.items()):
-        lines.append(f'- Type changed: `{f}` `{old}` → `{new}`')
-    for f, (old, new) in sorted(d.desc_changes.items()):
-        lines.append(f'- Description changed: `{f}`')
-        lines.append(f'  - Before: "{_truncate(old)}"')
-        lines.append(f'  - After:  "{_truncate(new)}"')
-    for f, (old, new) in sorted(d.length_changes.items()):
-        lines.append(f'- Length changed: `{f}` {old} → {new}')
-    return lines
 
 
 def _dataset_bucket(label: str) -> str:
@@ -362,27 +324,25 @@ def _render_version_pair(v_prev: str, v_curr: str, diff: VersionDiff) -> str:
         lines += [header, '']
 
         # LOGIDs added/removed: Traffic shows only the LOGID name; Event/UTM include subtype
-        def _logid_table(label: str, entries: dict[str, str]) -> None:
+        def _logid_table(label: str, entries: dict[str, str]) -> list[str]:
             if use_extra:
-                lines.extend(['**' + label + '**', ''] + _field_table_header(['LOGID', extra_col]))
-                for s, e in sorted(entries.items()):
-                    lines.append(f'| `{s}` | {e or "—"} |')
+                rows = ['**' + label + '**', ''] + _field_table_header(['LOGID', extra_col])
+                rows += [f'| `{s}` | {e or "—"} |' for s, e in sorted(entries.items())]
             else:
-                lines.extend(['**' + label + '**', ''] + _field_table_header(['LOGID']))
-                for s in sorted(entries.keys()):
-                    lines.append(f'| `{s}` |')
-            lines.append('')
+                rows = ['**' + label + '**', ''] + _field_table_header(['LOGID'])
+                rows += [f'| `{s}` |' for s in sorted(entries)]
+            return rows + ['']
 
         if bucket_added:
-            _logid_table('LOGIDs added', bucket_added)
+            lines += _logid_table('LOGIDs added', bucket_added)
         if bucket_removed:
-            _logid_table('LOGIDs removed', bucket_removed)
+            lines += _logid_table('LOGIDs removed', bucket_removed)
 
         # Helpers to build table columns and rows with/without the extra column
         def _field_cols(fixed: list[str]) -> list[str]:
             return fixed + ([extra_col] if use_extra else []) + ['LOGIDs']
 
-        def _field_row(cells: list[str], extra: str, stems: list[str]) -> str:
+        def _make_field_row(cells: list[str], extra: str, stems: list[str]) -> str:
             parts = cells + ([extra or '—'] if use_extra else []) + [_format_stems(stems)]
             return '| ' + ' | '.join(parts) + ' |'
 
@@ -391,7 +351,7 @@ def _render_version_pair(v_prev: str, v_curr: str, diff: VersionDiff) -> str:
             lines += ['**Fields added**', ''] + _field_table_header(cols)
             for fname in sorted(adds):
                 for (desc, dtype, length, extra), stems in sorted(adds[fname].items()):
-                    lines.append(_field_row(
+                    lines.append(_make_field_row(
                         [f'`{fname}`', _cell_desc(desc), f'`{dtype or "*(empty)*"}`', length or '—'],
                         extra, stems,
                     ))
@@ -402,7 +362,7 @@ def _render_version_pair(v_prev: str, v_curr: str, diff: VersionDiff) -> str:
             lines += ['**Fields removed**', ''] + _field_table_header(cols)
             for fname in sorted(rems):
                 for (desc, dtype, length, extra), stems in sorted(rems[fname].items()):
-                    lines.append(_field_row(
+                    lines.append(_make_field_row(
                         [f'`{fname}`', _cell_desc(desc), f'`{dtype or "*(empty)*"}`', length or '—'],
                         extra, stems,
                     ))
@@ -413,7 +373,7 @@ def _render_version_pair(v_prev: str, v_curr: str, diff: VersionDiff) -> str:
             lines += ['**Type changes**', ''] + _field_table_header(cols)
             for fname in sorted(type_chgs):
                 for (old_t, new_t, extra), stems in sorted(type_chgs[fname].items()):
-                    lines.append(_field_row([f'`{fname}`', f'`{old_t}`', f'`{new_t}`'], extra, stems))
+                    lines.append(_make_field_row([f'`{fname}`', f'`{old_t}`', f'`{new_t}`'], extra, stems))
             lines.append('')
 
         if len_chgs:
@@ -421,7 +381,7 @@ def _render_version_pair(v_prev: str, v_curr: str, diff: VersionDiff) -> str:
             lines += ['**Length changes**', ''] + _field_table_header(cols)
             for fname in sorted(len_chgs):
                 for (old_l, new_l, extra), stems in sorted(len_chgs[fname].items()):
-                    lines.append(_field_row([f'`{fname}`', old_l, new_l], extra, stems))
+                    lines.append(_make_field_row([f'`{fname}`', old_l, new_l], extra, stems))
             lines.append('')
 
         if desc_chgs:
@@ -429,7 +389,7 @@ def _render_version_pair(v_prev: str, v_curr: str, diff: VersionDiff) -> str:
             lines += ['**Description changes**', ''] + _field_table_header(cols)
             for fname in sorted(desc_chgs):
                 for (old_d, new_d, extra), stems in sorted(desc_chgs[fname].items()):
-                    lines.append(_field_row(
+                    lines.append(_make_field_row(
                         [f'`{fname}`', _cell_desc(old_d), _cell_desc(new_d)], extra, stems,
                     ))
             lines.append('')
@@ -450,11 +410,11 @@ def diff_versions(
     curr_stems = set(curr.keys())
 
     added_logids = {
-        s: (classify_dataset(curr[s]), _extra_val(curr[s], classify_dataset(curr[s])))
+        s: (label := classify_dataset(curr[s]), _extra_val(curr[s], label))
         for s in sorted(curr_stems - prev_stems)
     }
     removed_logids = {
-        s: (classify_dataset(prev[s]), _extra_val(prev[s], classify_dataset(prev[s])))
+        s: (label := classify_dataset(prev[s]), _extra_val(prev[s], label))
         for s in sorted(prev_stems - curr_stems)
     }
 
@@ -567,16 +527,8 @@ def _render_conflict_rows(field: str, rows: _ConflictRows, bucket: str) -> list[
     """Render the field heading and table for one conflicting field."""
     lines = [f'`{field}`', '']
     utm = bucket == 'UTM'
-    if utm:
-        lines += [
-            '| Log Field Name | Description | Data Type | Length | Type | LOGIDs |',
-            '|----------------|-------------|-----------|--------|------|--------|',
-        ]
-    else:
-        lines += [
-            '| Log Field Name | Description | Data Type | Length | Category | LOGIDs |',
-            '|----------------|-------------|-----------|--------|----------|--------|',
-        ]
+    extra_col = 'Type' if utm else 'Category'
+    lines += _field_table_header(['Log Field Name', 'Description', 'Data Type', 'Length', extra_col, 'LOGIDs'])
     for desc, dtype, length, type_val, category, stems in rows:
         desc_cell = _cell_desc(desc)
         dtype_cell = dtype or '*(empty)*'

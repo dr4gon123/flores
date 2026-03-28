@@ -261,23 +261,7 @@ class TestDiffVersions:
         assert 'GTP' not in result.utmtype_added
 
 
-from generate_changelog import _truncate, _cell_desc, _render_version_pair, LogidDiff, VersionDiff
-
-class TestTruncate:
-    def test_short_string_unchanged(self):
-        assert _truncate('hello') == 'hello'
-
-    def test_long_string_truncated(self):
-        result = _truncate('x' * 200)
-        assert len(result) == 121  # 120 chars + ellipsis
-        assert result.endswith('…')
-
-    def test_newlines_replaced_with_spaces(self):
-        assert '\n' not in _truncate('line1\nline2')
-
-    def test_crlf_replaced_with_space(self):
-        assert '\r' not in _truncate('line1\r\nline2')
-        assert '\n' not in _truncate('line1\r\nline2')
+from generate_changelog import _cell_desc, _render_version_pair, LogidDiff, VersionDiff
 
 
 class TestCellDesc:
