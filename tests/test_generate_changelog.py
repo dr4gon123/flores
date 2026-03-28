@@ -201,7 +201,7 @@ class TestDiffVersions:
         })
         result = diff_versions(prev, curr)
         assert '20_N' in result.added_logids
-        assert result.added_logids['20_N'] == 'Traffic'
+        assert result.added_logids['20_N'][0] == 'Traffic'
         assert not result.removed_logids
 
     def test_removed_logid(self):
@@ -212,14 +212,14 @@ class TestDiffVersions:
         curr = _make_vdict({'10_T': ([{'name': 'a', 'type': 'string', 'length': '32', 'desc': 'd'}], 'Traffic')})
         result = diff_versions(prev, curr)
         assert '20_O' in result.removed_logids
-        assert result.removed_logids['20_O'] == 'Event'
+        assert result.removed_logids['20_O'][0] == 'Event'
 
     def test_field_change_captured_with_dataset_label(self):
         prev = _make_vdict({'10_T': ([{'name': 'srcip', 'type': 'string', 'length': '32', 'desc': 'IP'}], 'Traffic')})
         curr = _make_vdict({'10_T': ([{'name': 'srcip', 'type': 'ip', 'length': '32', 'desc': 'IP'}], 'Traffic')})
         result = diff_versions(prev, curr)
         assert '10_T' in result.logid_diffs
-        label, d = result.logid_diffs['10_T']
+        label, extra, d = result.logid_diffs['10_T']
         assert label == 'Traffic'
         assert 'srcip' in d.type_changes
 
@@ -247,18 +247,21 @@ class TestDiffVersions:
         result = diff_versions(prev, curr)
         assert 'IPS' in result.utmtype_removed
 
-    def test_gtp_logid_excluded(self):
+    def test_gtp_logid_included(self):
         prev = _make_vdict({'10_G': ([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}], 'GTP')})
         curr = _make_vdict({
             '10_G': ([{'name': 'x', 'type': 'string', 'length': '8', 'desc': 'd'}], 'GTP'),
             '20_G': ([{'name': 'y', 'type': 'string', 'length': '8', 'desc': 'n'}], 'GTP'),
         })
         result = diff_versions(prev, curr)
-        assert '10_G' not in result.logid_diffs
-        assert '20_G' not in result.added_logids
+        assert '10_G' not in result.logid_diffs       # unchanged, so not in diffs
+        assert '20_G' in result.added_logids           # new GTP LOGID is tracked
+        assert result.added_logids['20_G'][0] == 'GTP'
+        # GTP was already in prev so utmtype_added is empty; only new subtypes appear there
+        assert 'GTP' not in result.utmtype_added
 
 
-from generate_changelog import _truncate, _render_version_pair, LogidDiff, VersionDiff
+from generate_changelog import _truncate, _cell_desc, _render_version_pair, LogidDiff, VersionDiff
 
 class TestTruncate:
     def test_short_string_unchanged(self):
@@ -272,13 +275,49 @@ class TestTruncate:
     def test_newlines_replaced_with_spaces(self):
         assert '\n' not in _truncate('line1\nline2')
 
+    def test_crlf_replaced_with_space(self):
+        assert '\r' not in _truncate('line1\r\nline2')
+        assert '\n' not in _truncate('line1\r\nline2')
+
+
+class TestCellDesc:
+    def test_empty_string_returns_empty_marker(self):
+        assert _cell_desc('') == '*(empty)*'
+
+    def test_single_line_unchanged(self):
+        assert _cell_desc('hello') == 'hello'
+
+    def test_lf_converted_to_br(self):
+        result = _cell_desc('line1\nline2')
+        assert result == 'line1<br>line2'
+
+    def test_crlf_converted_to_br(self):
+        result = _cell_desc('line1\r\nline2')
+        assert result == 'line1<br>line2'
+
+    def test_cr_converted_to_br(self):
+        result = _cell_desc('line1\rline2')
+        assert result == 'line1<br>line2'
+
+    def test_trailing_whitespace_stripped_per_line(self):
+        result = _cell_desc('line1   \nline2  ')
+        assert result == 'line1<br>line2'
+
+    def test_multiline_preserved_in_full(self):
+        desc = 'Security action:\n  detected - not blocked\n  blocked - blocked'
+        result = _cell_desc(desc)
+        assert '<br>' in result
+        assert 'detected - not blocked' in result
+        assert 'blocked - blocked' in result
+
 class TestRenderVersionPair:
     def _no_change_diff(self):
         return VersionDiff({}, {}, {}, set(), set())
 
     def _logid_diff(self, **kw):
         defaults = dict(added_fields=[], removed_fields=[], type_changes={},
-                        desc_changes={}, length_changes={})
+                        desc_changes={}, length_changes={},
+                        severity_change=None, message_desc_change=None, category_change=None)
         defaults.update(kw)
         return LogidDiff(**defaults)
 
@@ -289,52 +328,62 @@ class TestRenderVersionPair:
 
     def test_summary_counts_added_logid(self):
         diff = VersionDiff(
-            added_logids={'10_T': 'Traffic'}, removed_logids={},
+            added_logids={'10_T': ('Traffic', 'forward')}, removed_logids={},
             logid_diffs={}, utmtype_added=set(), utmtype_removed=set(),
         )
         output = _render_version_pair('7.2.0', '7.2.1', diff)
-        assert '1 LOGID added, 0 removed' in output
-        assert '10_T *(new)*' in output
+        assert '| LOGIDs added | 1 |' in output
+        assert '| LOGIDs removed | 0 |' in output
+        assert '`10_T`' in output
 
     def test_summary_counts_removed_logid(self):
         diff = VersionDiff(
-            added_logids={}, removed_logids={'20_E': 'Event'},
+            added_logids={}, removed_logids={'20_E': ('Event', 'system')},
             logid_diffs={}, utmtype_added=set(), utmtype_removed=set(),
         )
         output = _render_version_pair('7.2.0', '7.2.1', diff)
-        assert '0 LOGID added, 1 removed' in output
-        assert '20_E *(removed)*' in output
+        assert '| LOGIDs added | 0 |' in output
+        assert '| LOGIDs removed | 1 |' in output
+        assert '`20_E`' in output
 
     def test_field_added_rendered(self):
         d = self._logid_diff(added_fields=[('newf', 'ip', '64', 'New field desc')])
-        diff = VersionDiff({}, {}, {'10_T': ('Traffic', d)}, set(), set())
+        diff = VersionDiff({}, {}, {'10_T': ('Traffic', 'forward', d)}, set(), set())
         output = _render_version_pair('7.2.0', '7.2.1', diff)
-        assert 'Field added: `newf` (ip, len: 64)' in output
+        assert '`newf`' in output
         assert 'New field desc' in output
+        assert '`ip`' in output
 
     def test_type_change_rendered(self):
         d = self._logid_diff(type_changes={'action': ('string', 'ip')})
-        diff = VersionDiff({}, {}, {'10_T': ('Traffic', d)}, set(), set())
+        diff = VersionDiff({}, {}, {'10_T': ('Traffic', 'forward', d)}, set(), set())
         output = _render_version_pair('7.2.0', '7.2.1', diff)
-        assert 'Type changed: `action` `string` → `ip`' in output
+        assert '`action`' in output
+        assert '`string`' in output
+        assert '`ip`' in output
+        assert 'Type changes' in output
 
     def test_desc_change_rendered(self):
         d = self._logid_diff(desc_changes={'action': ('Old', 'New')})
-        diff = VersionDiff({}, {}, {'10_T': ('Traffic', d)}, set(), set())
+        diff = VersionDiff({}, {}, {'10_T': ('Traffic', 'forward', d)}, set(), set())
         output = _render_version_pair('7.2.0', '7.2.1', diff)
-        assert 'Description changed: `action`' in output
-        assert 'Before: "Old"' in output
-        assert 'After:  "New"' in output
+        assert '`action`' in output
+        assert 'Old' in output
+        assert 'New' in output
+        assert 'Description changes' in output
 
     def test_length_change_rendered(self):
         d = self._logid_diff(length_changes={'filename': ('255', '512')})
-        diff = VersionDiff({}, {}, {'10_T': ('Traffic', d)}, set(), set())
+        diff = VersionDiff({}, {}, {'10_T': ('Traffic', 'forward', d)}, set(), set())
         output = _render_version_pair('7.2.0', '7.2.1', diff)
-        assert 'Length changed: `filename` 255 → 512' in output
+        assert '`filename`' in output
+        assert '255' in output
+        assert '512' in output
+        assert 'Length changes' in output
 
     def test_utm_subtypes_shown(self):
         diff = VersionDiff(
-            added_logids={'10_I': 'IPS'}, removed_logids={},
+            added_logids={'10_I': ('IPS', 'IPS')}, removed_logids={},
             logid_diffs={}, utmtype_added={'IPS'}, utmtype_removed=set(),
         )
         output = _render_version_pair('7.2.0', '7.2.1', diff)
@@ -345,12 +394,48 @@ class TestRenderVersionPair:
         d_e = self._logid_diff(added_fields=[('y', 'string', '8', 'desc')])
         diff = VersionDiff(
             {}, {},
-            {'10_T': ('Traffic', d_t), '20_E': ('Event', d_e)},
+            {'10_T': ('Traffic', 'forward', d_t), '20_E': ('Event', 'system', d_e)},
             set(), set(),
         )
         output = _render_version_pair('7.2.0', '7.2.1', diff)
-        assert output.index('#### Traffic') < output.index('10_T')
-        assert output.index('#### Event') < output.index('20_E')
+        # Field 'x' appears in Traffic section, 'y' in Event section
+        assert output.index('#### Traffic') < output.index('`x`')
+        assert output.index('#### Event') < output.index('`y`')
+
+    def test_traffic_no_category_column(self):
+        """Traffic field tables must not have a Category column."""
+        d = self._logid_diff(added_fields=[('saasname', 'string', '80', '')])
+        # Two Traffic LOGIDs in different categories — should merge into one row
+        diff = VersionDiff(
+            {}, {},
+            {
+                '10_FWD': ('Traffic', 'forward', d),
+                '14_LCL': ('Traffic', 'local',   d),
+            },
+            set(), set(),
+        )
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert 'Category' not in output
+        # saasname appears exactly once (merged)
+        assert output.count('`saasname`') == 1
+        # Summary counts 1 unique field name, not 2 raw additions
+        assert '| Fields added | 1 |' in output
+
+    def test_summary_counts_unique_field_names(self):
+        """Fields added/removed counts reflect unique field names, not raw per-LOGID pairs."""
+        # Same field added across 3 LOGIDs
+        d = self._logid_diff(added_fields=[('f', 'string', '8', 'desc')])
+        diff = VersionDiff(
+            {}, {},
+            {
+                'A': ('Traffic', 'forward', d),
+                'B': ('Traffic', 'local',   d),
+                'C': ('Traffic', 'multicast', d),
+            },
+            set(), set(),
+        )
+        output = _render_version_pair('7.2.0', '7.2.1', diff)
+        assert '| Fields added | 1 |' in output  # 1 unique field, not 3
 
 
 from generate_changelog import discover_versions, load_version, diff_versions, _render_version_pair
@@ -386,10 +471,12 @@ class TestIntegration:
 
         assert '20_-_LOG_ID_TRAFFIC_NEW' in diff.added_logids
         assert '10_-_LOG_ID_TRAFFIC_FORWARD' in diff.logid_diffs
-        _, d = diff.logid_diffs['10_-_LOG_ID_TRAFFIC_FORWARD']
+        _, _, d = diff.logid_diffs['10_-_LOG_ID_TRAFFIC_FORWARD']
         assert d.type_changes == {'action': ('string', 'ip')}
 
         output = _render_version_pair('7.2.0', '7.2.1', diff)
-        assert '20_-_LOG_ID_TRAFFIC_NEW *(new)*' in output
-        assert 'Type changed: `action` `string` → `ip`' in output
-        assert '**Summary:** 1 LOGID added, 0 removed' in output
+        assert '20_-_LOG_ID_TRAFFIC_NEW' in output  # appears in LOGIDs added table
+        assert '`action`' in output                  # appears in Type changes table
+        assert '`string`' in output
+        assert '`ip`' in output
+        assert '| LOGIDs added | 1 |' in output
