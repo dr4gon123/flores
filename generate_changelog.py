@@ -547,40 +547,48 @@ def _render_version_coverage(version_dict: dict[str, pd.DataFrame]) -> str:
     if not version_dict:
         return ''
 
-    all_df = pd.concat(
-        [df for df in version_dict.values() if not df.empty and 'Log Field Name' in df.columns],
-        ignore_index=True,
-    )
-    if all_df.empty:
+    pieces = []
+    for stem, df in version_dict.items():
+        if not df.empty and 'Log Field Name' in df.columns:
+            tagged = df.copy()
+            tagged['_stem'] = stem
+            pieces.append(tagged)
+    if not pieces:
         return ''
+    all_df = pd.concat(pieces, ignore_index=True)
 
     lines: list[str] = []
 
     traffic = all_df[all_df['Type'] == 'Traffic']
     if not traffic.empty:
-        counts = traffic.groupby('Category')['Log Field Name'].nunique().sort_index()
-        lines += ['**Traffic**', ''] + _field_table_header(['Category', 'Fields'])
-        for cat, n in counts.items():
-            lines.append(f'| {cat} | {n} |')
+        grp = traffic.groupby('Category')
+        field_counts = grp['Log Field Name'].nunique().sort_index()
+        logid_counts = grp['_stem'].nunique().sort_index()
+        lines += ['**Traffic**', ''] + _field_table_header(['Category', 'Fields', 'LOGIDs'])
+        for cat, n in field_counts.items():
+            lines.append(f'| {cat} | {n} | {logid_counts[cat]} |')
         lines.append('')
 
     event = all_df[all_df['Type'] == 'Event']
     if not event.empty:
-        counts = event.groupby('Category')['Log Field Name'].nunique().sort_index()
-        lines += ['**Event**', ''] + _field_table_header(['Category', 'Fields'])
-        for cat, n in counts.items():
-            lines.append(f'| {cat} | {n} |')
+        grp = event.groupby('Category')
+        field_counts = grp['Log Field Name'].nunique().sort_index()
+        logid_counts = grp['_stem'].nunique().sort_index()
+        lines += ['**Event**', ''] + _field_table_header(['Category', 'Fields', 'LOGIDs'])
+        for cat, n in field_counts.items():
+            lines.append(f'| {cat} | {n} | {logid_counts[cat]} |')
         lines.append('')
 
     utm = all_df[~all_df['Type'].isin(['Traffic', 'Event'])]
     if not utm.empty:
         grp = utm.groupby('Type')
         field_counts = grp['Log Field Name'].nunique()
+        logid_counts = grp['_stem'].nunique()
         cat_counts = grp['Category'].nunique()
         cat_lists = grp['Category'].apply(lambda s: ', '.join(sorted(s.unique())))
-        lines += ['**UTM** *(including GTP)*', ''] + _field_table_header(['Type', 'Fields', 'Categories', 'Category List'])
+        lines += ['**UTM** *(including GTP)*', ''] + _field_table_header(['Type', 'Fields', 'LOGIDs', 'Categories', 'Category List'])
         for t in sorted(utm['Type'].unique()):
-            lines.append(f'| {t} | {field_counts[t]} | {cat_counts[t]} | {cat_lists[t]} |')
+            lines.append(f'| {t} | {field_counts[t]} | {logid_counts[t]} | {cat_counts[t]} | {cat_lists[t]} |')
         lines.append('')
 
     return '\n'.join(lines)

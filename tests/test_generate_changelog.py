@@ -486,8 +486,21 @@ class TestRenderVersionCoverage:
     def test_traffic_table_rendered(self):
         result = _render_version_coverage(self._traffic_dict())
         assert '**Traffic**' in result
-        assert '| forward | 2 |' in result
-        assert '| local | 1 |' in result
+        # one logid_1 covers both categories → 1 LOGID each
+        assert '| forward | 2 | 1 |' in result
+        assert '| local | 1 | 1 |' in result
+
+    def test_traffic_logid_count(self):
+        version_dict = {
+            'logid_1': _make_df([
+                {'Log Field Name': 'srcip', 'Type': 'Traffic', 'Category': 'forward'},
+            ]),
+            'logid_2': _make_df([
+                {'Log Field Name': 'dstip', 'Type': 'Traffic', 'Category': 'forward'},
+            ]),
+        }
+        result = _render_version_coverage(version_dict)
+        assert '| forward | 2 | 2 |' in result
 
     def test_event_table_rendered(self):
         version_dict = {
@@ -499,8 +512,8 @@ class TestRenderVersionCoverage:
         }
         result = _render_version_coverage(version_dict)
         assert '**Event**' in result
-        assert '| system | 2 |' in result
-        assert '| vpn | 1 |' in result
+        assert '| system | 2 | 1 |' in result
+        assert '| vpn | 1 | 1 |' in result
 
     def test_utm_includes_gtp(self):
         version_dict = {
@@ -521,7 +534,7 @@ class TestRenderVersionCoverage:
             ]),
         }
         result = _render_version_coverage(version_dict)
-        assert '| Webfilter | 2 | 2 | ftgd_blk, urlfilter |' in result
+        assert '| Webfilter | 2 | 1 | 2 | ftgd_blk, urlfilter |' in result
 
     def test_empty_version_returns_empty(self):
         assert _render_version_coverage({}) == ''
