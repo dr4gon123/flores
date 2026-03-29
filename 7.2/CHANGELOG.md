@@ -2,6 +2,56 @@
 
 ## 7.2.0
 
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| FORWARD | 151 |
+| LOCAL | 137 |
+| MULTICAST | 137 |
+| SNIFFER | 151 |
+| ZTNA | 137 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| CIFS-AUTH-FAIL | 30 |
+| CONNECTOR | 18 |
+| ENDPOINT | 41 |
+| FORTIEXTENDER | 16 |
+| HA | 30 |
+| REST-API | 18 |
+| ROUTER | 20 |
+| SDWAN | 37 |
+| SECURITY-RATING | 20 |
+| SWITCH-CONTROLLER | 22 |
+| SYSTEM | 147 |
+| USER | 40 |
+| VPN | 59 |
+| WAD | 38 |
+| WIRELESS | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| AV | 94 | 15 | ANALYTICS, COMMAND-BLOCKED, CONTENT-DISARM, EMS-THREAT-FEED, FILENAME, FILETYPE-EXECUTABLE, FORTINDR, FORTISANDBOX, INFECTED, MALWARE-LIST, MIMEFRAGMENTED, OUTBREAK-PREVENTION, OVERSIZE, SCANERROR, SWITCHPROTO |
+| Anomaly | 46 | 1 | ANOMALY |
+| App | 72 | 3 | PORT-VIOLATION, PROTOCOL-VIOLATION, SIGNATURE |
+| DLP | 78 | 2 | DLP, DLP-DOCSOURCE |
+| DNS | 54 | 2 | DNS-QUERY, DNS-RESPONSE |
+| Email | 56 | 5 | BANNEDWORD, EMAIL, FTGD_ERR, SPAM, WEBMAIL |
+| FILE-FILTER | 68 | 1 | FILE-FILTER |
+| GTP | 84 | 2 | GTP-ALL, PFCP-ALL |
+| ICAP | 35 | 1 | ICAP |
+| IPS | 66 | 3 | BOTNET, MALICIOUS-URL, SIGNATURE |
+| SSH | 42 | 3 | SSH-CHANNEL, SSH-COMMAND, SSH-HOSTKEY |
+| SSL | 63 | 5 | SSL-ANOMALY, SSL-EXEMPT, SSL-HANDSHAKE, SSL-NEGOTIATION, SSL-SERVER-CERT-INFO |
+| VoIP | 44 | 1 | VOIP |
+| WAF | 52 | 6 | WAF-ADDRESS-LIST, WAF-CUSTOM-SIGNATURE, WAF-HTTP-CONSTRAINT, WAF-HTTP-METHOD, WAF-SIGNATURE, WAF-URL-ACCESS |
+| Web | 85 | 19 | ACTIVEXFILTER, ANTIPHISHING, APPLETFILTER, CONTENT, COOKIEFILTER, FTGD_ALLOW, FTGD_BLK, FTGD_ERR, FTGD_QUOTA, FTGD_QUOTA_COUNTING, FTGD_QUOTA_EXPIRED, HTTP_HEADER_CHANGE, SCRIPTFILTER, SSL-EXEMPT, URLFILTER, URLMONITOR, VIDEOFILTER-CATEGORY, VIDEOFILTER-CHANNEL, WEBFILTER_COMMAND_BLOCK |
+
 ### 7.2.0 — Intra-version Inconsistencies
 
 **Summary**
@@ -1907,6 +1957,57 @@
 ---
 
 ## 7.2.1
+
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 154 |
+| local | 140 |
+| multicast | 140 |
+| sniffer | 154 |
+| ztna | 140 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 147 |
+| user | 40 |
+| vpn | 59 |
+| wad | 33 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| Email | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 85 | 2 | gtp-all, pfcp-all |
+| ICAP | 35 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 15 | analytics, command-blocked, content-disarm, ems-threat-feed, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 44 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 86 | 19 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
 
 ### 7.2.1 — Intra-version Inconsistencies
 
@@ -4019,6 +4120,57 @@
 
 ## 7.2.2
 
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 154 |
+| local | 140 |
+| multicast | 140 |
+| sniffer | 154 |
+| ztna | 140 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 147 |
+| user | 40 |
+| vpn | 59 |
+| wad | 33 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 85 | 2 | gtp-all, pfcp-all |
+| ICAP | 35 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 15 | analytics, command-blocked, content-disarm, ems-threat-feed, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 44 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 86 | 19 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
+
 ### 7.2.2 — Intra-version Inconsistencies
 
 **Summary**
@@ -6008,6 +6160,57 @@
 ---
 
 ## 7.2.3
+
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 154 |
+| local | 140 |
+| multicast | 140 |
+| sniffer | 154 |
+| ztna | 140 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 147 |
+| user | 40 |
+| vpn | 59 |
+| wad | 33 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| Email | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 85 | 2 | gtp-all, pfcp-all |
+| ICAP | 35 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 15 | analytics, command-blocked, content-disarm, ems-threat-feed, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 44 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 86 | 19 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
 
 ### 7.2.3 — Intra-version Inconsistencies
 
@@ -8017,6 +8220,58 @@
 ---
 
 ## 7.2.4
+
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 158 |
+| local | 144 |
+| multicast | 144 |
+| sniffer | 158 |
+| ztna | 144 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 148 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| Email | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 44 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
 
 ### 7.2.4 — Intra-version Inconsistencies
 
@@ -10076,6 +10331,58 @@
 
 ## 7.2.5
 
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 158 |
+| local | 144 |
+| multicast | 144 |
+| sniffer | 158 |
+| ztna | 144 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 149 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 45 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
+
 ### 7.2.5 — Intra-version Inconsistencies
 
 **Summary**
@@ -12115,6 +12422,58 @@
 
 ## 7.2.6
 
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 158 |
+| local | 144 |
+| multicast | 144 |
+| sniffer | 158 |
+| ztna | 144 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 149 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 45 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
+
 ### 7.2.6 — Intra-version Inconsistencies
 
 **Summary**
@@ -14083,6 +14442,58 @@
 ---
 
 ## 7.2.7
+
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 158 |
+| local | 144 |
+| multicast | 144 |
+| sniffer | 158 |
+| ztna | 144 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 151 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 45 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
 
 ### 7.2.7 — Intra-version Inconsistencies
 
@@ -16069,6 +16480,58 @@
 
 ## 7.2.8
 
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 159 |
+| local | 145 |
+| multicast | 145 |
+| sniffer | 159 |
+| ztna | 145 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 148 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 45 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
+
 ### 7.2.8 — Intra-version Inconsistencies
 
 **Summary**
@@ -18053,6 +18516,58 @@
 
 ## 7.2.9
 
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 161 |
+| local | 147 |
+| multicast | 147 |
+| sniffer | 161 |
+| ztna | 147 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 148 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 45 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
+
 ### 7.2.9 — Intra-version Inconsistencies
 
 **Summary**
@@ -20029,6 +20544,58 @@
 
 ## 7.2.10
 
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 161 |
+| local | 147 |
+| multicast | 147 |
+| sniffer | 161 |
+| ztna | 147 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 148 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 3 | ssh-channel, ssh-command, ssh-hostkey |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 45 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
+
 ### 7.2.10 — Intra-version Inconsistencies
 
 **Summary**
@@ -21969,6 +22536,58 @@
 ---
 
 ## 7.2.11
+
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 161 |
+| local | 147 |
+| multicast | 147 |
+| sniffer | 161 |
+| ztna | 147 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 148 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 4 | ssh-channel, ssh-command, ssh-hostkey, ssh-unsupport-proto |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 47 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
 
 ### 7.2.11 — Intra-version Inconsistencies
 
@@ -23952,6 +24571,58 @@
 
 ## 7.2.12
 
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 161 |
+| local | 147 |
+| multicast | 147 |
+| sniffer | 161 |
+| ztna | 147 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 148 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 4 | ssh-channel, ssh-command, ssh-hostkey, ssh-unsupport-proto |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 47 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
+
 ### 7.2.12 — Intra-version Inconsistencies
 
 **Summary**
@@ -25918,6 +26589,58 @@
 ---
 
 ## 7.2.13
+
+**Traffic**
+
+| Category | Fields |
+|----------|--------|
+| forward | 161 |
+| local | 147 |
+| multicast | 147 |
+| sniffer | 161 |
+| ztna | 147 |
+
+**Event**
+
+| Category | Fields |
+|----------|--------|
+| cifs-auth-fail | 30 |
+| connector | 20 |
+| endpoint | 41 |
+| fortiextender | 16 |
+| ha | 30 |
+| rest-api | 17 |
+| router | 20 |
+| sdwan | 37 |
+| security-rating | 20 |
+| switch-controller | 22 |
+| system | 148 |
+| user | 40 |
+| vpn | 59 |
+| wanopt | 28 |
+| webproxy | 17 |
+| wireless | 82 |
+
+**UTM** *(including GTP)*
+
+| Type | Fields | Categories | Category List |
+|------|--------|------------|---------------|
+| APP-CTRL | 72 | 3 | port-violation, protocol-violation, signature |
+| Anomaly | 46 | 1 | anomaly |
+| DLP | 78 | 2 | dlp, dlp-docsource |
+| DNS | 54 | 2 | dns-query, dns-response |
+| EmailFilter | 56 | 5 | bannedword, email, ftgd_err, spam, webmail |
+| FILE-FILTER | 68 | 1 | file-filter |
+| FORTI-SWITCH | 18 | 1 | fsw-flow |
+| GTP | 86 | 2 | gtp-all, pfcp-all |
+| ICAP | 36 | 1 | icap |
+| IPS | 66 | 3 | botnet, malicious-url, signature |
+| SSH | 42 | 4 | ssh-channel, ssh-command, ssh-hostkey, ssh-unsupport-proto |
+| SSL | 63 | 5 | ssl-anomaly, ssl-exempt, ssl-handshake, ssl-negotiation, ssl-server-cert-info |
+| Virus | 97 | 16 | analytics, command-blocked, content-disarm, ems-threat-feed, exempt-hash, filename, filetype-executable, fortindr, fortisandbox, infected, malware-list, mimefragmented, outbreak-prevention, oversize, scanerror, switchproto |
+| VoIP | 47 | 1 | voip |
+| WAF | 52 | 6 | waf-address-list, waf-custom-signature, waf-http-constraint, waf-http-method, waf-signature, waf-url-access |
+| Webfilter | 87 | 20 | activexfilter, antiphishing, appletfilter, content, cookiefilter, ftgd_allow, ftgd_blk, ftgd_err, ftgd_quota, ftgd_quota_counting, ftgd_quota_expired, http_header_change, scriptfilter, ssl-exempt, unknown-ce, urlfilter, urlmonitor, videofilter-category, videofilter-channel, webfilter_command_block |
 
 ### 7.2.13 — Intra-version Inconsistencies
 

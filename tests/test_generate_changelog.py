@@ -464,3 +464,74 @@ class TestIntegration:
         assert '`string`' in output
         assert '`ip`' in output
         assert '| LOGIDs added | 1 |' in output
+
+
+from generate_changelog import _render_version_coverage
+
+
+def _make_df(rows: list[dict]) -> pd.DataFrame:
+    return pd.DataFrame(rows)
+
+
+class TestRenderVersionCoverage:
+    def _traffic_dict(self):
+        return {
+            'logid_1': _make_df([
+                {'Log Field Name': 'srcip', 'Type': 'Traffic', 'Category': 'forward'},
+                {'Log Field Name': 'dstip', 'Type': 'Traffic', 'Category': 'forward'},
+                {'Log Field Name': 'srcip', 'Type': 'Traffic', 'Category': 'local'},
+            ]),
+        }
+
+    def test_traffic_table_rendered(self):
+        result = _render_version_coverage(self._traffic_dict())
+        assert '**Traffic**' in result
+        assert '| forward | 2 |' in result
+        assert '| local | 1 |' in result
+
+    def test_event_table_rendered(self):
+        version_dict = {
+            'logid_1': _make_df([
+                {'Log Field Name': 'user', 'Type': 'Event', 'Category': 'system'},
+                {'Log Field Name': 'msg',  'Type': 'Event', 'Category': 'system'},
+                {'Log Field Name': 'user', 'Type': 'Event', 'Category': 'vpn'},
+            ]),
+        }
+        result = _render_version_coverage(version_dict)
+        assert '**Event**' in result
+        assert '| system | 2 |' in result
+        assert '| vpn | 1 |' in result
+
+    def test_utm_includes_gtp(self):
+        version_dict = {
+            'logid_1': _make_df([
+                {'Log Field Name': 'imsi', 'Type': 'GTP', 'Category': 'gtp-all'},
+            ]),
+        }
+        result = _render_version_coverage(version_dict)
+        assert '**UTM**' in result
+        assert '| GTP |' in result
+
+    def test_utm_has_category_list(self):
+        version_dict = {
+            'logid_1': _make_df([
+                {'Log Field Name': 'url',    'Type': 'Webfilter', 'Category': 'urlfilter'},
+                {'Log Field Name': 'action', 'Type': 'Webfilter', 'Category': 'urlfilter'},
+                {'Log Field Name': 'url',    'Type': 'Webfilter', 'Category': 'ftgd_blk'},
+            ]),
+        }
+        result = _render_version_coverage(version_dict)
+        assert '| Webfilter | 2 | 2 | ftgd_blk, urlfilter |' in result
+
+    def test_empty_version_returns_empty(self):
+        assert _render_version_coverage({}) == ''
+
+    def test_no_traffic_section_when_absent(self):
+        version_dict = {
+            'logid_1': _make_df([
+                {'Log Field Name': 'user', 'Type': 'Event', 'Category': 'system'},
+            ]),
+        }
+        result = _render_version_coverage(version_dict)
+        assert '**Traffic**' not in result
+        assert '**Event**' in result

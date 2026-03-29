@@ -542,6 +542,50 @@ def _render_conflict_rows(field: str, rows: _ConflictRows, bucket: str) -> list[
     return lines
 
 
+def _render_version_coverage(version_dict: dict[str, pd.DataFrame]) -> str:
+    """Render Traffic/Event/UTM field-count summary tables for one minor version."""
+    if not version_dict:
+        return ''
+
+    all_df = pd.concat(
+        [df for df in version_dict.values() if not df.empty and 'Log Field Name' in df.columns],
+        ignore_index=True,
+    )
+    if all_df.empty:
+        return ''
+
+    lines: list[str] = []
+
+    traffic = all_df[all_df['Type'] == 'Traffic']
+    if not traffic.empty:
+        counts = traffic.groupby('Category')['Log Field Name'].nunique().sort_index()
+        lines += ['**Traffic**', ''] + _field_table_header(['Category', 'Fields'])
+        for cat, n in counts.items():
+            lines.append(f'| {cat} | {n} |')
+        lines.append('')
+
+    event = all_df[all_df['Type'] == 'Event']
+    if not event.empty:
+        counts = event.groupby('Category')['Log Field Name'].nunique().sort_index()
+        lines += ['**Event**', ''] + _field_table_header(['Category', 'Fields'])
+        for cat, n in counts.items():
+            lines.append(f'| {cat} | {n} |')
+        lines.append('')
+
+    utm = all_df[~all_df['Type'].isin(['Traffic', 'Event'])]
+    if not utm.empty:
+        grp = utm.groupby('Type')
+        field_counts = grp['Log Field Name'].nunique()
+        cat_counts = grp['Category'].nunique()
+        cat_lists = grp['Category'].apply(lambda s: ', '.join(sorted(s.unique())))
+        lines += ['**UTM** *(including GTP)*', ''] + _field_table_header(['Type', 'Fields', 'Categories', 'Category List'])
+        for t in sorted(utm['Type'].unique()):
+            lines.append(f'| {t} | {field_counts[t]} | {cat_counts[t]} | {cat_lists[t]} |')
+        lines.append('')
+
+    return '\n'.join(lines)
+
+
 def _render_version_snapshot(version: str, snap: VersionSnapshot) -> str:
     """Render the intra-version inconsistency section for a single minor version."""
     lines = [f'### {version} — Intra-version Inconsistencies', '']
@@ -609,12 +653,14 @@ def main() -> None:
 
         prev_data = load_version(minor_dirs[0])
         lines += [f'## {minor_dirs[0].name}', '']
+        lines.append(_render_version_coverage(prev_data))
         lines.append(_render_version_snapshot(minor_dirs[0].name, snapshot_version(prev_data)))
 
         for prev_dir, curr_dir in zip(minor_dirs, minor_dirs[1:]):
             curr_data = load_version(curr_dir)
             diff = diff_versions(prev_data, curr_data)
             lines += [f'## {curr_dir.name}', '']
+            lines.append(_render_version_coverage(curr_data))
             lines.append(_render_version_snapshot(curr_dir.name, snapshot_version(curr_data)))
             lines.append(_render_version_pair(prev_dir.name, curr_dir.name, diff))
             prev_data = curr_data
