@@ -548,3 +548,49 @@ class TestRenderVersionCoverage:
         result = _render_version_coverage(version_dict)
         assert '**Traffic**' not in result
         assert '**Event**' in result
+
+
+from generate_changelog import _render_conflict_rows
+
+
+class TestRenderConflictRows:
+    def _rows(self, entries):
+        # entries: list of (desc, dtype, length, type_val, category, stems)
+        return entries
+
+    def test_single_value_no_merge(self):
+        rows = [('desc A', 'string', '64', 'Event', 'system', ['logid_1'])]
+        result = '\n'.join(_render_conflict_rows('myfield', rows, 'Event'))
+        assert '| `myfield` | desc A | `string` | 64 | system | logid_1 |' in result
+
+    def test_same_desc_merges_categories(self):
+        rows = [
+            ('Sequence', 'string', '512', 'Event', 'vpn',      ['logid_a', 'logid_b']),
+            ('Sequence', 'string', '512', 'Event', 'wireless', ['logid_c']),
+        ]
+        result = '\n'.join(_render_conflict_rows('seq', rows, 'Event'))
+        assert result.count('| `seq` |') == 1
+        assert 'vpn<br>wireless' in result
+        assert 'logid_a, logid_b<br>logid_c' in result
+
+    def test_different_desc_not_merged(self):
+        rows = [
+            ('',         'string', '512', 'Event', 'system',   ['logid_a']),
+            ('Sequence', 'string', '512', 'Event', 'vpn',      ['logid_b']),
+        ]
+        result = '\n'.join(_render_conflict_rows('seq', rows, 'Event'))
+        assert result.count('| `seq` |') == 2
+
+    def test_logid_truncation_at_3(self):
+        rows = [('desc', 'string', '64', 'Event', 'system', ['a', 'b', 'c', 'd', 'e'])]
+        result = '\n'.join(_render_conflict_rows('f', rows, 'Event'))
+        assert 'a, b, c *(+2 more)*' in result
+
+    def test_utm_uses_type_val(self):
+        rows = [
+            ('blocked', 'string', '32', 'Webfilter', 'urlfilter', ['logid_1']),
+            ('blocked', 'string', '32', 'IPS',       'signature', ['logid_2']),
+        ]
+        result = '\n'.join(_render_conflict_rows('action', rows, 'UTM'))
+        assert result.count('| `action` |') == 1
+        assert 'Webfilter<br>IPS' in result

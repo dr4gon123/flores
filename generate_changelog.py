@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import re
 from collections import defaultdict
+from itertools import groupby
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -524,19 +525,30 @@ def _format_stems(stems: list[str], max_show: int = 5) -> str:
 
 
 def _render_conflict_rows(field: str, rows: _ConflictRows, bucket: str) -> list[str]:
-    """Render the field heading and table for one conflicting field."""
+    """Render the field heading and table for one conflicting field.
+
+    Rows sharing the same (desc, dtype, length) are collapsed into a single
+    table row with <br>-separated categories and LOGID lists.
+    """
     lines = [f'`{field}`', '']
     utm = bucket == 'UTM'
     extra_col = 'Type' if utm else 'Category'
     lines += _field_table_header(['Log Field Name', 'Description', 'Data Type', 'Length', extra_col, 'LOGIDs'])
-    for desc, dtype, length, type_val, category, stems in rows:
+    for (desc, dtype, length), group in groupby(rows, key=lambda r: (r[0], r[1], r[2])):
+        entries = list(group)
         desc_cell = _cell_desc(desc)
         dtype_cell = dtype or '*(empty)*'
         length_cell = length or '—'
-        extra_cell = (type_val or '—') if utm else (category or '—')
+        if len(entries) == 1:
+            _, _, _, type_val, category, stems = entries[0]
+            extra_cell = (type_val or '—') if utm else (category or '—')
+            stems_cell = _format_stems(stems, max_show=3)
+        else:
+            extra_cell = '<br>'.join((e[3] if utm else e[4]) or '—' for e in entries)
+            stems_cell = '<br>'.join(_format_stems(e[5], max_show=3) for e in entries)
         lines.append(
             f'| `{field}` | {desc_cell} | `{dtype_cell}` | {length_cell}'
-            f' | {extra_cell} | {_format_stems(stems)} |'
+            f' | {extra_cell} | {stems_cell} |'
         )
     lines.append('')
     return lines
