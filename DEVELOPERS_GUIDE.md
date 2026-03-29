@@ -14,17 +14,18 @@ fortigate_scraper_config.yaml
           ▼
 fortigate_scraper.py  ──►  <major>/<minor>/<LOGID>.csv  (raw, one CSV per log ID)
                                     │
-                    ┌───────────────┴───────────────┐
-                    ▼                               ▼
-           unique_fields.py               fortigate_fields.py
-           (type consolidation)           (description consolidation)
-                    │                               │
-                    ▼                               ▼
-        <major>/unique_fields/         <major>/field_descriptions/
-          unique_log_fields_           traffic_fields_*.csv
-          data_types_*.csv             event_fields_*.csv
-                                       utm_fields_*.csv
-                                       action_descriptions_*.csv
+                    ┌───────────────┼───────────────┐
+                    ▼               ▼               ▼
+           unique_fields.py  fortigate_fields.py  generate_changelog.py
+           (type             (description         (version diff &
+            consolidation)    consolidation)       inconsistency report)
+                    │               │               │
+                    ▼               ▼               ▼
+        <major>/unique_fields/  <major>/field_descriptions/  <major>/CHANGELOG.md
+          unique_log_fields_    traffic_fields_*.csv
+          data_types_*.csv      event_fields_*.csv
+                                utm_fields_*.csv
+                                action_descriptions_*.csv
 ```
 
 **Files and their roles:**
@@ -35,6 +36,7 @@ fortigate_scraper.py  ──►  <major>/<minor>/<LOGID>.csv  (raw, one CSV per 
 | `fortigate_scraper_config.yaml` | Configuration: versions list, rate limiting, output directory, flags |
 | `unique_fields.py` | Consolidates field/type pairs; resolves type conflicts across log IDs |
 | `fortigate_fields.py` | Consolidates field/type/description; preserves per-subtype meaning differences |
+| `generate_changelog.py` | Diffs raw CSVs between minor versions; renders per-major CHANGELOG.md |
 
 ---
 
@@ -383,6 +385,170 @@ GTP is only present in FortiGate Carrier (a specialized variant), and its log fi
 
 ---
 
+## Script 4: generate_changelog.py
+
+### Purpose
+
+Reads the raw LOGID CSVs produced by `fortigate_scraper.py` and generates one `CHANGELOG.md` per major version (e.g., `7.2/CHANGELOG.md`). Each changelog documents two things for every minor version:
+
+1. **Intra-version inconsistencies** — fields whose Description, Data Type, or Length differs across LOGIDs within the same minor version (data quality signal)
+2. **Inter-version changes** — fields added, removed, or modified between adjacent minor versions (e.g., 7.2.4 → 7.2.6)
+
+Run from the repo root:
+
+```bash
+python3 generate_changelog.py
+```
+
+Output is written to `<major>/CHANGELOG.md` (e.g., `7.2/CHANGELOG.md`). The file is overwritten on each run.
+
+### Architecture
+
+```
+discover_versions(root)
+  └─ for each major: sorted minor_dirs
+        │
+        ▼
+  load_version(minor_dir)  → dict[stem, DataFrame]  (one DataFrame per LOGID CSV)
+        │
+        ├─ snapshot_version()  → VersionSnapshot   (intra-version inconsistencies)
+        │
+        └─ diff_versions(prev, curr)  → VersionDiff  (inter-version changes)
+              │
+              ├─ per LOGID: diff_logid(prev_df, curr_df)  → LogidDiff
+              │
+              └─ _render_version_pair()  →  ### section text
+                    └─ _aggregate_bucket()  (per Traffic/Event/UTM bucket)
+```
+
+Each minor version directory is loaded once and reused as `prev` for the next version's diff, so the CSVs are never read more than once per version.
+
+### Dataset Buckets
+
+All LOGID data is partitioned into three buckets:
+
+| Bucket | Criteria | Subtype column |
+|--------|----------|---------------|
+| `Traffic` | `Type == 'Traffic'` | `Category` (e.g., `forward`, `local`, `sniffer`) |
+| `Event` | `Type == 'Event'` | `Category` (e.g., `system`, `user`, `vpn`) |
+| `UTM` | everything else (excl. GTP) | `Type` itself (e.g., `Webfilter`, `IPS`, `APP-CTRL`) |
+
+The bucket determines which column is used as the "extra" dimension (subtype) in table output. Traffic tables suppress the subtype column entirely — all Traffic LOGIDs for the same field are merged into a single row regardless of Category.
+
+GTP LOGIDs are silently ignored at the `classify_dataset()` step (`label not in ('Traffic', 'Event', 'Unknown')` still returns the label string, but the caller's `_dataset_bucket()` maps non-Traffic/Event/Unknown to `'UTM'`; GTP data flows through without harm because it is excluded during scraping and field consolidation upstream).
+
+### Key Data Structures
+
+**`LogidDiff`** — field-level diff between two versions of a single LOGID:
+
+```python
+@dataclass
+class LogidDiff:
+    added_fields:    list[tuple[str, str, str, str]]  # (name, type, length, desc)
+    removed_fields:  list[tuple[str, str, str, str]]
+    type_changes:    dict[str, tuple[str, str]]        # field → (old, new)
+    desc_changes:    dict[str, tuple[str, str]]
+    length_changes:  dict[str, tuple[str, str]]
+    severity_change:      tuple[str, str] | None       # LOGID-level metadata
+    message_desc_change:  tuple[str, str] | None
+    category_change:      tuple[str, str] | None
+```
+
+**`VersionDiff`** — all changes between two minor versions:
+
+```python
+@dataclass
+class VersionDiff:
+    added_logids:   dict[str, tuple[str, str]]           # stem → (label, extra_val)
+    removed_logids: dict[str, tuple[str, str]]           # stem → (label, extra_val)
+    logid_diffs:    dict[str, tuple[str, str, LogidDiff]] # stem → (label, extra_val, diff)
+    utmtype_added:   set[str]   # UTM subtypes that appeared in curr but not prev
+    utmtype_removed: set[str]
+```
+
+`extra_val` is the subtype string: Category for Traffic/Event, UTM-type for UTM.
+
+**`VersionSnapshot`** — intra-version field conflicts for one minor version:
+
+```python
+@dataclass
+class VersionSnapshot:
+    desc_conflicts:   dict[str, dict[str, _ConflictRows]]  # bucket → field → rows
+    type_conflicts:   dict[str, dict[str, _ConflictRows]]
+    length_conflicts: dict[str, dict[str, _ConflictRows]]
+```
+
+`_ConflictRows` is `list[tuple[str, str, str, str, str, list[str]]]` — each row is `(desc, dtype, length, type_val, category, [stems])`. A field is included in a conflict dict only if that dimension has more than one distinct value across LOGIDs.
+
+### Field-Oriented Aggregation
+
+Inter-version changes are presented per field name, not per LOGID. This is handled by `_aggregate_bucket()`, which accumulates all LOGIDs in a bucket into five `defaultdict` structures keyed by field name:
+
+```
+adds[field_name][(desc, dtype, length, extra)] → [stem, stem, ...]
+rems[field_name][(desc, dtype, length, extra)] → [stem, stem, ...]
+type_chgs[field_name][(old_type, new_type, extra)] → [stem, stem, ...]
+len_chgs[field_name][(old_len, new_len, extra)] → [stem, stem, ...]
+desc_chgs[field_name][(old_desc, new_desc, extra)] → [stem, stem, ...]
+```
+
+Each unique `(value-tuple, extra)` combination becomes one table row. Multiple LOGIDs that changed the same field in the same way are collapsed into a single row listing all affected LOGID stems. For Traffic, `extra` is always `''` (Category is excluded), so all Traffic LOGIDs for the same field always merge.
+
+Summary counts (e.g., `| Fields added | N |`) are derived from the aggregated structures — `len(adds)` counts unique field names, not raw per-LOGID pairs.
+
+### CRLF Handling in Descriptions
+
+Fortinet CSV files use Windows-style `\r\n` line endings. Description text extracted from those CSVs may contain embedded newlines. The helper `_cell_desc()` converts all line-ending variants (`\n`, `\r\n`, `\r`) to HTML `<br>` tags:
+
+```python
+def _cell_desc(text: str) -> str:
+    if not text:
+        return '*(empty)*'
+    lines = text.splitlines()          # handles \n, \r\n, \r uniformly
+    return '<br>'.join(line.rstrip() for line in lines)
+```
+
+GFM pipe tables have no native multi-line cell support; `<br>` is rendered correctly by GitHub and most Markdown renderers and does not break the table structure.
+
+### Rendering Pipeline
+
+`main()` assembles the changelog as a list of strings joined at the end:
+
+1. **Header**: `# FortiGate {major} Log Field Changelog`
+2. **Per minor version** (`## {version}`):
+   - `_render_version_snapshot()` — intra-version inconsistency tables via `_render_conflict_rows()`
+   - `_render_version_pair()` — inter-version change tables (skipped for the first/oldest version)
+3. The assembled string is written to `<major>/CHANGELOG.md` with UTF-8 encoding
+
+`_render_version_pair()` iterates over `['Traffic', 'Event', 'UTM']` and skips any bucket with no changes at all. LOGIDs added/removed are shown in a compact `| LOGID |` (Traffic) or `| LOGID | Type/Category |` (Event/UTM) table. Field changes use a consistent column set built by `_field_table_header()`.
+
+### Metadata Changes
+
+LOGID-level metadata changes (Severity, Message_Description, Category) are captured in `LogidDiff` but are currently **not rendered**. The rendering block is commented out pending a redesign into a field-oriented table format consistent with the rest of the output.
+
+### Methods Reference
+
+| Function | What it does |
+|----------|-------------|
+| `discover_versions(root)` | Returns `[(major_label, [minor_dirs])]` sorted by version number |
+| `load_version(minor_dir)` | Loads all CSVs in a minor version dir; returns `dict[stem, DataFrame]` |
+| `classify_dataset(df)` | Returns dataset label: `'Traffic'`, `'Event'`, `'Unknown'`, or UTM subtype name |
+| `_dataset_bucket(label)` | Maps label → `'Traffic'`, `'Event'`, or `'UTM'` |
+| `_extra_val(df, label)` | Returns Category (Traffic/Event) or label itself (UTM) as the subtype dimension |
+| `diff_logid(prev_df, curr_df)` | Field-level diff between two DataFrames for the same LOGID; returns `LogidDiff` |
+| `diff_versions(prev, curr)` | Compares two full minor version dicts; returns `VersionDiff` |
+| `snapshot_version(version_dict)` | Finds intra-version field conflicts across all LOGIDs; returns `VersionSnapshot` |
+| `_aggregate_bucket(bucket, diffs)` | Aggregates per-LOGID diffs into per-field-name maps for one bucket |
+| `_cell_desc(text)` | Renders description for a Markdown table cell; converts line endings to `<br>` |
+| `_field_table_header(cols)` | Returns `[header_row, separator_row]` for a GFM pipe table |
+| `_format_stems(stems)` | Formats a list of LOGID stems, truncating with `*(+N more)*` if long |
+| `_render_conflict_rows(field, rows, bucket)` | Renders field heading + table for one conflicting field |
+| `_render_version_snapshot(version, snap)` | Renders the intra-version inconsistency `###` section |
+| `_render_version_pair(v_prev, v_curr, diff)` | Renders the inter-version changes `###` section with summary table and per-bucket field tables |
+| `main()` | Entry point: discovers versions, drives rendering, writes CHANGELOG.md files |
+
+---
+
 ## Running the Pipeline
 
 ```bash
@@ -399,15 +565,18 @@ python3 unique_fields.py
 
 # Step 2b: Consolidate field descriptions (no arguments — scans current directory)
 python3 fortigate_fields.py
+
+# Step 3: Generate per-major-version changelogs (no arguments — scans current directory)
+python3 generate_changelog.py
 ```
 
-Steps 2a and 2b are independent and can be run in either order. Both scan for `^\d+\.\d+$` directories in the current working directory, so they must be run from the same root where the version directories live.
+Steps 2a and 2b are independent and can be run in either order. All three of steps 2a, 2b, and 3 scan for `^\d+\.\d+$` directories in the current working directory, so they must be run from the same root where the version directories live.
 
 To add a new FortiOS version:
 
 1. Add the version string to `versions:` in `fortigate_scraper_config.yaml`
 2. Run `fortigate_scraper.py` — existing versions are skipped automatically
-3. Re-run `unique_fields.py` and `fortigate_fields.py` — they reprocess all versions, so the new version's data is merged into the output
+3. Re-run `unique_fields.py`, `fortigate_fields.py`, and `generate_changelog.py` — they reprocess all versions, so the new version's data is incorporated into all outputs
 
 ---
 
