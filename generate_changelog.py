@@ -298,6 +298,22 @@ def _render_version_pair(v_prev: str, v_curr: str, diff: VersionDiff) -> str:
         '',
     ]
 
+    def _logid_table(label: str, entries: dict[str, str], use_extra: bool, extra_col: str | None) -> list[str]:
+        if use_extra:
+            rows = ['**' + label + '**', ''] + _field_table_header(['LOGID', extra_col])
+            rows += [f'| `{s}` | {e or "—"} |' for s, e in sorted(entries.items())]
+        else:
+            rows = ['**' + label + '**', ''] + _field_table_header(['LOGID'])
+            rows += [f'| `{s}` |' for s in sorted(entries)]
+        return rows + ['']
+
+    def _field_cols(fixed: list[str], use_extra: bool, extra_col: str | None) -> list[str]:
+        return fixed + ([extra_col] if use_extra else []) + ['LOGIDs']
+
+    def _make_field_row(cells: list[str], extra: str, stems: list[str], use_extra: bool) -> str:
+        parts = cells + ([extra or '—'] if use_extra else []) + [_format_stems(stems)]
+        return '| ' + ' | '.join(parts) + ' |'
+
     for bucket in ['Traffic', 'Event', 'UTM']:
         utm = bucket == 'UTM'
         use_extra = bucket != 'Traffic'
@@ -324,74 +340,56 @@ def _render_version_pair(v_prev: str, v_curr: str, diff: VersionDiff) -> str:
 
         lines += [header, '']
 
-        # LOGIDs added/removed: Traffic shows only the LOGID name; Event/UTM include subtype
-        def _logid_table(label: str, entries: dict[str, str]) -> list[str]:
-            if use_extra:
-                rows = ['**' + label + '**', ''] + _field_table_header(['LOGID', extra_col])
-                rows += [f'| `{s}` | {e or "—"} |' for s, e in sorted(entries.items())]
-            else:
-                rows = ['**' + label + '**', ''] + _field_table_header(['LOGID'])
-                rows += [f'| `{s}` |' for s in sorted(entries)]
-            return rows + ['']
-
         if bucket_added:
-            lines += _logid_table('LOGIDs added', bucket_added)
+            lines += _logid_table('LOGIDs added', bucket_added, use_extra, extra_col)
         if bucket_removed:
-            lines += _logid_table('LOGIDs removed', bucket_removed)
-
-        # Helpers to build table columns and rows with/without the extra column
-        def _field_cols(fixed: list[str]) -> list[str]:
-            return fixed + ([extra_col] if use_extra else []) + ['LOGIDs']
-
-        def _make_field_row(cells: list[str], extra: str, stems: list[str]) -> str:
-            parts = cells + ([extra or '—'] if use_extra else []) + [_format_stems(stems)]
-            return '| ' + ' | '.join(parts) + ' |'
+            lines += _logid_table('LOGIDs removed', bucket_removed, use_extra, extra_col)
 
         if adds:
-            cols = _field_cols(['Log Field Name', 'Description', 'Data Type', 'Length'])
+            cols = _field_cols(['Log Field Name', 'Description', 'Data Type', 'Length'], use_extra, extra_col)
             lines += ['**Fields added**', ''] + _field_table_header(cols)
             for fname in sorted(adds):
                 for (desc, dtype, length, extra), stems in sorted(adds[fname].items()):
                     lines.append(_make_field_row(
                         [f'`{fname}`', _cell_desc(desc), f'`{dtype or "*(empty)*"}`', length or '—'],
-                        extra, stems,
+                        extra, stems, use_extra,
                     ))
             lines.append('')
 
         if rems:
-            cols = _field_cols(['Log Field Name', 'Description', 'Data Type', 'Length'])
+            cols = _field_cols(['Log Field Name', 'Description', 'Data Type', 'Length'], use_extra, extra_col)
             lines += ['**Fields removed**', ''] + _field_table_header(cols)
             for fname in sorted(rems):
                 for (desc, dtype, length, extra), stems in sorted(rems[fname].items()):
                     lines.append(_make_field_row(
                         [f'`{fname}`', _cell_desc(desc), f'`{dtype or "*(empty)*"}`', length or '—'],
-                        extra, stems,
+                        extra, stems, use_extra,
                     ))
             lines.append('')
 
         if type_chgs:
-            cols = _field_cols(['Log Field Name', 'Old Type', 'New Type'])
+            cols = _field_cols(['Log Field Name', 'Old Type', 'New Type'], use_extra, extra_col)
             lines += ['**Type changes**', ''] + _field_table_header(cols)
             for fname in sorted(type_chgs):
                 for (old_t, new_t, extra), stems in sorted(type_chgs[fname].items()):
-                    lines.append(_make_field_row([f'`{fname}`', f'`{old_t}`', f'`{new_t}`'], extra, stems))
+                    lines.append(_make_field_row([f'`{fname}`', f'`{old_t}`', f'`{new_t}`'], extra, stems, use_extra))
             lines.append('')
 
         if len_chgs:
-            cols = _field_cols(['Log Field Name', 'Old Length', 'New Length'])
+            cols = _field_cols(['Log Field Name', 'Old Length', 'New Length'], use_extra, extra_col)
             lines += ['**Length changes**', ''] + _field_table_header(cols)
             for fname in sorted(len_chgs):
                 for (old_l, new_l, extra), stems in sorted(len_chgs[fname].items()):
-                    lines.append(_make_field_row([f'`{fname}`', old_l, new_l], extra, stems))
+                    lines.append(_make_field_row([f'`{fname}`', old_l, new_l], extra, stems, use_extra))
             lines.append('')
 
         if desc_chgs:
-            cols = _field_cols(['Log Field Name', 'Old Description', 'New Description'])
+            cols = _field_cols(['Log Field Name', 'Old Description', 'New Description'], use_extra, extra_col)
             lines += ['**Description changes**', ''] + _field_table_header(cols)
             for fname in sorted(desc_chgs):
                 for (old_d, new_d, extra), stems in sorted(desc_chgs[fname].items()):
                     lines.append(_make_field_row(
-                        [f'`{fname}`', _cell_desc(old_d), _cell_desc(new_d)], extra, stems,
+                        [f'`{fname}`', _cell_desc(old_d), _cell_desc(new_d)], extra, stems, use_extra,
                     ))
             lines.append('')
 
@@ -524,13 +522,20 @@ def _format_stems(stems: list[str], max_show: int = 5) -> str:
     return result
 
 
-def _render_conflict_rows(field: str, rows: _ConflictRows, bucket: str) -> list[str]:
-    """Render the field heading and table for one conflicting field.
+def _render_conflict_rows(
+    field: str,
+    rows: _ConflictRows,
+    bucket: str,
+    conflict_labels: list[str] | None = None,
+) -> list[str]:
+    """Render the field heading, optional conflict-type labels, and table for one field.
 
     Rows sharing the same (desc, dtype, length) are collapsed into a single
     table row with <br>-separated categories and LOGID lists.
     """
     lines = [f'`{field}`', '']
+    if conflict_labels:
+        lines += conflict_labels + ['']
     utm = bucket == 'UTM'
     extra_col = 'Type' if utm else 'Category'
     lines += _field_table_header(['Log Field Name', 'Description', 'Data Type', 'Length', extra_col, 'LOGIDs'])
@@ -551,23 +556,9 @@ def _render_conflict_rows(field: str, rows: _ConflictRows, bucket: str) -> list[
     return lines
 
 
-def _render_version_coverage(version_dict: dict[str, pd.DataFrame]) -> str:
-    """Render Traffic/Event/UTM field-count summary tables for one minor version."""
-    if not version_dict:
-        return ''
-
-    pieces = []
-    for stem, df in version_dict.items():
-        if not df.empty and 'Log Field Name' in df.columns:
-            tagged = df.copy()
-            tagged['_stem'] = stem
-            pieces.append(tagged)
-    if not pieces:
-        return ''
-    all_df = pd.concat(pieces, ignore_index=True)
-
+def _render_traffic_event_coverage(all_df: pd.DataFrame) -> list[str]:
+    """Render per-Category field/LOGID counts for Traffic and Event rows."""
     lines: list[str] = []
-
     for label in ('Traffic', 'Event'):
         subset = all_df[all_df['Type'] == label]
         if subset.empty:
@@ -579,19 +570,41 @@ def _render_version_coverage(version_dict: dict[str, pd.DataFrame]) -> str:
         for cat, n in field_counts.items():
             lines.append(f'| {cat} | {n} | {logid_counts[cat]} |')
         lines.append('')
+    return lines
 
+
+def _render_utm_coverage(all_df: pd.DataFrame) -> list[str]:
+    """Render per-Type field/LOGID/category counts for UTM (including GTP) rows."""
     utm = all_df[~all_df['Type'].isin(['Traffic', 'Event'])]
-    if not utm.empty:
-        grp = utm.groupby('Type')
-        field_counts = grp['Log Field Name'].nunique()
-        logid_counts = grp['_stem'].nunique()
-        cat_counts = grp['Category'].nunique()
-        cat_lists = grp['Category'].apply(lambda s: ', '.join(sorted(s.unique())))
-        lines += ['**UTM** *(including GTP)*', ''] + _field_table_header(['Type', 'Fields', 'LOGIDs', 'Categories', 'Category List'])
-        for t in sorted(utm['Type'].unique()):
-            lines.append(f'| {t} | {field_counts[t]} | {logid_counts[t]} | {cat_counts[t]} | {cat_lists[t]} |')
-        lines.append('')
+    if utm.empty:
+        return []
+    grp = utm.groupby('Type')
+    field_counts = grp['Log Field Name'].nunique()
+    logid_counts = grp['_stem'].nunique()
+    cat_counts = grp['Category'].nunique()
+    cat_lists = grp['Category'].apply(lambda s: ', '.join(sorted(s.unique())))
+    lines: list[str] = ['**UTM** *(including GTP)*', ''] + _field_table_header(['Type', 'Fields', 'LOGIDs', 'Categories', 'Category List'])
+    for t in sorted(utm['Type'].unique()):
+        lines.append(f'| {t} | {field_counts[t]} | {logid_counts[t]} | {cat_counts[t]} | {cat_lists[t]} |')
+    lines.append('')
+    return lines
 
+
+def _render_version_coverage(version_dict: dict[str, pd.DataFrame]) -> str:
+    """Render Traffic/Event/UTM field-count summary tables for one minor version."""
+    if not version_dict:
+        return ''
+
+    pieces = [
+        df.assign(_stem=stem)
+        for stem, df in version_dict.items()
+        if not df.empty and 'Log Field Name' in df.columns
+    ]
+    if not pieces:
+        return ''
+    all_df = pd.concat(pieces, ignore_index=True)
+
+    lines = _render_traffic_event_coverage(all_df) + _render_utm_coverage(all_df)
     return '\n'.join(lines)
 
 
@@ -635,26 +648,114 @@ def _render_version_snapshot(version: str, snap: VersionSnapshot) -> str:
             )
         lines.append('')
 
-        if dc:
-            lines += ['**Description conflicts** — same field, different `Description` across LOGIDs', '']
-            for field, rows in sorted(dc.items()):
-                lines += _render_conflict_rows(field, rows, bucket)
-
-        if tc:
-            lines += ['**Data Type conflicts** — same field, different `Data Type` across LOGIDs', '']
-            for field, rows in sorted(tc.items()):
-                lines += _render_conflict_rows(field, rows, bucket)
-
-        if lc:
-            lines += ['**Length conflicts** — same field, different `Length` across LOGIDs', '']
-            for field, rows in sorted(lc.items()):
-                lines += _render_conflict_rows(field, rows, bucket)
+        for field in all_conflict_fields:
+            labels = []
+            if field in dc:
+                labels.append('**Description conflicts** — same field, different `Description` across LOGIDs')
+            if field in tc:
+                labels.append('**Data Type conflicts** — same field, different `Data Type` across LOGIDs')
+            if field in lc:
+                labels.append('**Length conflicts** — same field, different `Length` across LOGIDs')
+            rows = dc.get(field) or tc.get(field) or lc.get(field)
+            lines += _render_conflict_rows(field, rows, bucket, conflict_labels=labels)
 
     lines += ['---', '']
     return '\n'.join(lines)
 
 
+def _build_field_matrix(
+    version_dict: dict[str, pd.DataFrame],
+    type_filter: str | None,
+    group_col: str,
+) -> pd.DataFrame:
+    """Build a field × category/type occurrence matrix for one minor version.
+
+    Rows are field names, columns are categories (Traffic/Event) or types (UTM).
+    The first row (index '_total') holds the total LOGID count per column.
+    Cell values are the number of distinct LOGIDs containing that field.
+    Returns an empty DataFrame if no rows match the filter.
+    """
+    pieces = [
+        df.assign(_stem=stem)
+        for stem, df in version_dict.items()
+        if not df.empty and 'Log Field Name' in df.columns
+    ]
+    if not pieces:
+        return pd.DataFrame()
+    all_df = pd.concat(pieces, ignore_index=True)
+
+    if type_filter is not None:
+        subset = all_df[all_df['Type'] == type_filter]
+    else:
+        subset = all_df[~all_df['Type'].isin(['Traffic', 'Event'])]
+
+    if subset.empty:
+        return pd.DataFrame()
+
+    matrix = (
+        subset
+        .groupby(['Log Field Name', group_col])['_stem']
+        .nunique()
+        .unstack(fill_value=0)
+    )
+    matrix = matrix[sorted(matrix.columns)].sort_index()
+
+    totals = subset.groupby(group_col)['_stem'].nunique().reindex(matrix.columns, fill_value=0)
+    total_row = totals.to_frame().T
+    total_row.index = pd.Index(['_total'], name=matrix.index.name)
+    return pd.concat([total_row, matrix])
+
+
+def _write_minor_analysis(
+    minor_dir: Path,
+    version_dict: dict[str, pd.DataFrame],
+    snap: VersionSnapshot,
+    diff: VersionDiff | None = None,
+    prev_label: str | None = None,
+    do_changelog: bool = True,
+    do_matrices: bool = True,
+) -> None:
+    """Write analysis/CHANGELOG.md and/or the three field matrix CSVs for one minor version."""
+    analysis_dir = minor_dir / 'analysis'
+    analysis_dir.mkdir(exist_ok=True)
+
+    if do_changelog:
+        content_parts = [
+            f'# FortiGate {minor_dir.name} — Analysis', '',
+            _render_version_coverage(version_dict),
+            _render_version_snapshot(minor_dir.name, snap),
+        ]
+        if diff is not None and prev_label is not None:
+            content_parts.append(_render_version_pair(prev_label, minor_dir.name, diff))
+        changelog_path = analysis_dir / 'CHANGELOG.md'
+        changelog_path.write_text('\n'.join(content_parts) + '\n', encoding='utf-8')
+        print(f'Written: {changelog_path} ({changelog_path.stat().st_size:,} bytes)')
+
+    if do_matrices:
+        specs = [
+            ('traffic_matrix.csv', 'Traffic', 'Category'),
+            ('event_matrix.csv',   'Event',   'Category'),
+            ('utm_matrix.csv',     None,      'Type'),
+        ]
+        for filename, type_filter, group_col in specs:
+            matrix = _build_field_matrix(version_dict, type_filter, group_col)
+            if matrix.empty:
+                continue
+            path = analysis_dir / filename
+            matrix.to_csv(path)
+            n_fields = len(matrix) - 1  # exclude _total row
+            print(f'Written: {path} ({n_fields} fields × {len(matrix.columns)} columns)')
+
+
 def main() -> None:
+    import argparse
+    parser = argparse.ArgumentParser(description='Generate FortiGate log field changelogs and field matrices.')
+    parser.add_argument('--changelog', action='store_true', help='Generate only per-minor-version CHANGELOG.md files')
+    parser.add_argument('--matrices', action='store_true', help='Generate only per-minor-version field matrix CSVs')
+    args = parser.parse_args()
+    do_changelog = args.changelog or not (args.changelog or args.matrices)
+    do_matrices = args.matrices or not (args.changelog or args.matrices)
+
     root = Path(__file__).parent
     version_groups = discover_versions(root)
 
@@ -666,26 +767,19 @@ def main() -> None:
         if not minor_dirs:
             continue
 
-        lines: list[str] = [f'# FortiGate {major_label} Log Field Changelog', '']
-
         prev_data = load_version(minor_dirs[0])
-        lines += [f'## {minor_dirs[0].name}', '']
-        lines.append(_render_version_coverage(prev_data))
-        lines.append(_render_version_snapshot(minor_dirs[0].name, snapshot_version(prev_data)))
+        prev_snap = snapshot_version(prev_data)
+        _write_minor_analysis(minor_dirs[0], prev_data, prev_snap,
+                              do_changelog=do_changelog, do_matrices=do_matrices)
 
         for prev_dir, curr_dir in zip(minor_dirs, minor_dirs[1:]):
             curr_data = load_version(curr_dir)
-            diff = diff_versions(prev_data, curr_data)
-            lines += [f'## {curr_dir.name}', '']
-            lines.append(_render_version_coverage(curr_data))
-            lines.append(_render_version_snapshot(curr_dir.name, snapshot_version(curr_data)))
-            lines.append(_render_version_pair(prev_dir.name, curr_dir.name, diff))
+            diff = diff_versions(prev_data, curr_data) if do_changelog else None
+            curr_snap = snapshot_version(curr_data)
+            _write_minor_analysis(curr_dir, curr_data, curr_snap,
+                                  diff=diff, prev_label=prev_dir.name,
+                                  do_changelog=do_changelog, do_matrices=do_matrices)
             prev_data = curr_data
-
-        output = '\n'.join(lines) + '\n'
-        output_path = root / major_label / 'CHANGELOG.md'
-        output_path.write_text(output, encoding='utf-8')
-        print(f'Written: {output_path} ({output_path.stat().st_size:,} bytes)')
 
 
 if __name__ == '__main__':
