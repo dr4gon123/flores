@@ -1,0 +1,171 @@
+Log Field Name,Data Type,Length,Description
+accessctrl,string,80,
+accessproxy,string,80,
+action,string,16,"The status of the session:
+ deny - Session was denied
+ accept - Allowed Forward session
+ start - Session starts (log message was created when the session was created)
+ dns - DNS query return error
+ ip-conn - Failed connection attempts
+ close - Local-traffic session allowed
+ timeout - Allowed session was timeout
+ client-rst - Session reset by client
+ server-rst - Session reset by server"
+agent,string,1024,"User agent - eg. agent=""Mozilla/5.0"""
+ap,string,36,Access Point name
+app,string,96,Application name
+appact,string,16,The security action from app control
+appcat,string,64,Application category
+appid,uint32,10,Application ID
+applist,string,64,Application Control profile (name)
+apprisk,string,16,Application Risk Level
+apsn,string,36,Access Point serial number
+authserver,string,64,Remote Authentication server
+centralnatid,uint32,10,central-snat-map id
+channel,uint32,10,WiFi Channel
+clientdeviceid,string,80,
+clientdevicemanageable,string,16,
+clientdeviceowner,string,80,
+clientdevicetags,string,512,
+comment,string,1024,Customized policy comment
+countapp,uint32,10,Number of App Ctrl logs associated with the session
+countav,uint32,10,Number of AV logs associated with the session
+countcifs,uint32,10,
+countdlp,uint32,10,Number of DLP logs associated with the session
+countdns,uint32,10,Number of DNS Query logs associated with the session
+countemail,uint32,10,Number of Email logs associated with the session
+countff,uint32,10,
+counticap,uint32,10,
+countips,uint32,10,Number of IPS logs associated with the session
+countsctpf,uint32,10,
+countssh,uint32,10,Number of SSH logs associated with the session
+countssl,uint32,10,
+countwaf,uint32,10,Number of WAF logs associated with the session
+countweb,uint32,10,Number of Web Filter logs associated with the session
+craction,uint32,10,Action performed by Threat Weight
+crlevel,string,10,Threat Weight level
+crscore,uint32,10,Threat Weight score
+date,string,10,Date
+devid,string,16,Device Serial Number
+devtype,string,66,Device Type
+dstauthserver,string,64,
+dstcity,string,64,
+dstcountry,string,64,Country name for the destination IP
+dstdevtype,string,66,Destination Device Type
+dstfamily,string,66,
+dsthwvendor,string,66,
+dsthwversion,string,66,
+dstinetsvc,string,64,Internet service name for the destination
+dstintf,string,32,Destination Interface
+dstintfrole,string,10,"Destination Interface's assigned role (LAN, WAN, etc.)"
+dstip,ip,39,Destination IP Address
+dstmac,string,17,Destination Mac Address
+dstname,string,256,Destination name
+dstosname,string,66,Destination OS name
+dstport,uint16,5,Destination Protocol Port Number
+dstregion,string,64,
+dstreputation,uint32,10,
+dstserver,uint8,3,Destination Server
+dstssid,string,33,Destination SSID
+dstswversion,string,66,
+dstthreatfeed,string,36,
+dstunauthuser,string,66,
+dstunauthusersource,string,66,
+dstuser,string,256,
+dstuuid,string,37,UUID of the Destination Address Object
+duration,uint32,10,Duration of the session
+emsconnection,string,8,
+eventtime,uint64,20,Epoch time in nanoseconds
+fctuid,string,32,FortiClient UID
+gatewayid,uint32,10,
+group,string,512,User group name
+identifier,uint16,5,
+lanin,uint64,20,LAN incoming traffic in bytes
+lanout,uint64,20,LAN outgoing traffic in bytes
+level,string,11,Log Level
+logid,string,10,Log ID
+masterdstmac,string,17,Destination master MAC address
+mastersrcmac,string,17,The master MAC address for a host that has multiple network interfaces
+msg,string,512,Log message
+osname,string,66,Name of the device's OS
+pdstport,uint16,5,
+policyid,uint32,10,Firewall Policy ID
+policymode,string,8,
+policyname,string,36,Policy name
+policytype,string,24,Policy type
+poluuid,string,37,UUID of the Firewall Policy
+proto,uint8,3,Protocol Number
+proxyapptype,string,9,
+psrcport,uint16,5,
+radioband,string,64,Radio Band
+rcvdbyte,uint64,20,Received Bytes
+rcvddelta,uint64,20,Delta Received Bytes
+rcvdpkt,uint32,10,Received Packets
+replydstintf,string,32,
+replysrcintf,string,32,
+saasname,string,80,
+sentbyte,uint64,20,Sent Bytes
+sentdelta,uint64,20,Delta Sent Bytes
+sentpkt,uint32,10,Sent Packets
+service,string,80,Name of Service
+sessionid,uint32,10,Session ID
+shaperdroprcvdbyte,uint32,10,Received bytes dropped by shaper
+shaperdropsentbyte,uint32,10,Sent bytes dropped by shaper
+shaperperipdropbyte,uint32,10,Dropped bytes per IP by shaper
+shaperperipname,string,36,Traffic shaper name (per IP)
+shaperrcvdname,string,36,Traffic shaper name for received traffic
+shapersentname,string,36,Traffic shaper name for sent traffic
+shapingpolicyid,uint32,10,Shaping Policy ID
+shapingpolicyname,string,36,
+signal,int8,4,
+snr,int8,4,
+srccity,string,64,
+srccountry,string,64,Country name for Source IP
+srcdomain,string,255,
+srcfamily,string,66,
+srchwvendor,string,66,
+srchwversion,string,66,
+srcinetsvc,string,64,Internet service name for the source
+srcintf,string,32,Source interface name
+srcintfrole,string,10,"Source Interface's assigned role (LAN, WAN, etc.)"
+srcip,ip,39,Source IP address
+srcmac,string,17,MAC address associated with the Source IP
+srcmacvendor,string,66,
+srcname,string,256,Source name
+srcport,uint16,5,Source protocol port number
+srcregion,string,64,
+srcremote,ip,39,
+srcreputation,uint32,10,
+srcserver,uint8,3,Source server
+srcssid,string,33,Source SSID
+srcswversion,string,66,
+srcthreatfeed,string,36,
+srcuuid,string,37,UUID of the Source Address Object
+sslaction,string,26,Action taken by ssl-ssh-profile
+subtype,string,20,Subtype of the traffic
+time,string,8,Time
+trandisp,string,16,NAT translation type
+tranip,ip,39,NAT Destination IP
+tranport,uint16,5,NAT Destination Port
+transip,ip,39,NAT Source IP
+transport,uint16,5,NAT Source Protocol Port
+tunnelid,uint32,10,
+type,string,16,Log type
+tz,string,5,Time zone
+unauthuser,string,66,Unauthenticated user name
+unauthusersource,string,66,The method used to detect unauthenticated user name
+url,string,512,URL
+user,string,256,User name
+utmaction,string,32,Security action performed by UTM
+vd,string,32,Virtual domain name
+vip,string,64,
+vpntype,string,14,The type of the VPN tunnel
+vrf,uint8,3,Virtual router forwarding
+vwlid,uint32,10,Virtual Wan Link (SD-WAN) service id
+vwlname,string,36,
+vwlquality,string,320,Quality info of the service rule that is matched by traffic
+vwlservice,string,64,Application that is matched by the traffic (internet-service-app-ctrl)
+vwpvlanid,uint32,10,Virtual Wire Pair vlan id
+wanin,uint64,20,WAN incoming traffic in bytes
+wanoptapptype,string,9,WAN Optimization Application type
+wanout,uint64,20,WAN outgoing traffic in bytes

@@ -6,7 +6,7 @@ Run from repo root: python3 generate_changelog.py
 from __future__ import annotations
 
 import re
-from collections import defaultdict
+from collections import Counter, defaultdict
 from itertools import groupby
 from dataclasses import dataclass
 from pathlib import Path
@@ -747,14 +747,126 @@ def _write_minor_analysis(
             print(f'Written: {path} ({n_fields} fields × {len(matrix.columns)} columns)')
 
 
+def _normalize_desc(text: str) -> str:
+    return text.strip().lower() if text else ''
+
+
+def _canonical_desc(descriptions: list[str]) -> str:
+    return Counter(descriptions).most_common(1)[0][0] if descriptions else ''
+
+
+def _label_descriptions(subtype_descs: dict[str, list[str]]) -> str:
+    """Build subtype-labeled description string. Returns plain text if single meaning."""
+    norm_groups: dict[str, list[tuple[str, str]]] = defaultdict(list)
+    for subtype, descs in subtype_descs.items():
+        for desc in descs:
+            norm = _normalize_desc(desc)
+            if norm:
+                norm_groups[norm].append((desc, subtype))
+    if not norm_groups:
+        return ''
+    meanings = sorted(
+        [(_canonical_desc([d for d, _ in pairs]), sorted({s for _, s in pairs}))
+         for pairs in norm_groups.values()],
+        key=lambda x: x[1][0],
+    )
+    if len(meanings) == 1:
+        return meanings[0][0]
+    return '\n\n'.join(f"{'/'.join(subtypes)}: {desc}" for desc, subtypes in meanings)
+
+
+def _consolidate_fields(
+    all_stems: dict[str, pd.DataFrame],
+    type_filter: str | None,
+    group_col: str,
+) -> pd.DataFrame:
+    """Consolidate field definitions across all minor versions for one log type.
+
+    Returns a DataFrame with columns: Log Field Name, Data Type, Length, Description.
+    Data Type and Length list all distinct raw values (comma-separated).
+    Description uses subtype-labeled format when meanings differ across subtypes.
+    """
+    pieces = [
+        df.assign(_stem=stem)
+        for stem, df in all_stems.items()
+        if not df.empty and 'Log Field Name' in df.columns
+    ]
+    if not pieces:
+        return pd.DataFrame()
+    all_df = pd.concat(pieces, ignore_index=True)
+
+    if type_filter is not None:
+        subset = all_df[all_df['Type'] == type_filter].copy()
+    else:
+        subset = all_df[~all_df['Type'].isin(['Traffic', 'Event', 'GTP'])].copy()
+
+    if subset.empty:
+        return pd.DataFrame()
+
+    for col in ('Data Type', 'Length', 'Description'):
+        if col not in subset.columns:
+            subset[col] = ''
+    if group_col not in subset.columns:
+        subset[group_col] = ''
+
+    type_agg = (
+        subset.groupby('Log Field Name')['Data Type']
+        .apply(lambda s: ','.join(sorted({t for t in s.map(_safe_str).unique() if t})))
+    )
+    length_agg = (
+        subset.groupby('Log Field Name')['Length']
+        .apply(lambda s: ','.join(sorted(
+            {lv for lv in s.map(_safe_str).unique() if lv},
+            key=lambda x: int(x) if x.isdigit() else x,
+        )))
+    )
+    desc_agg = {
+        field: _label_descriptions(
+            grp.groupby(group_col)['Description']
+            .apply(lambda s: s.map(_safe_str).tolist())
+            .to_dict()
+        )
+        for field, grp in subset.groupby('Log Field Name')
+    }
+
+    fields = type_agg.index.tolist()
+    return pd.DataFrame({
+        'Log Field Name': fields,
+        'Data Type': type_agg.values,
+        'Length': length_agg.reindex(fields, fill_value='').values,
+        'Description': [desc_agg.get(f, '') for f in fields],
+    })
+
+
+def _write_major_fields(major_dir: Path, all_stems: dict[str, pd.DataFrame]) -> None:
+    """Write consolidated field CSVs for all log types under {major}/fields/."""
+    fields_dir = major_dir / 'fields'
+    fields_dir.mkdir(exist_ok=True)
+    specs = [
+        ('traffic_fields.csv', 'Traffic', 'Category'),
+        ('event_fields.csv',   'Event',   'Category'),
+        ('utm_fields.csv',     None,      'Type'),
+    ]
+    for filename, type_filter, group_col in specs:
+        df = _consolidate_fields(all_stems, type_filter, group_col)
+        if df.empty:
+            continue
+        path = fields_dir / filename
+        df.to_csv(path, index=False)
+        print(f'Written: {path} ({len(df)} fields)')
+
+
 def main() -> None:
     import argparse
     parser = argparse.ArgumentParser(description='Generate FortiGate log field changelogs and field matrices.')
     parser.add_argument('--changelog', action='store_true', help='Generate only per-minor-version CHANGELOG.md files')
     parser.add_argument('--matrices', action='store_true', help='Generate only per-minor-version field matrix CSVs')
+    parser.add_argument('--fields', action='store_true', help='Generate consolidated field CSVs per major version')
     args = parser.parse_args()
-    do_changelog = args.changelog or not (args.changelog or args.matrices)
-    do_matrices = args.matrices or not (args.changelog or args.matrices)
+    any_flag = args.changelog or args.matrices or args.fields
+    do_changelog = args.changelog or not any_flag
+    do_matrices = args.matrices or not any_flag
+    do_fields = args.fields or not any_flag
 
     root = Path(__file__).parent
     version_groups = discover_versions(root)
@@ -767,19 +879,28 @@ def main() -> None:
         if not minor_dirs:
             continue
 
+        all_stems: dict[str, pd.DataFrame] = {}
+
         prev_data = load_version(minor_dirs[0])
-        prev_snap = snapshot_version(prev_data)
-        _write_minor_analysis(minor_dirs[0], prev_data, prev_snap,
-                              do_changelog=do_changelog, do_matrices=do_matrices)
+        all_stems.update(prev_data)
+        if do_changelog or do_matrices:
+            prev_snap = snapshot_version(prev_data)
+            _write_minor_analysis(minor_dirs[0], prev_data, prev_snap,
+                                  do_changelog=do_changelog, do_matrices=do_matrices)
 
         for prev_dir, curr_dir in zip(minor_dirs, minor_dirs[1:]):
             curr_data = load_version(curr_dir)
-            diff = diff_versions(prev_data, curr_data) if do_changelog else None
-            curr_snap = snapshot_version(curr_data)
-            _write_minor_analysis(curr_dir, curr_data, curr_snap,
-                                  diff=diff, prev_label=prev_dir.name,
-                                  do_changelog=do_changelog, do_matrices=do_matrices)
+            all_stems.update(curr_data)
+            if do_changelog or do_matrices:
+                diff = diff_versions(prev_data, curr_data) if do_changelog else None
+                curr_snap = snapshot_version(curr_data)
+                _write_minor_analysis(curr_dir, curr_data, curr_snap,
+                                      diff=diff, prev_label=prev_dir.name,
+                                      do_changelog=do_changelog, do_matrices=do_matrices)
             prev_data = curr_data
+
+        if do_fields:
+            _write_major_fields(root / major_label, all_stems)
 
 
 if __name__ == '__main__':
