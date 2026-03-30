@@ -638,6 +638,14 @@ def _render_version_snapshot(version: str, snap: VersionSnapshot) -> str:
 
         lines += [f'#### {bucket}', '']
 
+        all_conflict_fields = sorted(set(dc) | set(tc) | set(lc))
+        lines += _field_table_header(['Log Field Name', 'Description', 'Data Type', 'Length'])
+        for f in all_conflict_fields:
+            lines.append(
+                f'| `{f}` | {"X" if f in dc else ""} | {"X" if f in tc else ""} | {"X" if f in lc else ""} |'
+            )
+        lines.append('')
+
         if dc:
             lines += ['**Description conflicts** — same field, different `Description` across LOGIDs', '']
             for field, rows in sorted(dc.items()):

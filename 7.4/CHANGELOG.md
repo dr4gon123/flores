@@ -66,6 +66,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -76,6 +80,51 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -376,6 +425,94 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtername` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -1360,6 +1497,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -1370,6 +1511,51 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -1669,6 +1855,97 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtername` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -2778,6 +3055,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -2788,6 +3069,52 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -3094,6 +3421,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -4261,6 +4680,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -4271,6 +4694,52 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -4577,6 +5046,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -5602,6 +6163,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -5612,6 +6177,53 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `error_num` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -5925,6 +6537,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -7023,6 +7727,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -7033,6 +7741,53 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `error_num` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -7346,6 +8101,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -8408,6 +9255,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -8418,6 +9269,53 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `error_num` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -8731,6 +9629,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -9782,6 +10772,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -9792,6 +10786,53 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `error_num` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -10105,6 +11146,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -11130,6 +12263,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -11140,6 +12277,53 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `error_num` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -11453,6 +12637,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -12512,6 +13788,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -12522,6 +13802,53 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `error_num` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -12835,6 +14162,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -13888,6 +15307,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -13898,6 +15321,53 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `error_num` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -14211,6 +15681,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -15267,6 +16829,10 @@
 
 #### Traffic
 
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `app` | X |  |  |
+
 **Description conflicts** — same field, different `Description` across LOGIDs
 
 `app`
@@ -15277,6 +16843,53 @@
 | `app` | Application name | `string` | 96 | forward<br>local<br>multicast | 10_-_LOG_ID_TRAFFIC_EXPLICIT_PROXY, 11_-_LOG_ID_TRAFFIC_FAIL_CONN, 13_-_LOG_ID_TRAFFIC_END_FORWARD *(+11 more)*<br>14_-_LOG_ID_TRAFFIC_END_LOCAL, 16_-_LOG_ID_TRAFFIC_START_LOCAL<br>12_-_LOG_ID_TRAFFIC_MULTICAST, 19_-_LOG_ID_TRAFFIC_BROADCAST |
 
 #### Event
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  |  |
+| `authserver` | X |  |  |
+| `cfgattr` | X |  |  |
+| `cfgobj` | X |  |  |
+| `cfgpath` | X |  |  |
+| `cfgtid` | X |  |  |
+| `count` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `dst_int` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `duration` | X |  |  |
+| `error` | X |  |  |
+| `error_num` | X |  |  |
+| `eventtime` | X |  |  |
+| `fctuid` | X |  |  |
+| `hostname` | X |  |  |
+| `ip` | X |  |  |
+| `level` | X |  |  |
+| `logdesc` | X |  |  |
+| `logid` | X |  |  |
+| `mode` | X |  |  |
+| `msg` | X |  |  |
+| `name` | X |  |  |
+| `policyid` | X |  |  |
+| `profile` | X |  |  |
+| `scope` | X |  |  |
+| `seq` | X |  |  |
+| `server` | X |  |  |
+| `severity` | X |  |  |
+| `sn` | X |  |  |
+| `src_int` | X |  |  |
+| `srcip` | X |  |  |
+| `srcmac` | X |  |  |
+| `srcport` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `ui` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `version` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
@@ -15590,6 +17203,98 @@
 | `version` | Version | `string` | 64 | system<br>vpn | 22080_-_LOG_ID_PROVISION_LATEST_SUCCEEDED, 22081_-_LOG_ID_PROVISION_LATEST_FAILED, 22085_-_LOG_ID_DEVICE_UPGRADE_SUCCEEDED *(+9 more)*<br>37127_-_MESGID_NEG_PROGRESS_P1_NOTIF, 37128_-_MESGID_NEG_PROGRESS_P1_ERROR, 37129_-_MESGID_NEG_PROGRESS_P2_NOTIF *(+1 more)* |
 
 #### UTM
+
+| Log Field Name | Description | Data Type | Length |
+|----------------|-------------|-----------|--------|
+| `action` | X |  | X |
+| `agent` | X |  |  |
+| `analyticscksum` | X |  |  |
+| `analyticssubmit` | X |  |  |
+| `attack` | X |  |  |
+| `attackcontext` | X |  |  |
+| `attackcontextid` | X |  |  |
+| `attackid` | X |  |  |
+| `authserver` | X |  |  |
+| `banword` | X |  |  |
+| `cat` | X |  |  |
+| `catdesc` | X |  |  |
+| `cc` |  |  | X |
+| `checksum` | X |  |  |
+| `command` | X |  | X |
+| `contentdisarmed` | X |  |  |
+| `count` | X |  |  |
+| `craction` | X |  |  |
+| `crlevel` | X |  |  |
+| `crscore` | X |  |  |
+| `date` | X |  |  |
+| `devid` | X |  |  |
+| `direction` | X |  | X |
+| `dstintf` | X |  | X |
+| `dstintfrole` | X |  |  |
+| `dstip` | X |  |  |
+| `dstport` | X |  |  |
+| `dtype` | X |  |  |
+| `duration` | X |  |  |
+| `epoch` | X |  |  |
+| `error` | X |  |  |
+| `eventid` | X |  |  |
+| `eventtime` | X |  |  |
+| `eventtype` | X |  |  |
+| `fctuid` | X |  |  |
+| `filehash` | X |  |  |
+| `filehashsrc` | X |  |  |
+| `filename` | X |  |  |
+| `filesize` | X |  |  |
+| `filetype` | X |  | X |
+| `filtertype` | X |  | X |
+| `forwardedfor` | X |  |  |
+| `from` | X | X |  |
+| `group` | X |  |  |
+| `hostname` | X |  |  |
+| `icmpcode` | X |  |  |
+| `icmpid` | X |  |  |
+| `icmptype` | X |  |  |
+| `level` | X |  |  |
+| `logid` | X |  |  |
+| `msg` | X |  | X |
+| `policyid` | X |  |  |
+| `policytype` | X |  |  |
+| `profile` | X |  | X |
+| `proto` | X |  |  |
+| `quarskip` | X |  |  |
+| `ratemethod` |  |  | X |
+| `rawdata` | X |  |  |
+| `rcvdbyte` | X | X | X |
+| `reason` | X |  | X |
+| `recipient` | X |  |  |
+| `ref` | X |  | X |
+| `referralurl` | X |  |  |
+| `rulename` |  |  | X |
+| `sender` | X |  |  |
+| `service` | X |  | X |
+| `sessionid` | X |  |  |
+| `severity` | X |  | X |
+| `srccountry` | X |  |  |
+| `srcintf` | X |  | X |
+| `srcintfrole` | X |  |  |
+| `srcip` | X |  |  |
+| `srcport` | X |  |  |
+| `status` | X |  |  |
+| `subject` | X |  |  |
+| `subtype` | X |  |  |
+| `time` | X |  |  |
+| `to` | X | X |  |
+| `trueclntip` | X |  |  |
+| `type` | X |  |  |
+| `tz` | X |  |  |
+| `unauthuser` | X |  |  |
+| `unauthusersource` | X |  |  |
+| `url` | X |  |  |
+| `user` | X |  |  |
+| `vd` | X |  |  |
+| `virus` | X |  |  |
+| `virusid` | X | X | X |
+| `vrf` | X |  |  |
 
 **Description conflicts** — same field, different `Description` across LOGIDs
 
