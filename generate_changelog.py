@@ -539,13 +539,10 @@ def _render_conflict_rows(field: str, rows: _ConflictRows, bucket: str) -> list[
         desc_cell = _cell_desc(desc)
         dtype_cell = dtype or '*(empty)*'
         length_cell = length or '—'
-        if len(entries) == 1:
-            _, _, _, type_val, category, stems = entries[0]
-            extra_cell = (type_val or '—') if utm else (category or '—')
-            stems_cell = _format_stems(stems, max_show=3)
-        else:
-            extra_cell = '<br>'.join((e[3] if utm else e[4]) or '—' for e in entries)
-            stems_cell = '<br>'.join(_format_stems(e[5], max_show=3) for e in entries)
+        extra_cell = '<br>'.join((type_val if utm else category) or '—'
+                                 for _, _, _, type_val, category, _ in entries)
+        stems_cell = '<br>'.join(_format_stems(stems, max_show=3)
+                                 for *_, stems in entries)
         lines.append(
             f'| `{field}` | {desc_cell} | `{dtype_cell}` | {length_cell}'
             f' | {extra_cell} | {stems_cell} |'
@@ -571,22 +568,14 @@ def _render_version_coverage(version_dict: dict[str, pd.DataFrame]) -> str:
 
     lines: list[str] = []
 
-    traffic = all_df[all_df['Type'] == 'Traffic']
-    if not traffic.empty:
-        grp = traffic.groupby('Category')
+    for label in ('Traffic', 'Event'):
+        subset = all_df[all_df['Type'] == label]
+        if subset.empty:
+            continue
+        grp = subset.groupby('Category')
         field_counts = grp['Log Field Name'].nunique().sort_index()
         logid_counts = grp['_stem'].nunique().sort_index()
-        lines += ['**Traffic**', ''] + _field_table_header(['Category', 'Fields', 'LOGIDs'])
-        for cat, n in field_counts.items():
-            lines.append(f'| {cat} | {n} | {logid_counts[cat]} |')
-        lines.append('')
-
-    event = all_df[all_df['Type'] == 'Event']
-    if not event.empty:
-        grp = event.groupby('Category')
-        field_counts = grp['Log Field Name'].nunique().sort_index()
-        logid_counts = grp['_stem'].nunique().sort_index()
-        lines += ['**Event**', ''] + _field_table_header(['Category', 'Fields', 'LOGIDs'])
+        lines += [f'**{label}**', ''] + _field_table_header(['Category', 'Fields', 'LOGIDs'])
         for cat, n in field_counts.items():
             lines.append(f'| {cat} | {n} | {logid_counts[cat]} |')
         lines.append('')
