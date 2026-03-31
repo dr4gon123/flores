@@ -1,0 +1,296 @@
+Log Field Name,Data Type,Length,Description,Mapping Type,ECS Field,ECS Type,ECS Description
+accessctrl,string,80,,,,,
+accessproxy,string,80,,,,,
+action,string,16,"The status of the session:
+ deny - Session was denied
+ accept - Allowed Forward session
+ start - Session starts (log message was created when the session was created)
+ dns - DNS query return error
+ ip-conn - Failed connection attempts
+ close - Local-traffic session allowed
+ timeout - Allowed session was timeout
+ client-rst - Session reset by client
+ server-rst - Session reset by server",,,,
+agent,string,1024,"User agent - eg. agent=""Mozilla/5.0""",=,user_agent.original,keyword,Unparsed user_agent string.
+ap,string,36,Access Point name,,,,
+app,string,96,Application name,=,network.application,keyword,Application level protocol name.
+appact,string,16,The security action from app control,,,,
+appcat,string,64,Application category,,,,
+appid,uint32,10,Application ID,,,,
+applist,string,64,Application Control profile (name),,,,
+apprisk,string,16,Application Risk Level,,,,
+apsn,string,36,Access Point serial number,,,,
+authserver,string,64,Remote Authentication server,,,,
+centralnatid,uint32,10,central-snat-map id,,,,
+channel,uint32,10,WiFi Channel,,,,
+clientcert,string,10,,,,,
+clientdeviceems,string,16,,,,,
+clientdeviceid,string,80,,,,,
+clientdevicemanageable,string,16,,,,,
+clientdeviceowner,string,80,,,,,
+clientdevicetags,string,512,,,,,
+comment,string,1024,Customized policy comment,=,rule.comment,keyword,(*) Description or comment pertaining to the rule.
+countapp,uint32,10,Number of App Ctrl logs associated with the session,,,,
+countav,uint32,10,Number of AV logs associated with the session,,,,
+countcasb,uint32,10,,,,,
+countcifs,uint32,10,,,,,
+countdlp,uint32,10,Number of DLP logs associated with the session,,,,
+countdns,uint32,10,Number of DNS Query logs associated with the session,,,,
+countemail,uint32,10,Number of Email logs associated with the session,,,,
+countff,uint32,10,,,,,
+counticap,uint32,10,,,,,
+countips,uint32,10,Number of IPS logs associated with the session,,,,
+countsctpf,uint32,10,,,,,
+countssh,uint32,10,Number of SSH logs associated with the session,,,,
+countssl,uint32,10,,,,,
+countvpatch,uint32,10,,,,,
+countwaf,uint32,10,Number of WAF logs associated with the session,,,,
+countweb,uint32,10,Number of Web Filter logs associated with the session,,,,
+craction,uint32,10,Action performed by Threat Weight,,,,
+crlevel,string,10,Threat Weight level,=,host.risk.static_level,keyword,"A risk classification level obtained from outside the system, such as from some external Threat Intelligence Platform."
+crscore,uint32,10,Threat Weight score,->,host.risk.static_score,float,"A risk classification score obtained from outside the system, such as from some external Threat Intelligence Platform."
+date,string,10,Date,,,,
+devid,string,16,Device Serial Number,=,observer.serial_number,keyword,Observer serial number.
+devtype,string,66,Device Type,,,,
+dstauthserver,string,64,,,,,
+dstcity,string,64,,=,destination.geo.city_name,keyword,City name.
+dstcountry,string,64,Country name for the destination IP,=,destination.geo.country_name,keyword,Country name.
+dstdevtype,string,66,Destination Device Type,,,,
+dstfamily,string,66,,,,,
+dsthwvendor,string,66,,,,,
+dsthwversion,string,66,,,,,
+dstinetsvc,string,64,Internet service name for the destination,,,,
+dstintf,string,32,Destination Interface,=,observer.egress.interface.name,keyword,Interface name as reported by the system.
+dstintfrole,string,10,"Destination Interface's assigned role (LAN, WAN, etc.)",,,,
+dstip,ip,39,Destination IP Address,"=
+->
+->
+->","destination.ip
+network.community_id
+network.direction
+related.ip","ip
+keyword
+keyword
+ip","IP address of the destination.
+A hash of source and destination IPs and ports, and the protocol used in a communication.
+Direction of the network traffic.
+All of the IPs seen on your event."
+dstmac,string,17,Destination Mac Address,=,destination.mac,keyword,MAC address of the destination.
+dstname,string,256,Destination name,=,destination.address,keyword,Destination network address.
+dstosname,string,66,Destination OS name,,,,
+dstport,uint16,5,Destination Protocol Port Number,"->
+->","destination.port
+network.transport_port","long
+keyword","Port of the destination.
+(*) Combination of network transport and destination port (e.g. tcp/443)."
+dstregion,string,64,,,,,
+dstreputation,uint32,10,,,,,
+dstserver,uint8,3,Destination Server,,,,
+dstssid,string,33,Destination SSID,,,,
+dstswversion,string,66,,,,,
+dstthreatfeed,string,36,,,,,
+dstunauthuser,string,66,,=,destination.user.name,keyword,Short name or login of the user.
+dstunauthusersource,string,66,,=,destination.user.group.name,keyword,Name of the group.
+dstuser,string,256,,=,destination.user.name,keyword,Short name or login of the user.
+dstuuid,string,37,UUID of the Destination Address Object,,,,
+dstzone,string,32,,=,observer.egress.zone,keyword,Observer Egress zone.
+duration,uint32,10,Duration of the session,->,event.duration,long,Duration of the event in nanoseconds.
+durationdelta,uint32,20,,,,,
+emsconnection,string,8,,,,,
+emstag,string,80,,,,,
+emstag2,string,80,,,,,
+eventtime,uint64,20,Epoch time in nanoseconds,,,,
+fctuid,string,32,FortiClient UID,,,,
+fwdsrv,string,64,,,,,
+gatewayid,uint32,10,,,,,
+group,string,512,User group name,=,source.user.group.name,keyword,Name of the group.
+hostname,string,256,,"=
+->
+->","url.domain
+url.registered_domain
+url.top_level_domain","keyword
+keyword
+keyword","Domain of the url.
+The highest registered url domain, stripped of the subdomain.
+The effective top level domain (com, org, net, co.uk)."
+httpmethod,string,20,,=,http.request.method,keyword,HTTP request method.
+identifier,uint16,5,,,,,
+lanin,uint64,20,LAN incoming traffic in bytes,,,,
+lanout,uint64,20,LAN outgoing traffic in bytes,,,,
+level,string,11,Log Level,=,log.level,keyword,Log level of the log event.
+logid,string,10,Log ID,=,event.code,keyword,Identification code for this event.
+masterdstmac,string,17,Destination master MAC address,,,,
+mastersrcmac,string,17,The master MAC address for a host that has multiple network interfaces,,,,
+msg,string,512,Log message,=,message,match_only_text,Log message optimized for viewing in a log viewer.
+osname,string,66,Name of the device's OS,,,,
+pdstport,uint16,5,,,,,
+policyid,uint32,10,Firewall Policy ID,=,rule.id,keyword,Rule ID.
+policymode,string,8,,,,,
+policyname,string,36,Policy name,=,rule.name,keyword,Rule name.
+policytype,string,24,Policy type,=,rule.ruleset,keyword,Rule ruleset.
+poluuid,string,37,UUID of the Firewall Policy,=,rule.uuid,keyword,Rule UUID.
+proto,uint8,3,Protocol Number,"->
+->
+->","network.iana_number
+network.transport
+network.community_id","keyword
+keyword
+keyword","IANA Protocol Number.
+Protocol Name corresponding to the field `iana_number`.
+A hash of source and destination IPs and ports, and the protocol used in a communication."
+proxyapptype,string,16,,,,,
+psrcport,uint16,5,,,,,
+radioband,string,64,Radio Band,,,,
+rcvdbyte,uint64,20,Received Bytes,"->
+->","destination.bytes
+network.bytes","long
+long","Bytes sent from the destination to the source.
+Total bytes transferred in both directions."
+rcvddelta,uint64,20,Delta Received Bytes,,,,
+rcvdpkt,uint32,10,Received Packets,"->
+->","destination.packets
+network.packets","long
+long","Packets sent from the destination to the source.
+Total packets transferred in both directions."
+rcvdpktdelta,uint32,20,,,,,
+realserverid,uint32,10,,,,,
+referralurl,string,512,,=,http.request.referrer,keyword,Referrer for this HTTP request.
+replydstintf,string,32,,,,,
+replysrcintf,string,32,,,,,
+reqlength,uint64,16,,,,,
+reqtime,uint64,16,,,,,
+respfinishtime,uint64,16,,,,,
+resplength,uint64,16,,,,,
+resptime,uint64,16,,,,,
+resptype,string,16,,,,,
+saasname,string,80,,,,,
+scheme,string,16,,,,,
+sentbyte,uint64,20,Sent Bytes,"->
+->","source.bytes
+network.bytes","long
+long","Bytes sent from the source to the destination.
+Total bytes transferred in both directions."
+sentdelta,uint64,20,Delta Sent Bytes,,,,
+sentpkt,uint32,10,Sent Packets,"->
+->","source.packets
+network.packets","long
+long","Packets sent from the source to the destination.
+Total packets transferred in both directions."
+sentpktdelta,uint32,20,,,,,
+service,string,80,Name of Service,=,network.protocol,keyword,Application protocol name.
+sessionid,uint32,10,Session ID,=,session.id,keyword,(*) Unique identifier for the session.
+shaperdroprcvdbyte,uint32,10,Received bytes dropped by shaper,,,,
+shaperdropsentbyte,uint32,10,Sent bytes dropped by shaper,,,,
+shaperperipdropbyte,uint32,10,Dropped bytes per IP by shaper,,,,
+shaperperipname,string,36,Traffic shaper name (per IP),,,,
+shaperrcvdname,string,36,Traffic shaper name for received traffic,,,,
+shapersentname,string,36,Traffic shaper name for sent traffic,,,,
+shapingpolicyid,uint32,10,Shaping Policy ID,,,,
+shapingpolicyname,string,36,,,,,
+signal,int8,4,,,,,
+snr,int8,4,,,,,
+srccity,string,64,,=,source.geo.city_name,keyword,City name.
+srccountry,string,64,Country name for Source IP,=,source.geo.country_name,keyword,Country name.
+srcdomain,string,255,,=,source.domain,keyword,The domain name of the source.
+srcfamily,string,66,,,,,
+srchwvendor,string,66,,,,,
+srchwversion,string,66,,,,,
+srcinetsvc,string,64,Internet service name for the source,,,,
+srcintf,string,32,Source interface name,=,observer.ingress.interface.name,keyword,Interface name as reported by the system.
+srcintfrole,string,10,"Source Interface's assigned role (LAN, WAN, etc.)",,,,
+srcip,ip,39,Source IP address,"=
+->
+->
+->","source.ip
+network.community_id
+network.direction
+related.ip","ip
+keyword
+keyword
+ip","IP address of the source.
+A hash of source and destination IPs and ports, and the protocol used in a communication.
+Direction of the network traffic.
+All of the IPs seen on your event."
+srcmac,string,17,MAC address associated with the Source IP,=,source.mac,keyword,MAC address of the source.
+srcmacvendor,string,66,,,,,
+srcname,string,256,Source name,=,source.address,keyword,Source network address.
+srcport,uint16,5,Source protocol port number,->,source.port,long,Port of the source.
+srcregion,string,64,,,,,
+srcremote,ip,39,,,,,
+srcreputation,uint32,10,,,,,
+srcserver,uint8,3,Source server,,,,
+srcssid,string,33,Source SSID,,,,
+srcswversion,string,66,,,,,
+srcthreatfeed,string,36,,,,,
+srcuuid,string,37,UUID of the Source Address Object,,,,
+srczone,string,32,,=,observer.ingress.zone,keyword,Observer ingress zone.
+sslaction,string,26,Action taken by ssl-ssh-profile,,,,
+statuscode,string,8,,->,http.response.status_code,long,HTTP response status code.
+subtype,string,20,Subtype of the traffic,,,,
+tcpnrt,uint32,10,,,,,
+tcporgrtrs,uint32,10,,,,,
+tcprplrtrs,uint32,10,,,,,
+tcprst,string,6,,,,,
+tcpsrt,uint32,10,,,,,
+tcpsynackrtrs,uint32,10,,,,,
+tcpsynrtrs,uint32,10,,,,,
+time,string,8,Time,,,,
+trandisp,string,16,NAT translation type,,,,
+tranip,ip,39,NAT Destination IP,"=
+->","destination.nat.ip
+related.ip","ip
+ip","Destination NAT ip.
+All of the IPs seen on your event."
+tranport,uint16,5,NAT Destination Port,->,destination.nat.port,long,Destination NAT Port.
+transid,uint32,10,,,,,
+transip,ip,39,NAT Source IP,"=
+->","source.nat.ip
+related.ip","ip
+ip","Source NAT ip.
+All of the IPs seen on your event."
+transport,uint16,5,NAT Source Protocol Port,"->
+->","source.nat.port
+network.transport_port","long
+keyword","Source NAT port.
+(*) Combination of network transport and destination port (e.g. tcp/443)."
+tunneldstip,ip,39,,,,,
+tunnelid,uint32,10,,,,,
+tunnelproto,string,10,,,,,
+tunnelsessionid,uint32,10,,,,,
+tunnelsrcip,ip,39,,,,,
+type,string,16,Log type,,,,
+tz,string,5,Time zone,=,event.timezone,keyword,Event time zone.
+unauthuser,string,66,Unauthenticated user name,=,source.user.name,keyword,Short name or login of the user.
+unauthusersource,string,66,The method used to detect unauthenticated user name,=,source.user.group.name,keyword,Name of the group.
+url,string,512,URL,"=
+->
+->
+->
+->","url.original
+url.path
+url.query
+url.registered_domain
+url.top_level_domain","wildcard
+wildcard
+keyword
+keyword
+keyword","Unmodified original url as seen in the event source.
+Path of the request.
+Query string of the request.
+The highest registered url domain, stripped of the subdomain.
+The effective top level domain (com, org, net, co.uk)."
+user,string,256,User name,=,source.user.name,keyword,Short name or login of the user.
+utmaction,string,32,Security action performed by UTM,,,,
+vd,string,32,Virtual domain name,,,,
+vip,string,64,,,,,
+vipincomingip,ip,39,,,,,
+vpntype,string,14,The type of the VPN tunnel,,,,
+vrf,uint16,3,Virtual router forwarding,=,network.vrf,keyword,(*) Virtual routing and forwarding ID.
+vwlid,uint32,10,Virtual Wan Link (SD-WAN) service id,,,,
+vwlname,string,36,,,,,
+vwlquality,string,320,Quality info of the service rule that is matched by traffic,,,,
+vwlservice,string,64,Application that is matched by the traffic (internet-service-app-ctrl),,,,
+vwpvlanid,uint32,10,Virtual Wire Pair vlan id,,,,
+wanin,uint64,20,WAN incoming traffic in bytes,,,,
+wanoptapptype,string,9,WAN Optimization Application type,,,,
+wanout,uint64,20,WAN outgoing traffic in bytes,,,,
