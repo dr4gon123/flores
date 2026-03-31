@@ -798,7 +798,7 @@ def _consolidate_fields(
     if type_filter is not None:
         subset = all_df[all_df['Type'] == type_filter].copy()
     else:
-        subset = all_df[~all_df['Type'].isin(['Traffic', 'Event', 'GTP'])].copy()
+        subset = all_df[~all_df['Type'].isin(['Traffic', 'Event'])].copy()
 
     if subset.empty:
         return pd.DataFrame()
@@ -838,6 +838,39 @@ def _consolidate_fields(
     })
 
 
+def _consolidate_action_descriptions(all_stems: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    """Build a single-row DataFrame of action field descriptions keyed by UTM subtype."""
+    pieces = [
+        df
+        for df in all_stems.values()
+        if not df.empty and 'Log Field Name' in df.columns
+    ]
+    if not pieces:
+        return pd.DataFrame()
+    all_df = pd.concat(pieces, ignore_index=True)
+
+    action_rows = all_df[
+        ~all_df['Type'].isin(['Traffic', 'Event'])
+        & (all_df['Log Field Name'].fillna('') == 'action')
+    ]
+    if action_rows.empty:
+        return pd.DataFrame()
+
+    result: dict[str, str] = {}
+    for subtype, grp in action_rows.groupby('Type'):
+        seen: set[str] = set()
+        unique_descs: list[str] = []
+        for desc in grp['Description']:
+            safe = _safe_str(desc)
+            norm = _normalize_desc(safe)
+            if norm and norm not in seen:
+                seen.add(norm)
+                unique_descs.append(safe)
+        result[str(subtype)] = '\n\n'.join(unique_descs)
+
+    return pd.DataFrame([{s: result[s] for s in sorted(result)}])
+
+
 def _write_major_fields(major_dir: Path, all_stems: dict[str, pd.DataFrame]) -> None:
     """Write consolidated field CSVs for all log types under {major}/fields/."""
     fields_dir = major_dir / 'fields'
@@ -854,6 +887,12 @@ def _write_major_fields(major_dir: Path, all_stems: dict[str, pd.DataFrame]) -> 
         path = fields_dir / filename
         df.to_csv(path, index=False)
         print(f'Written: {path} ({len(df)} fields)')
+
+    action_df = _consolidate_action_descriptions(all_stems)
+    if not action_df.empty:
+        path = fields_dir / 'action_descriptions.csv'
+        action_df.to_csv(path, index=False)
+        print(f'Written: {path} ({len(action_df.columns)} subtypes)')
 
 
 def main() -> None:

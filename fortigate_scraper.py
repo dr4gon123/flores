@@ -1,140 +1,106 @@
-
 """
 FortiGate Log Message Reference Scraper
 
-This script scrapes all log message reference tables from Fortinet documentation
+Scrapes all log message reference tables from Fortinet documentation
 for different FortiOS versions and saves them as CSV files.
 
 Requirements:
     pip install requests beautifulsoup4 pandas lxml pyyaml
 """
+from __future__ import annotations
 
-import random
-import requests
-from bs4 import BeautifulSoup
-import pandas as pd
-import os
-import time
-from urllib.parse import urljoin, urlparse
-import re
 import logging
-import yaml
-from typing import List, Dict, Optional, Any
+import random
+import re
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+from urllib.parse import urljoin
 
-# Configure logging
+import pandas as pd
+import requests
+import yaml
+from bs4 import BeautifulSoup
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-class FortiGateLogScraper:
-    def __init__(self, config_file='fortigate_scraper_config.yaml', base_delay=None):
-        """
-        Initialize the scraper with rate limiting and configuration
 
-        Args:
-            config_file: Path to the YAML configuration file
-            base_delay: Base delay between requests in seconds (overrides config file if provided)
-        """
-        # Load configuration from file
+@dataclass
+class ScrapeResult:
+    successful: int = 0
+    failed: list[tuple[str, str, str]] = field(default_factory=list)
+
+
+class FortiGateLogScraper:
+    def __init__(self, config_file: str = 'fortigate_scraper_config.yaml'):
+        """Initialize the scraper from config file."""
         config = self._load_config(config_file)
-        
+        settings = config.get('settings', {})
+
         self.session = requests.Session()
         self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+                          '(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
-        
-        # Use provided base_delay or fall back to config file value
-        self.base_delay = base_delay if base_delay is not None else config.get('settings', {}).get('base_delay', 1.0)
-        self.max_retries = config.get('settings', {}).get('max_retries', 3)
-        self.retry_backoff = config.get('settings', {}).get('retry_backoff', 2.0)
 
-        # Load FortiOS versions from configuration file
-        self.versions = config.get('versions', [])
+        self.base_delay: float = settings.get('base_delay', 1.0)
+        self.max_retries: int = settings.get('max_retries', 3)
+        self.retry_backoff: float = settings.get('retry_backoff', 2.0)
+        self.output_dir: Path = Path(settings.get('output_dir', Path.cwd()))
+        self.force_rescrape: bool = settings.get('force_rescrape', False)
+        self.dry_run: bool = settings.get('dry_run', False)
+        self.versions: list[str] = config.get('versions', [])
+
         if not self.versions:
-            logger.warning("No versions found in configuration file. Scraper will not process any versions.")
+            logger.warning('No versions found in configuration file.')
 
-        # Set output directory (defaults to current working directory)
-        self.output_dir = config.get('settings', {}).get('output_dir', os.getcwd())
-        os.makedirs(self.output_dir, exist_ok=True)
-        
-        
-        # Load force_rescrape and dry_run flags
-        self.force_rescrape = config.get('settings', {}).get('force_rescrape', False)
-        self.dry_run = config.get('settings', {}).get('dry_run', False)
-        
-        logger.info(f"Loaded {len(self.versions)} versions from configuration file")
-        logger.info(f"Force rescrape: {self.force_rescrape}")
-        logger.info(f"Dry run mode: {self.dry_run}")
-        logger.info(f"Max retries: {self.max_retries}, retry backoff: {self.retry_backoff}")
-    
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+
+        logger.info(f'Loaded {len(self.versions)} versions from configuration file')
+        logger.info(f'Force rescrape: {self.force_rescrape}')
+        logger.info(f'Dry run mode: {self.dry_run}')
+        logger.info(f'Max retries: {self.max_retries}, retry backoff: {self.retry_backoff}')
+
     def _load_config(self, config_file: str) -> dict:
-        """
-        Load configuration from YAML file
-        
-        Args:
-            config_file: Path to the YAML configuration file
-            
-        Returns:
-            Dictionary containing configuration
-        """
-        # Get the directory where this script is located
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        config_path = os.path.join(script_dir, config_file)
-        
+        """Load and return YAML configuration from the script's directory."""
+        config_path = Path(__file__).parent / config_file
         try:
-            with open(config_path, 'r') as f:
+            with open(config_path) as f:
                 config = yaml.safe_load(f)
-                logger.info(f"Successfully loaded configuration from {config_path}")
-                return config
+            logger.info(f'Successfully loaded configuration from {config_path}')
+            return config
         except FileNotFoundError:
-            logger.error(f"Configuration file not found: {config_path}")
+            logger.error(f'Configuration file not found: {config_path}')
             raise
         except yaml.YAMLError as e:
-            logger.error(f"Error parsing YAML configuration: {e}")
+            logger.error(f'Error parsing YAML configuration: {e}')
             raise
-    
-    def get_version_directories(self, version: str) -> tuple:
-        """
-        Get the major and minor version directory paths
 
-        Args:
-            version: Version string like '7.6.4'
+    def get_version_directories(self, version: str) -> tuple[Path, Path]:
+        """Return (major_dir, minor_dir) for a version string like '7.6.4'."""
+        parts = version.split('.')
+        major = f'{parts[0]}.{parts[1]}' if len(parts) >= 2 else version
+        major_dir = self.output_dir / major
+        return major_dir, major_dir / version
 
-        Returns:
-            Tuple of (major_version_dir, minor_version_dir)
-        """
-        # Split version into major (7.6) and full version (7.6.4)
-        version_parts = version.split('.')
-        if len(version_parts) >= 2:
-            major_version = f"{version_parts[0]}.{version_parts[1]}"  # e.g., "7.6"
-        else:
-            major_version = version  # Fallback if version format is unexpected
+    def get_version_url(self, version: str) -> str:
+        """Return the Fortinet docs URL for a given FortiOS version."""
+        return (f'https://docs.fortinet.com/document/fortigate/{version}'
+                f'/fortios-log-message-reference/1/log-messages')
 
-        # Create directory paths
-        major_version_dir = os.path.join(self.output_dir, major_version)
-        minor_version_dir = os.path.join(major_version_dir, version)
-
-        return major_version_dir, minor_version_dir#!/usr/bin/env python3
-
-    def get_page_content(self, url: str) -> Optional[BeautifulSoup]:
-        """
-        Fetch and parse a web page, with configurable retry and exponential backoff.
-
-        Args:
-            url: URL to fetch
-
-        Returns:
-            BeautifulSoup object or None if all attempts failed
-        """
+    def get_page_content(self, url: str) -> BeautifulSoup | None:
+        """Fetch and parse a web page with configurable retry and exponential backoff."""
         for attempt in range(self.max_retries + 1):
             try:
-                logger.info(f"Fetching: {url}")
+                logger.info(f'Fetching: {url}')
                 response = self.session.get(url, timeout=30)
 
                 if response.status_code == 429:
-                    wait = int(response.headers.get('Retry-After',
-                               self.base_delay * (self.retry_backoff ** attempt)))
-                    logger.warning(f"Rate limited (429). Waiting {wait}s "
-                                   f"(attempt {attempt + 1}/{self.max_retries + 1})")
+                    wait = int(response.headers.get(
+                        'Retry-After', self.base_delay * (self.retry_backoff ** attempt)))
+                    logger.warning(f'Rate limited (429). Waiting {wait}s '
+                                   f'(attempt {attempt + 1}/{self.max_retries + 1})')
                     time.sleep(wait)
                     continue
 
@@ -145,104 +111,58 @@ class FortiGateLogScraper:
             except requests.exceptions.RequestException as e:
                 if attempt < self.max_retries:
                     wait = self.base_delay * (self.retry_backoff ** attempt) + random.uniform(0, 1)
-                    logger.warning(f"Error fetching {url}: {e}. "
-                                   f"Retrying in {wait:.1f}s "
-                                   f"(attempt {attempt + 1}/{self.max_retries + 1})")
+                    logger.warning(f'Error fetching {url}: {e}. '
+                                   f'Retrying in {wait:.1f}s '
+                                   f'(attempt {attempt + 1}/{self.max_retries + 1})')
                     time.sleep(wait)
                 else:
-                    logger.error(f"Failed to fetch {url} after {self.max_retries + 1} attempts: {e}")
+                    logger.error(f'Failed to fetch {url} after {self.max_retries + 1} attempts: {e}')
 
         return None
 
-    def get_version_url(self, version: str) -> str:
-        """
-        Generate the documentation URL for a specific version
-
-        Args:
-            version: FortiOS version (e.g., '7.6.4')
-
-        Returns:
-            Documentation URL
-        """
-        return f"https://docs.fortinet.com/document/fortigate/{version}/fortios-log-message-reference/1/log-messages"
-
-
-
-    def extract_logid_links(self, soup: BeautifulSoup, base_url: str) -> Dict[str, str]:
-        """
-        Extract all LOGID links from a page using the specific URL pattern
-
-        Args:
-            soup: BeautifulSoup object of the page
-            base_url: Base URL for resolving relative links
-
-        Returns:
-            Dictionary mapping LOGID description to full URL
-        """
-        logid_links = {}
-
-        # URL pattern: ends with {logid}-{keyword}-...
-        # Where logid = 1-6 digits, keyword = logid|log-id|mesgid
+    def extract_logid_links(self, soup: BeautifulSoup, base_url: str) -> dict[str, str]:
+        """Return {description: full_url} for all LOGID links found on the page."""
         url_pattern = r'/(\d{1,6})-(logid|log-id|mesgid)-[^/]*$'
-
-        # Look for all links that match the specific pattern
+        logid_links = {}
         for link in soup.find_all('a', href=True):
             href = link.get('href')
             text = link.get_text(strip=True)
-
-            # Skip empty links
             if not href or not text:
                 continue
-
-            # Check if the URL matches our specific pattern
             if re.search(url_pattern, href, re.IGNORECASE):
                 full_url = urljoin(base_url, href)
                 logid_links[text] = full_url
-                logger.debug(f"Found LOGID link: {text} -> {full_url}")
-                continue
-
+                logger.debug(f'Found LOGID link: {text} -> {full_url}')
         return logid_links
 
-    def extract_log_metadata(self, soup: BeautifulSoup) -> Dict[str, str]:
-        """
-        Extract log metadata from the page (Message ID, Description, etc.)
-
-        Args:
-            soup: BeautifulSoup object of the LOGID page
-
-        Returns:
-            Dictionary with metadata fields
-        """
-        metadata = {
+    def extract_log_metadata(self, soup: BeautifulSoup) -> dict[str, str]:
+        """Extract log metadata (Message ID, Type, Category, Severity, etc.) from a LOGID page."""
+        metadata: dict[str, str] = {
             'Message_ID': '',
             'Message_Description': '',
             'Message_Meaning': '',
             'Type': '',
             'Category': '',
-            'Severity': ''
+            'Severity': '',
         }
 
-        # Look for the metadata section - typically in bold text or specific formatting
         text_content = soup.get_text()
 
-        # Pattern to match the metadata structure
         patterns = {
             'Message_ID': r'Message ID:\s*(\d+)',
             'Message_Description': r'Message Description:\s*([^\n\r]+)',
             'Message_Meaning': r'Message Meaning:\s*([^\n\r]+)',
             'Type': r'Type:\s*([^\n\r]+)',
             'Category': r'Category:\s*([^\n\r]+)',
-            'Severity': r'Severity:\s*([^\n\r]+)'
+            'Severity': r'Severity:\s*([^\n\r]+)',
         }
 
-        # Extract each field using regex
-        for field, pattern in patterns.items():
+        for key, pattern in patterns.items():
             match = re.search(pattern, text_content, re.IGNORECASE | re.MULTILINE)
             if match:
-                metadata[field] = match.group(1).strip()
-                logger.debug(f"Found {field}: {metadata[field]}")
+                metadata[key] = match.group(1).strip()
+                logger.debug(f'Found {key}: {metadata[key]}')
 
-        # Also try to extract from the main header (like "20002 - LOG_ID_DOMAIN_UNRESOLVABLE")
         header_match = re.search(r'(\d+)\s*-\s*([A-Z_]+)', text_content)
         if header_match:
             if not metadata['Message_ID']:
@@ -250,256 +170,176 @@ class FortiGateLogScraper:
             if not metadata['Message_Description']:
                 metadata['Message_Description'] = header_match.group(2).strip()
 
-        # Try alternative patterns if standard ones don't work
         if not metadata['Message_ID']:
-            # Look for any number that might be the message ID
             id_match = re.search(r'\b(\d{4,6})\b', text_content)
             if id_match:
                 metadata['Message_ID'] = id_match.group(1)
 
         return metadata
 
-    def extract_log_table(self, soup: BeautifulSoup, logid: str) -> Optional[pd.DataFrame]:
-        """
-        Extract log message table from a LOGID page along with metadata
-
-        Args:
-            soup: BeautifulSoup object of the LOGID page
-            logid: LOGID identifier
-
-        Returns:
-            DataFrame with log fields and metadata or None if not found
-        """
-        # First extract metadata
+    def extract_log_table(self, soup: BeautifulSoup, logid: str) -> pd.DataFrame | None:
+        """Extract the log field table and metadata from a LOGID page."""
         metadata = self.extract_log_metadata(soup)
+        expected_headers = ['field', 'description', 'type', 'length', 'data type', 'field name']
 
-        # Look for tables that contain log field information
-        tables = soup.find_all('table')
+        for table in soup.find_all('table'):
+            headers_lower = [th.get_text(strip=True).lower() for th in table.find_all('th')]
+            if not any(h in ' '.join(headers_lower) for h in expected_headers):
+                continue
 
-        for table in tables:
-            # Check if this table contains log field information
-            th_elements = table.find_all('th')
-            headers_lower = [th.get_text(strip=True).lower() for th in th_elements]
-
-            # Common header patterns for log field tables
-            expected_headers = ['field', 'description', 'type', 'length', 'data type', 'field name']
-
-            if any(header in ' '.join(headers_lower) for header in expected_headers):
-                try:
-                    # Extract table data
-                    data = []
-                    rows = table.find_all('tr')
-
-                    if not rows:
-                        continue
-
-                    # Get headers (first row, including td cells for tables without th)
-                    header_row = rows[0]
-                    headers = [th.get_text(strip=True) for th in header_row.find_all(['th', 'td'])]
-
-                    # Get data rows
-                    for row in rows[1:]:
-                        cells = row.find_all(['td', 'th'])
-                        if len(cells) >= len(headers):
-                            row_data = [cell.get_text(strip=True) for cell in cells[:len(headers)]]
-                            data.append(row_data)
-
-                    if data:
-                        df = pd.DataFrame(data, columns=headers)
-                        df['LOGID'] = logid
-
-                        # Add metadata columns
-                        for meta_key, meta_value in metadata.items():
-                            df[meta_key] = meta_value
-
-                        logger.info(f"Extracted table for {logid}: {len(df)} rows with metadata")
-                        return df
-
-                except Exception as e:
-                    logger.error(f"Error parsing table for {logid}: {e}")
+            try:
+                rows = table.find_all('tr')
+                if not rows:
                     continue
 
-        # If no table found but we have metadata, create a basic DataFrame
+                headers = [th.get_text(strip=True) for th in rows[0].find_all(['th', 'td'])]
+                data = [
+                    [cell.get_text(strip=True) for cell in row.find_all(['td', 'th'])[:len(headers)]]
+                    for row in rows[1:]
+                    if len(row.find_all(['td', 'th'])) >= len(headers)
+                ]
+
+                if data:
+                    df = pd.DataFrame(data, columns=headers)
+                    df['LOGID'] = logid
+                    for key, value in metadata.items():
+                        df[key] = value
+                    logger.info(f'Extracted table for {logid}: {len(df)} rows with metadata')
+                    return df
+
+            except Exception as e:
+                logger.error(f'Error parsing table for {logid}: {e}')
+                continue
+
         if any(metadata.values()):
             df = pd.DataFrame([{'LOGID': logid, 'Field': 'No field table found'}])
-            for meta_key, meta_value in metadata.items():
-                df[meta_key] = meta_value
-            logger.info(f"No table found for {logid}, but extracted metadata")
+            for key, value in metadata.items():
+                df[key] = value
+            logger.info(f'No table found for {logid}, but extracted metadata')
             return df
 
-        logger.warning(f"No suitable table or metadata found for {logid}")
+        logger.warning(f'No suitable table or metadata found for {logid}')
         return None
 
-    def scrape_version(self, version: str) -> Dict[str, Any]:
-        """
-        Scrape all log tables for a specific FortiOS version
+    def scrape_version(self, version: str) -> ScrapeResult:
+        """Scrape all log tables for one FortiOS version and return the result."""
+        logger.info(f'Starting scrape for FortiOS version {version}')
+        result = ScrapeResult()
 
-        Args:
-            version: FortiOS version
+        major_dir, minor_dir = self.get_version_directories(version)
+        major_dir.mkdir(parents=True, exist_ok=True)
+        minor_dir.mkdir(parents=True, exist_ok=True)
 
-        Returns:
-            Dictionary with 'successful' count and 'failed' list of (version, logid, reason) tuples
-        """
-        logger.info(f"Starting scrape for FortiOS version {version}")
-
-        result = {
-            'successful': 0,
-            'failed': []
-        }
-
-        # Create version-specific directory structure
-        major_version_dir, minor_version_dir = self.get_version_directories(version)
-        os.makedirs(major_version_dir, exist_ok=True)
-        os.makedirs(minor_version_dir, exist_ok=True)
-
-        version_url = self.get_version_url(version)
-        soup = self.get_page_content(version_url)
-
+        soup = self.get_page_content(self.get_version_url(version))
         if not soup:
-            logger.error(f"Failed to fetch main page for version {version}")
+            logger.error(f'Failed to fetch main page for version {version}')
             return result
 
-        # Extract all LOGID links from the main page
-        logid_links = self.extract_logid_links(soup, version_url)
-
+        logid_links = self.extract_logid_links(soup, self.get_version_url(version))
         if not logid_links:
-            logger.warning(f"No LOGID links found for version {version}")
+            logger.warning(f'No LOGID links found for version {version}')
             return result
 
         if not self.force_rescrape:
-            missing = [d for d in logid_links if not os.path.exists(
-                os.path.join(minor_version_dir, re.sub(r'[^\w\-_\.]', '_', str(d)) + '.csv'))]
-            logger.info(f"Version {version}: {len(logid_links)} LOGIDs total, "
-                        f"{len(logid_links) - len(missing)} already scraped, "
-                        f"{len(missing)} to fetch")
+            missing_count = sum(
+                1 for d in logid_links
+                if not (minor_dir / (re.sub(r'[^\w\-_\.]', '_', str(d)) + '.csv')).exists()
+            )
+            logger.info(f'Version {version}: {len(logid_links)} LOGIDs total, '
+                        f'{len(logid_links) - missing_count} already scraped, '
+                        f'{missing_count} to fetch')
         else:
-            logger.info(f"Version {version}: {len(logid_links)} LOGIDs total (force_rescrape=true)")
+            logger.info(f'Version {version}: {len(logid_links)} LOGIDs total (force_rescrape=true)')
 
-        # Process each LOGID and save immediately
         for logid_description, url in logid_links.items():
-            safe_logid = re.sub(r'[^\w\-_\.]', '_', str(logid_description))
-            filename = f"{safe_logid}.csv"
-            filepath = os.path.join(minor_version_dir, filename)
+            filepath = minor_dir / (re.sub(r'[^\w\-_\.]', '_', str(logid_description)) + '.csv')
 
-            if not self.force_rescrape and os.path.exists(filepath):
-                logger.info(f"Skipping {logid_description} (already exists)")
-                result['successful'] += 1
+            if not self.force_rescrape and filepath.exists():
+                logger.info(f'Skipping {logid_description} (already exists)')
+                result.successful += 1
                 continue
 
-            logger.info(f"Processing LOGID: {logid_description}")
+            logger.info(f'Processing LOGID: {logid_description}')
 
             logid_soup = self.get_page_content(url)
             if not logid_soup:
-                result['failed'].append((version, logid_description, 'fetch_failed'))
+                result.failed.append((version, logid_description, 'fetch_failed'))
                 continue
 
             df = self.extract_log_table(logid_soup, logid_description)
             if df is None:
-                result['failed'].append((version, logid_description, 'no_table_found'))
+                result.failed.append((version, logid_description, 'no_table_found'))
                 continue
 
             df['Version'] = version
 
-            # Save immediately to CSV in the minor version directory
-            # (safe_logid, filename, filepath already computed above)
-
             try:
                 df.to_csv(filepath, index=False)
-                logger.info(f"Saved {len(df)} rows to {filepath}")
-                result['successful'] += 1
+                logger.info(f'Saved {len(df)} rows to {filepath}')
+                result.successful += 1
             except Exception as e:
-                logger.error(f"Error saving {filepath}: {e}")
-                result['failed'].append((version, logid_description, f'save_failed: {e}'))
+                logger.error(f'Error saving {filepath}: {e}')
+                result.failed.append((version, logid_description, f'save_failed: {e}'))
 
         return result
 
-    # Method removed - saving is now done immediately in scrape_version()
+    def _log_summary(self, successful: int, failed: list[tuple[str, str, str]]) -> None:
+        """Log the final scraping summary."""
+        total = successful + len(failed)
+        logger.info('=' * 60)
+        logger.info('SCRAPING SUMMARY')
+        logger.info('=' * 60)
+        logger.info(f'Total LOGIDs attempted: {total}')
+        logger.info(f'Successful: {successful}')
+        logger.info(f'Failed: {len(failed)}')
+        if total > 0:
+            logger.info(f'Success rate: {successful / total * 100:.1f}%')
+        if failed:
+            logger.info('')
+            logger.info('FAILED LOGIDs:')
+            logger.info('-' * 60)
+            for version, logid, reason in failed:
+                logger.info(f'  Version: {version} | LOGID: {logid} | Reason: {reason}')
+        logger.info('=' * 60)
 
+    def run(self, specific_versions: list[str] | None = None) -> None:
+        """Run the complete scraping process for all configured (or specified) versions."""
+        versions_to_scrape = specific_versions or self.versions
+        logger.info(f'Will check {len(versions_to_scrape)} versions for missing LOGIDs')
 
-    def run(self, specific_versions: Optional[List[str]] = None):
-        """
-        Run the complete scraping process
-
-        Args:
-            specific_versions: Optional list of specific versions to scrape
-        """
-        # Determine which versions to scrape
-        if specific_versions:
-            # If specific versions provided, use them directly
-            versions_to_scrape = specific_versions
-            logger.info(f"Using {len(specific_versions)} specific versions provided by caller")
-        else:
-            # All versions are always checked; individual LOGIDs are skipped if already scraped
-            versions_to_scrape = self.versions
-            logger.info(f"Will check {len(versions_to_scrape)} versions for missing LOGIDs")
-
-        logger.info(f"Starting scrape for {len(versions_to_scrape)} versions")
-        
-        # Dry run mode - just print what would be scraped
         if self.dry_run:
-            logger.info("=" * 60)
-            logger.info("DRY RUN MODE - No actual scraping will be performed")
-            logger.info("=" * 60)
-            logger.info(f"\nVersions that would be scraped ({len(versions_to_scrape)} total):")
+            logger.info('=' * 60)
+            logger.info('DRY RUN MODE - No actual scraping will be performed')
+            logger.info('=' * 60)
+            logger.info(f'\nVersions that would be scraped ({len(versions_to_scrape)} total):')
             for i, version in enumerate(versions_to_scrape, 1):
-                major_version_dir, minor_version_dir = self.get_version_directories(version)
-                logger.info(f"  {i}. Version {version} -> {minor_version_dir}")
-            logger.info("\n" + "=" * 60)
-            logger.info(f"Total versions to scrape: {len(versions_to_scrape)}")
-            logger.info("=" * 60)
+                _, minor_dir = self.get_version_directories(version)
+                logger.info(f'  {i}. Version {version} -> {minor_dir}')
+            logger.info('\n' + '=' * 60)
+            logger.info(f'Total versions to scrape: {len(versions_to_scrape)}')
+            logger.info('=' * 60)
             return
 
         total_successful = 0
-        all_failed = []
+        all_failed: list[tuple[str, str, str]] = []
 
         for version in versions_to_scrape:
             try:
-                logger.info(f"Processing version {version}")
                 result = self.scrape_version(version)
-                total_successful += result['successful']
-                all_failed.extend(result['failed'])
-                logger.info(f"Completed version {version} - {result['successful']} LOGIDs processed, {len(result['failed'])} failed")
-
-                # Brief pause between versions
+                total_successful += result.successful
+                all_failed.extend(result.failed)
+                logger.info(f'Completed version {version} — {result.successful} LOGIDs processed, '
+                            f'{len(result.failed)} failed')
                 time.sleep(2)
-
             except Exception as e:
-                logger.error(f"Error processing version {version}: {e}")
-                continue
+                logger.error(f'Error processing version {version}: {e}')
 
-        # Output final statistics
-        total_failed = len(all_failed)
-        total_attempted = total_successful + total_failed
+        self._log_summary(total_successful, all_failed)
 
-        logger.info("=" * 60)
-        logger.info("SCRAPING SUMMARY")
-        logger.info("=" * 60)
-        logger.info(f"Total LOGIDs attempted: {total_attempted}")
-        logger.info(f"Successful: {total_successful}")
-        logger.info(f"Failed: {total_failed}")
 
-        if total_attempted > 0:
-            success_rate = (total_successful / total_attempted) * 100
-            logger.info(f"Success rate: {success_rate:.1f}%")
+def main() -> None:
+    FortiGateLogScraper().run()
 
-        if all_failed:
-            logger.info("")
-            logger.info("FAILED LOGIDs:")
-            logger.info("-" * 60)
-            for version, logid, reason in all_failed:
-                logger.info(f"  Version: {version} | LOGID: {logid} | Reason: {reason}")
 
-        logger.info("=" * 60)
-
-def main():
-    """Main execution function"""
-    scraper = FortiGateLogScraper(base_delay=1.0)
-
-    # Option 1: Scrape all versions
-    scraper.run()
-
-    # Option 2: Scrape specific versions only (uncomment to use)
-    # scraper.run(['7.6.4', '7.4.4'])
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
