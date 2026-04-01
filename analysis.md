@@ -127,43 +127,94 @@ The 4 cross-type data type conflicts that force incompatible mappings:
 
 ## LOGID Distribution
 
-LOGIDs are not evenly distributed across categories. Some categories have hundreds; others have one.
+LOGIDs are not evenly distributed across categories — but the count disparity is a symptom of a deeper problem: there is no consistent model for what constitutes a distinct event type.
 
-### Event
+Each FortiOS team decided independently whether to encode an outcome (block, allow, monitor) as a **new LOGID** or as a value in the **`action` field** of a shared LOGID. Both approaches exist in the same product, with no documented rule governing which to use:
+
+**Separate LOGID per outcome** — VideoFilter assigns three LOGIDs for the exact same event depending on its result:
+
+- `13664 LOG_ID_VIDEOFILTER_CATEGORY_BLOCK`
+- `13665 LOG_ID_VIDEOFILTER_CATEGORY_MONITOR`
+- `13666 LOG_ID_VIDEOFILTER_CATEGORY_ALLOW`
+
+DNS does the same: `54400 LOG_ID_DNS_URL_FILTER_BLOCK` vs `54401 LOG_ID_DNS_URL_FILTER_ALLOW`. CASB follows suit: `10000 LOG_ID_CASB_ACCESS_BLOCKED`, `10001 LOG_ID_CASB_ACCESS_BYPASS`, `10002 LOG_ID_CASB_ACCESS_MONITOR`.
+
+Antiphishing goes further, splitting by both rule source and outcome — 6 LOGIDs for what is functionally one event type with two variables:
+
+- `13648 LOG_ID_ANTIPHISH_URL_ALLOW`, `13649 LOG_ID_ANTIPHISH_FTGD_ALLOW`, `13650 LOG_ID_ANTIPHISH_DEFAULT_ALLOW`
+- `13651 LOG_ID_ANTIPHISH_URL_BLOCK`, `13652 LOG_ID_ANTIPHISH_FTGD_BLOCK`, `13653 LOG_ID_ANTIPHISH_DEFAULT_BLOCK`
+
+**Single LOGID, outcome in `action`** — Anomaly uses 3 LOGIDs split by protocol, not by outcome:
+
+- `18432 LOGID_ATTCK_ANOMALY_TCP_UDP`
+- `18433 LOGID_ATTCK_ANOMALY_ICMP`
+- `18434 LOGID_ATTCK_ANOMALY_OTHERS`
+
+The `action` field carries detected/dropped/reset across all three. Virus splits by notification type (WARNING vs NOTIF) rather than outcome — `8192 MESGID_INFECT_WARNING` and `8193 MESGID_INFECT_NOTIF` cover the same infection event; the `action` field distinguishes blocked from passthrough from monitored.
+
+The consequence for parsing is that neither LOGID alone nor `action` alone is a reliable classifier across the board. For VideoFilter, LOGID determines the outcome and `action` is redundant. For Anomaly, `action` determines the outcome and the LOGID only tells you the protocol. A SIEM parser must know which pattern a given subtype follows before it can correctly classify an event — and that knowledge is not expressed anywhere in the log stream itself.
+
+### Event (7.6.6)
 
 | Category | LOGIDs | Unique fields |
 |----------|--------|--------------|
-| System | 594 | 165 |
-| Wireless | 189 | 83 |
-| VPN | 75 | 61 |
-| Switch-Controller | 64 | 39 |
-| User | 53 | 40 |
+| System | 628 | 171 |
+| Wireless | 201 | 84 |
+| VPN | 78 | 63 |
+| Switch-Controller | 65 | 39 |
+| User | 54 | 41 |
 | HA | 37 | 30 |
-| Endpoint | — | 36 |
-| REST API | — | 17 |
+| SDWAN | 17 | 60 |
+| Endpoint | 18 | 36 |
+| REST API | 2 | 33 |
+| CIFS-auth-fail | 4 | 30 |
+| WAN opt | 5 | 28 |
+| Security-rating | 3 | 27 |
+| web-svc | 2 | 27 |
+| Router | 10 | 21 |
+| Connector | 6 | 20 |
+| Webproxy | 2 | 19 |
+| FortiExtender | 11 | 16 |
+| Telemetry | 4 | 12 |
 
-System and Wireless together account for the overwhelming majority of Event LOGIDs. Wireless in particular has nearly 200 LOGIDs covering fine-grained association, roaming, interference, and rogue AP events — most of which are rarely seen in production deployments.
+System and Wireless together account for the overwhelming majority of Event LOGIDs. Wireless in particular has over 200 LOGIDs covering fine-grained association, roaming, interference, and rogue AP events — most of which are rarely seen in production deployments.
 
-### UTM
+### UTM (7.6.6)
 
 | Subtype | LOGIDs | Unique fields |
 |---------|--------|--------------|
-| Virus | 73 | 99 |
-| Webfilter | 63 | 90 |
+| Virus | 77 | 103 |
+| Webfilter | 65 | 95 |
+| APP-CTRL | 15 | 89 |
+| DLP | 6 | 86 |
 | GTP | 18 | 86 |
-| APP-CTRL | — | 89 |
-| DNS | 12 | 54 |
-| EmailFilter | 5 | 60 |
-| Anomaly | — | 46 |
+| FILE-FILTER | 2 | 75 |
+| IPS | 7 | 75 |
+| SSL | 21 | 69 |
+| EmailFilter | 5 | 63 |
+| virtual-patch | 4 | 61 |
+| DNS | 13 | 58 |
+| WAF | 12 | 55 |
+| Anomaly | 3 | 49 |
+| VoIP | 7 | 47 |
+| SSH | 10 | 46 |
+| ICAP | 3 | 44 |
+| casb | 3 | 44 |
 | FORTI-SWITCH | 1 | 18 |
+| Debug | 1 | 12 |
 
-### Traffic
+### Traffic (7.6.6)
 
-Traffic is the most uniform: Forward, Local, Multicast, Sniffer, and ZTNA subtypes all share 156–172 fields. The exception is HTTP-Transaction, which has a single LOGID and only 60 fields — it captures HTTP-level metadata not present in the others.
+| Subtype | LOGIDs | Unique fields |
+|---------|--------|--------------|
+| Forward | 15 | 186 |
+| Sniffer | 2 | 186 |
+| Local | 2 | 170 |
+| Multicast | 2 | 170 |
+| ZTNA | 1 | 170 |
+| HTTP-Transaction | 1 | 77 |
 
-### Implication
-
-High-LOGID categories dominate schema design decisions and testing coverage. Rare categories (FORTI-SWITCH, REST API, HTTP-Transaction) may appear correct in schema definitions while having subtle mapping gaps that only surface at ingestion time.
+Traffic is the most uniform log type: Forward, Sniffer, Local, Multicast, and ZTNA subtypes cluster tightly between 170–186 fields. The exception is HTTP-Transaction, which has a single LOGID and only 77 fields — it captures HTTP-level metadata not present in the others.
 
 ---
 
@@ -181,11 +232,11 @@ The schema is not a ratchet — fields and LOGIDs are both added and removed bet
 | 7.6.4 | 17 | 2 | 25 | 3 |
 | 7.6.5 | 14 | 0 | 11 | 2 |
 
-Additions consistently outnumber removals, so the net trend is growth — but removals are real. 7.6.3 is the most disruptive: 15 fields removed in the same release that added 25.
+Additions consistently outnumber removals, so the net trend is growth — but removals are real. 7.6.3 is the most disruptive: 15 fields removed in the same release that added 17.
 
 Schema churn between minor versions creates several concrete problems:
 
-**Field removals break parsing rules.** A SIEM ingestion pipeline built against 7.6.2 that extracts or normalizes one of the 15 fields removed in 7.6.3 will silently produce nulls or parsing errors after a FortiGate upgrade — with no indication from the device itself that the field disappeared. Detection rules or dashboards referencing those fields stop working without any alert.
+**Field removals break parsing rules.** A SIEM ingestion pipeline built against 7.6.2 that extracts or normalizes any of the 15 fields removed in 7.6.3 will silently produce nulls or parsing errors after a FortiGate upgrade — with no indication from the device itself that the field disappeared. Detection rules or dashboards referencing those fields stop working without any alert.
 
 **Field additions go unnoticed without version tracking.** When 22 new LOGIDs and 30 fields appear in 7.6.1, a SIEM that doesn't track schema versions will either drop the new fields (if using a strict mapping) or ingest them untyped (if using dynamic mapping), both of which degrade data quality. New fields often carry security-relevant context — ignoring them means incomplete detections.
 
