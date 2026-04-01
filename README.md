@@ -1,13 +1,10 @@
 # FLORES — FortiGate Log Message Reference Scraper
 
-FLORES extracts FortiGate log field documentation from Fortinet's official Log Message
-Reference and transforms it into clean, structured CSV datasets built for log normalization.
-Normalizing FortiGate logs against ECS, OCSF, or a custom schema requires exact field names,
-data types, and descriptions across hundreds of LOGIDs spread across Traffic, Event, and UTM
-log types — information that Fortinet distributes across per-version documentation pages.
-FLORES collects it, consolidates it, and tracks how the schema changes between minor versions,
-delivering machine-readable field references ready for normalization pipelines, parser
-development, and Elasticsearch mapping generation.
+FLORES extracts FortiGate log field documentation from Fortinet's official Log Message Reference documentation and transforms it into clean, structured CSV datasets. It is designed for security engineers and data teams who need machine-readable syslog schemas for parser development, log normalization, or field reference.
+
+Schema normalization makes firewall logs queryable, correlatable, and actionable across a modern security stack. Normalizing FortiGate log fields against ECS, OCSF, or a custom schema requires exact field names, data types, and descriptions across hundreds of LOGIDs spread across Traffic, Event, and UTM log types — information that Fortinet distributes across per-minor-version documentation pages.
+
+FLORES provides the full pipeline: collecting, consolidating, and tracking how the schema changes between minor versions, then translating them into ECS and OCSF field mappings ready for your normalization workflow.
 
 ## Quick Start
 
