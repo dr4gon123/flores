@@ -53,8 +53,6 @@ ECS_FIELD_REGISTRY: dict[str, EcsField] = {
     "source.packets":                    EcsField("source.packets",                    "long",     "Packets sent from the source to the destination."),
     "source.domain":                     EcsField("source.domain",                     "keyword",  "The domain name of the source."),
     "source.address":                    EcsField("source.address",                    "keyword",  "Source network address."),
-    "source.risk.static_score":          EcsField("source.risk.static_score",          "float",    "(*) Risk classification score from an external source."),
-    "source.risk.static_level":          EcsField("source.risk.static_level",          "keyword",  "(*) Risk classification level from an external source."),
     "destination.ip":                    EcsField("destination.ip",                    "ip",       "IP address of the destination."),
     "destination.port":                  EcsField("destination.port",                  "long",     "Port of the destination."),
     "destination.mac":                   EcsField("destination.mac",                   "keyword",  "MAC address of the destination."),
@@ -274,8 +272,8 @@ UTM_MAPPINGS: list[FgtMapping] = [
     FgtMapping("unauthuser",        ((_t("source.user.name",              "=")),)),
     FgtMapping("group",             ((_t("source.user.group.name",        "=")),)),
     FgtMapping("unauthusersource",  ((_t("source.user.group.name",        "=")),)),
-    FgtMapping("crscore",           ((_t("source.risk.static_score",      "->")),)),  # to_int; UTM uses source.risk not host.risk
-    FgtMapping("crlevel",           ((_t("source.risk.static_level",      "=")),)),
+    FgtMapping("crscore",           ((_t("host.risk.static_score",        "->")),)),  # to_int
+    FgtMapping("crlevel",           ((_t("host.risk.static_level",        "=")),)),
     FgtMapping("sentbyte",          ((_t("source.bytes",                  "->")),)),  # to_int
     FgtMapping("sentbyte",          ((_t("network.bytes",                 "->")),)),
     FgtMapping("srcdomain",         ((_t("source.domain",                 "=")),)),

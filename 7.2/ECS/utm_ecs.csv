@@ -115,10 +115,10 @@ IPS: Action performed by Threat Weight
 Virus: Threat Weight action",,,,
 crlevel,string,10,"APP-CTRL/Anomaly/IPS/Webfilter: Client Reputation level
 
-Virus: Threat Weight Level",=,source.risk.static_level,keyword,(*) Risk classification level from an external source.
+Virus: Threat Weight Level",=,host.risk.static_level,keyword,"A risk classification level obtained from outside the system, such as from some external Threat Intelligence Platform."
 crscore,uint32,10,"APP-CTRL/Anomaly/IPS/Webfilter: Client Reputation Score
 
-Virus: Threat Weight Score",->,source.risk.static_score,float,(*) Risk classification score from an external source.
+Virus: Threat Weight Score",->,host.risk.static_score,float,"A risk classification score obtained from outside the system, such as from some external Threat Intelligence Platform."
 date,string,10,"APP-CTRL/Anomaly/DLP/DNS/IPS/SSH/Virus/WAF/Webfilter: Date
 
 VoIP: Day, month, and year when the log message was recorded.",,,,
