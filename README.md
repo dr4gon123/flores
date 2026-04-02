@@ -6,12 +6,19 @@ Schema normalization makes firewall logs queryable, correlatable, and actionable
 
 FLORES provides the full pipeline: collecting, consolidating, and tracking how the schema changes between minor versions, then translating them into ECS and OCSF field mappings ready for your normalization workflow.
 
+For a full index of changelogs, consolidated fields, and ECS mappings across all versions, see [INDEX.md](INDEX.md).
+
 ## Quick Start
+
+All scraped data and generated outputs are already committed to this repository — you can use the CSV and Markdown files directly without running anything.
+
+To add a new FortiOS version or regenerate outputs:
 
 ```bash
 pip install requests beautifulsoup4 pandas lxml pyyaml
-python3 fortigate_scraper.py
-python3 generate_changelog.py
+python3 fortigate_scraper.py       # scrape Fortinet docs
+python3 generate_changelog.py      # changelogs, field matrices, consolidated CSVs, INDEX.md
+python3 generate_ecs_mappings.py   # ECS mapping CSVs
 ```
 
 Output lands in major-version subdirectories (e.g. `7.6/`) in the current working directory.
@@ -50,7 +57,7 @@ conflicts (same field name, different descriptions across LOGIDs) and inter-vers
 (fields and LOGIDs added or removed since the previous minor version).
 
 **`analysis/{log_type}_matrix.csv`** — field × subtype matrix showing which fields appear
-in which subtypes, with occurrence counts.
+in which subtypes, with occurrence counts. Column headers are the definitive per-version subtype list.
 
 ## Elastic Common Schema (ECS) Mapping
 
@@ -63,6 +70,8 @@ FortiGate fields are cross-referenced to Elastic Common Schema (ECS) for SIEM in
 | UTM | 51/567 fields mapped | `{major}/ECS/utm_ecs.csv` |
 
 Run `python3 generate_ecs_mappings.py` to regenerate the ECS CSVs after scraping new versions.
+
+For mapping notation, coverage details, intentionally unmapped fields, and guidance on extending the mapping, see [FIELD_NAMING_NORMALIZATION.md](FIELD_NAMING_NORMALIZATION.md).
 
 ## Configuration
 
@@ -88,59 +97,6 @@ versions:
 
 FLORES will skip versions that already exist locally unless `force_rescrape: true`.
 
-## Scraped Log Types
-
-**Traffic** (6 subtypes)
-
-1. Forward
-2. Sniffer
-3. Local
-4. Multicast
-5. ZTNA
-6. HTTP-Transaction
-
-**Event** (18 subtypes)
-
-1. System
-2. Wireless
-3. VPN
-4. Switch-Controller
-5. User
-6. HA
-7. SDWAN
-8. Endpoint
-9. REST API
-10. CIFS-auth-fail
-11. WAN opt
-12. Security-rating
-13. web-svc
-14. Router
-15. Connector
-16. Webproxy
-17. FortiExtender
-18. Telemetry
-
-**UTM** (19 subtypes)
-
-1. Virus
-2. Webfilter
-3. APP-CTRL
-4. DLP
-5. GTP
-6. FILE-FILTER
-7. IPS
-8. SSL
-9. EmailFilter
-10. virtual-patch
-11. DNS
-12. WAF
-13. Anomaly
-14. VoIP
-15. SSH
-16. ICAP
-17. casb
-18. FORTI-SWITCH
-19. Debug
 
 ## FortiGate Documentation Notes
 

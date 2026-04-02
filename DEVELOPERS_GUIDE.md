@@ -18,10 +18,17 @@ fortigate_scraper.py  ──►  <major>/<minor>/<LOGID>.csv  (raw, one CSV per 
                           generate_changelog.py
                           ├── --changelog   → <major>/<minor>/analysis/CHANGELOG.md
                           ├── --matrices    → <major>/<minor>/analysis/*_matrix.csv
-                          └── --fields      → <major>/fields/traffic_fields.csv
-                                              <major>/fields/event_fields.csv
-                                              <major>/fields/utm_fields.csv
-                                              <major>/fields/action_descriptions.csv
+                          ├── --fields      → <major>/fields/traffic_fields.csv
+                          │                   <major>/fields/event_fields.csv
+                          │                   <major>/fields/utm_fields.csv
+                          │                   <major>/fields/action_descriptions.csv
+                          └── --index       → INDEX.md
+                                    │
+                                    ▼
+                          generate_ecs_mappings.py
+                          └──────────────────────→ <major>/ECS/traffic_ecs.csv
+                                                    <major>/ECS/event_ecs.csv
+                                                    <major>/ECS/utm_ecs.csv
 ```
 
 **Files and their roles:**
@@ -215,8 +222,9 @@ Reads the raw LOGID CSVs produced by `fortigate_scraper.py` and produces three c
 | `--changelog` | `<major>/<minor>/analysis/CHANGELOG.md` — intra-version inconsistencies and inter-version field changes |
 | `--matrices` | `<major>/<minor>/analysis/{traffic,event,utm}_matrix.csv` — field × subtype occurrence counts |
 | `--fields` | `<major>/fields/{traffic,event,utm}_fields.csv` + `action_descriptions.csv` — consolidated field definitions across all minor versions |
+| `--index` | `INDEX.md` at repo root — links to all changelogs, consolidated field CSVs, and ECS CSVs across every version |
 
-Running without flags generates all three outputs. Flags can be combined.
+Running without flags generates all four outputs. Flags can be combined.
 
 ### Dataset Buckets
 
@@ -352,6 +360,10 @@ python3 generate_changelog.py
 python3 generate_changelog.py --changelog   # per-minor CHANGELOG.md only
 python3 generate_changelog.py --matrices    # per-minor field matrix CSVs only
 python3 generate_changelog.py --fields      # per-major consolidated field CSVs only
+python3 generate_changelog.py --index       # root-level INDEX.md only
+
+# Step 3: Regenerate ECS mapping CSVs
+python3 generate_ecs_mappings.py
 ```
 
 To add a new FortiOS version:
