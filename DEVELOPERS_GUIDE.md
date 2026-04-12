@@ -12,12 +12,12 @@ FLORES is a two-script pipeline. The scraper fetches raw HTML and emits CSVs; `g
 fortigate_scraper_config.yaml
           │
           ▼
-fortigate_scraper.py  ──►  <major>/<minor>/<LOGID>.csv  (raw, one CSV per log ID)
+fortigate_scraper.py  ──►  <major>/<minor>/LOGID/<LOGID>.csv  (raw, one CSV per log ID)
                                     │
                                     ▼
                           generate_changelog.py
-                          ├── --changelog   → <major>/<minor>/analysis/CHANGELOG.md
-                          ├── --matrices    → <major>/<minor>/analysis/*_matrix.csv
+                          ├── --changelog   → <major>/<minor>/CHANGELOG.md
+                          ├── --matrices    → <major>/<minor>/*_matrix.csv
                           ├── --fields      → <major>/fields/traffic_fields.csv
                           │                   <major>/fields/event_fields.csv
                           │                   <major>/fields/utm_fields.csv
@@ -67,14 +67,14 @@ run()
             ├─ extract_logid_links()   → {description: full_url}
             │     regex: r'/(\d{1,6})-(logid|log-id|mesgid)-[^/]*$'
             └─ for each LOGID link:
-                 [force_rescrape=false] → skip if <minor_dir>/<safe_logid>.csv exists
+                 [force_rescrape=false] → skip if <minor_dir>/LOGID/<safe_logid>.csv exists
                  get_page_content(logid_url)
                  ├─ extract_log_metadata() → Message_ID, Type, Category, Severity, ...
                  └─ extract_log_table()    → DataFrame (fields + metadata columns)
                        │
                        ▼
                    df['Version'] = version
-                   df.to_csv(minor_dir/<safe_logid>.csv)
+                   df.to_csv(minor_dir/LOGID/<safe_logid>.csv)
 
 ─── After scraping ─────────────────────────────────────────────────────────────
 
@@ -91,10 +91,10 @@ discover_versions(root)
           │    snapshot_version()  → VersionSnapshot  (intra-version conflicts)
           │    diff_versions(prev, curr)  → VersionDiff  (inter-version changes)
           │    _write_minor_analysis()
-          │        ├── analysis/CHANGELOG.md
-          │        ├── analysis/traffic_matrix.csv
-          │        ├── analysis/event_matrix.csv
-          │        └── analysis/utm_matrix.csv
+          │        ├── CHANGELOG.md
+          │        ├── traffic_matrix.csv
+          │        ├── event_matrix.csv
+          │        └── utm_matrix.csv
           │
           └─ [--fields]  (accumulates all_stems across all minor versions first)
                _write_major_fields()
@@ -148,7 +148,7 @@ Single-class design — all scraping logic lives here. A `requests.Session` is r
 Every run always fetches the index page for each configured version to get the full LOGID list. Before fetching each LOGID page, the scraper checks whether its output CSV already exists on disk:
 
 ```
-<minor_version_dir>/<safe_logid>.csv
+<minor_version_dir>/LOGID/<safe_logid>.csv
 ```
 
 If the file exists and `force_rescrape` is false, the LOGID is skipped (counted as successful in the summary). Only missing files are fetched. This means an interrupted run can be resumed safely — the scraper picks up exactly where it left off at LOGID granularity.
@@ -161,7 +161,12 @@ Setting `force_rescrape: true` bypasses all skip checks and re-fetches every LOG
 output_dir/
 └── <major>/          e.g., 7.6/
     └── <minor>/      e.g., 7.6.4/
-        └── <LOGID_description>.csv
+        ├── LOGID/
+        │   └── <LOGID_description>.csv
+        ├── CHANGELOG.md
+        ├── traffic_matrix.csv
+        ├── event_matrix.csv
+        └── utm_matrix.csv
 ```
 
 The filename is derived from the link text on the documentation index page. Non-word characters are replaced with underscores via `re.sub(r'[^\w\-_\.]', '_', logid_description)`.
@@ -219,8 +224,8 @@ Reads the raw LOGID CSVs produced by `fortigate_scraper.py` and produces three c
 
 | Flag | Output |
 |------|--------|
-| `--changelog` | `<major>/<minor>/analysis/CHANGELOG.md` — intra-version inconsistencies and inter-version field changes |
-| `--matrices` | `<major>/<minor>/analysis/{traffic,event,utm}_matrix.csv` — field × subtype occurrence counts |
+| `--changelog` | `<major>/<minor>/CHANGELOG.md` — intra-version inconsistencies and inter-version field changes |
+| `--matrices` | `<major>/<minor>/{traffic,event,utm}_matrix.csv` — field × subtype occurrence counts |
 | `--fields` | `<major>/fields/{traffic,event,utm}_fields.csv` + `action_descriptions.csv` — consolidated field definitions across all minor versions |
 | `--index` | `INDEX.md` at repo root — links to all changelogs, consolidated field CSVs, and ECS CSVs across every version |
 

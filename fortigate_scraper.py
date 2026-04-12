@@ -229,6 +229,8 @@ class FortiGateLogScraper:
         major_dir, minor_dir = self.get_version_directories(version)
         major_dir.mkdir(parents=True, exist_ok=True)
         minor_dir.mkdir(parents=True, exist_ok=True)
+        logid_dir = minor_dir / 'LOGID'
+        logid_dir.mkdir(exist_ok=True)
 
         soup = self.get_page_content(self.get_version_url(version))
         if not soup:
@@ -243,7 +245,7 @@ class FortiGateLogScraper:
         if not self.force_rescrape:
             missing_count = sum(
                 1 for d in logid_links
-                if not (minor_dir / (re.sub(r'[^\w\-_\.]', '_', str(d)) + '.csv')).exists()
+                if not (logid_dir / (re.sub(r'[^\w\-_\.]', '_', str(d)) + '.csv')).exists()
             )
             logger.info(f'Version {version}: {len(logid_links)} LOGIDs total, '
                         f'{len(logid_links) - missing_count} already scraped, '
@@ -252,7 +254,7 @@ class FortiGateLogScraper:
             logger.info(f'Version {version}: {len(logid_links)} LOGIDs total (force_rescrape=true)')
 
         for logid_description, url in logid_links.items():
-            filepath = minor_dir / (re.sub(r'[^\w\-_\.]', '_', str(logid_description)) + '.csv')
+            filepath = logid_dir / (re.sub(r'[^\w\-_\.]', '_', str(logid_description)) + '.csv')
 
             if not self.force_rescrape and filepath.exists():
                 logger.info(f'Skipping {logid_description} (already exists)')

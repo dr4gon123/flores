@@ -41,13 +41,13 @@ python3 generate_changelog.py --index      # root-level INDEX.md only
 
 ```
 <major>/                              # e.g., 7.6/
-├── <minor>/                          # e.g., 7.6.4/ — one CSV per LOGID
-│   ├── <LOGID_description>.csv
-│   └── analysis/
-│       ├── CHANGELOG.md              # intra-version conflicts + inter-version diffs
-│       ├── traffic_matrix.csv        # field × category occurrence counts
-│       ├── event_matrix.csv
-│       └── utm_matrix.csv
+├── <minor>/                          # e.g., 7.6.4/
+│   ├── LOGID/                        # one CSV per LOGID
+│   │   └── <LOGID_description>.csv
+│   ├── CHANGELOG.md                  # intra-version conflicts + inter-version diffs
+│   ├── traffic_matrix.csv            # field × category occurrence counts
+│   ├── event_matrix.csv
+│   └── utm_matrix.csv
 └── fields/
     ├── traffic_fields.csv            # consolidated across all minor versions
     ├── event_fields.csv

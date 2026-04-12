@@ -27,13 +27,13 @@ Output lands in major-version subdirectories (e.g. `7.6/`) in the current workin
 
 ```
 {major}/                              # e.g. 7.6/
-  {minor}/                            # e.g. 7.6.4/ — one CSV per LOGID
-    {LOGID_description}.csv
-    analysis/
-      CHANGELOG.md                    # intra-version conflicts + inter-version diffs
-      traffic_matrix.csv              # field × subtype occurrence counts
-      event_matrix.csv
-      utm_matrix.csv
+  {minor}/                            # e.g. 7.6.4/
+    LOGID/                            # one CSV per LOGID
+      {LOGID_description}.csv
+    CHANGELOG.md                      # intra-version conflicts + inter-version diffs
+    traffic_matrix.csv                # field × subtype occurrence counts
+    event_matrix.csv
+    utm_matrix.csv
   fields/
     traffic_fields.csv                # consolidated across all minor versions
     event_fields.csv
@@ -52,11 +52,11 @@ docs. Columns: `Type`, `Log Field Name`, `Description`, `Data Type`.
 across all minor versions of the major. When a field has different descriptions per subtype,
 each variant is labeled `subtype: description`.
 
-**`analysis/CHANGELOG.md`** — per-minor changelog recording intra-version description
+**`CHANGELOG.md`** — per-minor changelog recording intra-version description
 conflicts (same field name, different descriptions across LOGIDs) and inter-version diffs
 (fields and LOGIDs added or removed since the previous minor version).
 
-**`analysis/{log_type}_matrix.csv`** — field × subtype matrix showing which fields appear
+**`{log_type}_matrix.csv`** — field × subtype matrix showing which fields appear
 in which subtypes, with occurrence counts. Column headers are the definitive per-version subtype list.
 
 ## Elastic Common Schema (ECS) Mapping
