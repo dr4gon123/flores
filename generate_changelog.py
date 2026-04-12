@@ -79,7 +79,7 @@ def discover_versions(root: Path) -> list[tuple[str, list[Path]]]:
 def load_version(minor_dir: Path) -> dict[str, pd.DataFrame]:
     """Load all CSV files from a minor version directory, keyed by filename stem."""
     result = {}
-    for csv_file in sorted(minor_dir.glob('*.csv')):
+    for csv_file in sorted((minor_dir / 'LOGID').glob('*.csv')):
         try:
             df = pd.read_csv(csv_file)
             result[csv_file.stem] = df
@@ -715,10 +715,7 @@ def _write_minor_analysis(
     do_changelog: bool = True,
     do_matrices: bool = True,
 ) -> None:
-    """Write analysis/CHANGELOG.md and/or the three field matrix CSVs for one minor version."""
-    analysis_dir = minor_dir / 'analysis'
-    analysis_dir.mkdir(exist_ok=True)
-
+    """Write CHANGELOG.md and/or the three field matrix CSVs for one minor version."""
     if do_changelog:
         content_parts = [
             f'# FortiGate {minor_dir.name} — Analysis', '',
@@ -727,7 +724,7 @@ def _write_minor_analysis(
         ]
         if diff is not None and prev_label is not None:
             content_parts.append(_render_version_pair(prev_label, minor_dir.name, diff))
-        changelog_path = analysis_dir / 'CHANGELOG.md'
+        changelog_path = minor_dir / 'CHANGELOG.md'
         changelog_path.write_text('\n'.join(content_parts) + '\n', encoding='utf-8')
         print(f'Written: {changelog_path} ({changelog_path.stat().st_size:,} bytes)')
 
@@ -741,7 +738,7 @@ def _write_minor_analysis(
             matrix = _build_field_matrix(version_dict, type_filter, group_col)
             if matrix.empty:
                 continue
-            path = analysis_dir / filename
+            path = minor_dir / filename
             matrix.to_csv(path)
             n_fields = len(matrix) - 1  # exclude _total row
             print(f'Written: {path} ({n_fields} fields × {len(matrix.columns)} columns)')
@@ -896,11 +893,67 @@ def _write_major_fields(major_dir: Path, all_stems: dict[str, pd.DataFrame]) -> 
 
 
 def _write_changelog_index(root: Path, version_groups: list[tuple[str, list[Path]]]) -> None:
-    """Write INDEX.md at the repo root with per-major sections for Changelog, Consolidated Fields, and ECS."""
+    """Write root INDEX.md and per-major INDEX.md files."""
     def _link(path: Path, label: str, rel: str) -> str:
         return f"[{label}]({rel})" if path.exists() else label
 
-    lines: list[str] = [
+    def _major_section(major_label: str, minor_dirs: list[Path], prefix: str, include_matrices: bool = False) -> list[str]:
+        """Build the lines for one major-version section. prefix is prepended to all paths."""
+        sec: list[str] = []
+        sec.append(f"## FortiOS {major_label}")
+        sec.append("")
+
+        sec.append("### Changelog")
+        sec.append("")
+        for minor_dir in reversed(minor_dirs):
+            version = minor_dir.name
+            rel = f"{prefix}{version}/CHANGELOG.md"
+            sec.append(f"- {_link(root / f'{major_label}/{version}/CHANGELOG.md', version, rel)}")
+        sec.append("")
+
+        sec.append("### Consolidated Fields")
+        sec.append("")
+        field_specs = [
+            ("traffic_fields",      f"{prefix}fields/traffic_fields.csv"),
+            ("event_fields",        f"{prefix}fields/event_fields.csv"),
+            ("utm_fields",          f"{prefix}fields/utm_fields.csv"),
+            ("action_descriptions", f"{prefix}fields/action_descriptions.csv"),
+        ]
+        field_specs = [(label, rel) for label, rel in field_specs if (root / f"{major_label}/fields/{label}.csv").exists()]
+        for label, rel in field_specs:
+            sec.append(f"- {_link(root / f'{major_label}/fields/{label}.csv', label, rel)}")
+        sec.append("")
+
+        sec.append("### ECS")
+        sec.append("")
+        ecs_names = ["traffic_ecs", "event_ecs", "utm_ecs"]
+        ecs_specs = [
+            (name, f"{prefix}ECS/{name}.csv")
+            for name in ecs_names
+            if (root / f"{major_label}/ECS/{name}.csv").exists()
+        ]
+        for label, rel in ecs_specs:
+            sec.append(f"- {_link(root / f'{major_label}/ECS/{label}.csv', label, rel)}")
+        sec.append("")
+
+        if include_matrices:
+            sec.append("### Field Occurrence Matrix")
+            sec.append("")
+            matrix_names = ["traffic", "event", "utm"]
+            for minor_dir in reversed(minor_dirs):
+                version = minor_dir.name
+                parts = [
+                    _link(root / f"{major_label}/{version}/{name}_matrix.csv", name, f"{prefix}{version}/{name}_matrix.csv")
+                    for name in matrix_names
+                    if (root / f"{major_label}/{version}/{name}_matrix.csv").exists()
+                ]
+                if parts:
+                    sec.append(f"- **{version}** — {' · '.join(parts)}")
+            sec.append("")
+
+        return sec
+
+    root_lines: list[str] = [
         "# FLORES — Index",
         "",
         "> Auto-generated by `generate_changelog.py --index`. Do not edit manually.",
@@ -908,59 +961,23 @@ def _write_changelog_index(root: Path, version_groups: list[tuple[str, list[Path
     ]
 
     for major_label, minor_dirs in reversed(version_groups):
-        lines.append(f"## FortiOS {major_label}")
-        lines.append("")
+        # Root INDEX.md: links are relative to repo root (prefix includes major_label/)
+        root_lines.extend(_major_section(major_label, minor_dirs, prefix=f"{major_label}/", include_matrices=True))
+        root_lines.append("---")
+        root_lines.append("")
 
-        # --- Changelog ---
-        lines.append("### Changelog")
-        lines.append("")
-        lines.append("| Version |")
-        lines.append("|---------|")
-        for minor_dir in reversed(minor_dirs):
-            version = minor_dir.name
-            rel = f"{major_label}/{version}/analysis/CHANGELOG.md"
-            cell = _link(root / rel, version, rel)
-            lines.append(f"| {cell} |")
-        lines.append("")
-
-        # --- Consolidated Fields ---
-        lines.append("### Consolidated Fields")
-        lines.append("")
-        field_specs = [
-            ("traffic_fields",     f"{major_label}/fields/traffic_fields.csv"),
-            ("event_fields",       f"{major_label}/fields/event_fields.csv"),
-            ("utm_fields",         f"{major_label}/fields/utm_fields.csv"),
-            ("action_descriptions", f"{major_label}/fields/action_descriptions.csv"),
+        # Per-major INDEX.md: links are relative to the major folder (no prefix)
+        major_lines = [
+            "> Auto-generated by `generate_changelog.py --index`. Do not edit manually.",
+            "",
         ]
-        field_specs = [(label, rel) for label, rel in field_specs if (root / rel).exists()]
-        if field_specs:
-            lines.append("| File |")
-            lines.append("|------|")
-            for label, rel in field_specs:
-                lines.append(f"| {_link(root / rel, label, rel)} |")
-        lines.append("")
-
-        # --- ECS ---
-        lines.append("### ECS")
-        lines.append("")
-        ecs_specs = [
-            ("traffic_ecs", f"{major_label}/ECS/traffic_ecs.csv"),
-            ("event_ecs",   f"{major_label}/ECS/event_ecs.csv"),
-            ("utm_ecs",     f"{major_label}/ECS/utm_ecs.csv"),
-        ]
-        ecs_specs = [(label, rel) for label, rel in ecs_specs if (root / rel).exists()]
-        if ecs_specs:
-            lines.append("| File |")
-            lines.append("|------|")
-            for label, rel in ecs_specs:
-                lines.append(f"| {_link(root / rel, label, rel)} |")
-        lines.append("")
-
-        lines.append("---")
-        lines.append("")
+        major_lines.extend(_major_section(major_label, minor_dirs, prefix="", include_matrices=True))
+        major_out = root / major_label / "INDEX.md"
+        major_out.write_text("\n".join(major_lines))
+        print(f"Written: {major_out}")
 
     out = root / "INDEX.md"
-    out.write_text("\n".join(lines))
+    out.write_text("\n".join(root_lines))
     print(f"Written: {out}")
 
 
