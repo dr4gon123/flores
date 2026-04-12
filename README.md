@@ -24,7 +24,9 @@ Output lands in major-version subdirectories (e.g. `7.6/`) in the current workin
 ## Output
 
 ```
+INDEX.md                              # root index: all versions, all sections
 {major}/                              # e.g. 7.6/
+  INDEX.md                            # per-major index: changelog, fields, ECS, matrices
   {minor}/                            # e.g. 7.6.4/
     LOGID/                            # one CSV per LOGID
       {LOGID_description}.csv
