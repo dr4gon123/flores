@@ -19,7 +19,7 @@ python3 generate_changelog.py              # all outputs
 python3 generate_changelog.py --changelog  # per-minor CHANGELOG.md only
 python3 generate_changelog.py --matrices   # per-minor field matrix CSVs only
 python3 generate_changelog.py --fields     # per-major consolidated field CSVs only
-python3 generate_changelog.py --index      # root-level INDEX.md only
+python3 generate_changelog.py --index      # root INDEX.md + per-major {major}/INDEX.md
 
 # Step 3: Generate Elasticsearch component templates (lives in fortinet-2-elasticsearch)
 # python3 ../fortinet-2-elasticsearch/datasets/Fortinet/elasticsearch_mappings.py

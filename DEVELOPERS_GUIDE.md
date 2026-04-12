@@ -23,6 +23,7 @@ fortigate_scraper.py  ──►  <major>/<minor>/LOGID/<LOGID>.csv  (raw, one CS
                           │                   <major>/fields/utm_fields.csv
                           │                   <major>/fields/action_descriptions.csv
                           └── --index       → INDEX.md
+                                              <major>/INDEX.md
                                     │
                                     ▼
                           generate_ecs_mappings.py
@@ -227,7 +228,7 @@ Reads the raw LOGID CSVs produced by `fortigate_scraper.py` and produces three c
 | `--changelog` | `<major>/<minor>/CHANGELOG.md` — intra-version inconsistencies and inter-version field changes |
 | `--matrices` | `<major>/<minor>/{traffic,event,utm}_matrix.csv` — field × subtype occurrence counts |
 | `--fields` | `<major>/fields/{traffic,event,utm}_fields.csv` + `action_descriptions.csv` — consolidated field definitions across all minor versions |
-| `--index` | `INDEX.md` at repo root — links to all changelogs, consolidated field CSVs, and ECS CSVs across every version |
+| `--index` | `INDEX.md` at repo root and `<major>/INDEX.md` per major version — each lists Changelog, Consolidated Fields, ECS, and Field Occurrence Matrix links |
 
 Running without flags generates all four outputs. Flags can be combined.
 
@@ -365,7 +366,7 @@ python3 generate_changelog.py
 python3 generate_changelog.py --changelog   # per-minor CHANGELOG.md only
 python3 generate_changelog.py --matrices    # per-minor field matrix CSVs only
 python3 generate_changelog.py --fields      # per-major consolidated field CSVs only
-python3 generate_changelog.py --index       # root-level INDEX.md only
+python3 generate_changelog.py --index       # root INDEX.md + per-major {major}/INDEX.md
 
 # Step 3: Regenerate ECS mapping CSVs
 python3 generate_ecs_mappings.py

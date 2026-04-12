@@ -987,7 +987,7 @@ def main() -> None:
     parser.add_argument('--changelog', action='store_true', help='Generate only per-minor-version CHANGELOG.md files')
     parser.add_argument('--matrices', action='store_true', help='Generate only per-minor-version field matrix CSVs')
     parser.add_argument('--fields', action='store_true', help='Generate consolidated field CSVs per major version')
-    parser.add_argument('--index', action='store_true', help='Generate root-level INDEX.md')
+    parser.add_argument('--index', action='store_true', help='Generate root INDEX.md and per-major {major}/INDEX.md files')
     args = parser.parse_args()
     any_flag = args.changelog or args.matrices or args.fields or args.index
     do_changelog = args.changelog or not any_flag
