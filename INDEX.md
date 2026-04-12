@@ -6,32 +6,36 @@
 
 ### Changelog
 
-| Version |
-|---------|
-| [7.6.6](7.6/7.6.6/analysis/CHANGELOG.md) |
-| [7.6.5](7.6/7.6.5/analysis/CHANGELOG.md) |
-| [7.6.4](7.6/7.6.4/analysis/CHANGELOG.md) |
-| [7.6.3](7.6/7.6.3/analysis/CHANGELOG.md) |
-| [7.6.2](7.6/7.6.2/analysis/CHANGELOG.md) |
-| [7.6.1](7.6/7.6.1/analysis/CHANGELOG.md) |
-| [7.6.0](7.6/7.6.0/analysis/CHANGELOG.md) |
+- [7.6.6](7.6/7.6.6/CHANGELOG.md)
+- [7.6.5](7.6/7.6.5/CHANGELOG.md)
+- [7.6.4](7.6/7.6.4/CHANGELOG.md)
+- [7.6.3](7.6/7.6.3/CHANGELOG.md)
+- [7.6.2](7.6/7.6.2/CHANGELOG.md)
+- [7.6.1](7.6/7.6.1/CHANGELOG.md)
+- [7.6.0](7.6/7.6.0/CHANGELOG.md)
 
 ### Consolidated Fields
 
-| File |
-|------|
-| [traffic_fields](7.6/fields/traffic_fields.csv) |
-| [event_fields](7.6/fields/event_fields.csv) |
-| [utm_fields](7.6/fields/utm_fields.csv) |
-| [action_descriptions](7.6/fields/action_descriptions.csv) |
+- [traffic_fields](7.6/fields/traffic_fields.csv)
+- [event_fields](7.6/fields/event_fields.csv)
+- [utm_fields](7.6/fields/utm_fields.csv)
+- [action_descriptions](7.6/fields/action_descriptions.csv)
 
 ### ECS
 
-| File |
-|------|
-| [traffic_ecs](7.6/ECS/traffic_ecs.csv) |
-| [event_ecs](7.6/ECS/event_ecs.csv) |
-| [utm_ecs](7.6/ECS/utm_ecs.csv) |
+- [traffic_ecs](7.6/ECS/traffic_ecs.csv)
+- [event_ecs](7.6/ECS/event_ecs.csv)
+- [utm_ecs](7.6/ECS/utm_ecs.csv)
+
+### Field Occurrence Matrix
+
+- **7.6.6** — [traffic](7.6/7.6.6/traffic_matrix.csv) · [event](7.6/7.6.6/event_matrix.csv) · [utm](7.6/7.6.6/utm_matrix.csv)
+- **7.6.5** — [traffic](7.6/7.6.5/traffic_matrix.csv) · [event](7.6/7.6.5/event_matrix.csv) · [utm](7.6/7.6.5/utm_matrix.csv)
+- **7.6.4** — [traffic](7.6/7.6.4/traffic_matrix.csv) · [event](7.6/7.6.4/event_matrix.csv) · [utm](7.6/7.6.4/utm_matrix.csv)
+- **7.6.3** — [traffic](7.6/7.6.3/traffic_matrix.csv) · [event](7.6/7.6.3/event_matrix.csv) · [utm](7.6/7.6.3/utm_matrix.csv)
+- **7.6.2** — [traffic](7.6/7.6.2/traffic_matrix.csv) · [event](7.6/7.6.2/event_matrix.csv) · [utm](7.6/7.6.2/utm_matrix.csv)
+- **7.6.1** — [traffic](7.6/7.6.1/traffic_matrix.csv) · [event](7.6/7.6.1/event_matrix.csv) · [utm](7.6/7.6.1/utm_matrix.csv)
+- **7.6.0** — [traffic](7.6/7.6.0/traffic_matrix.csv) · [event](7.6/7.6.0/event_matrix.csv) · [utm](7.6/7.6.0/utm_matrix.csv)
 
 ---
 
@@ -39,37 +43,46 @@
 
 ### Changelog
 
-| Version |
-|---------|
-| [7.4.11](7.4/7.4.11/analysis/CHANGELOG.md) |
-| [7.4.10](7.4/7.4.10/analysis/CHANGELOG.md) |
-| [7.4.9](7.4/7.4.9/analysis/CHANGELOG.md) |
-| [7.4.8](7.4/7.4.8/analysis/CHANGELOG.md) |
-| [7.4.7](7.4/7.4.7/analysis/CHANGELOG.md) |
-| [7.4.6](7.4/7.4.6/analysis/CHANGELOG.md) |
-| [7.4.5](7.4/7.4.5/analysis/CHANGELOG.md) |
-| [7.4.4](7.4/7.4.4/analysis/CHANGELOG.md) |
-| [7.4.3](7.4/7.4.3/analysis/CHANGELOG.md) |
-| [7.4.2](7.4/7.4.2/analysis/CHANGELOG.md) |
-| [7.4.1](7.4/7.4.1/analysis/CHANGELOG.md) |
-| [7.4.0](7.4/7.4.0/analysis/CHANGELOG.md) |
+- [7.4.11](7.4/7.4.11/CHANGELOG.md)
+- [7.4.10](7.4/7.4.10/CHANGELOG.md)
+- [7.4.9](7.4/7.4.9/CHANGELOG.md)
+- [7.4.8](7.4/7.4.8/CHANGELOG.md)
+- [7.4.7](7.4/7.4.7/CHANGELOG.md)
+- [7.4.6](7.4/7.4.6/CHANGELOG.md)
+- [7.4.5](7.4/7.4.5/CHANGELOG.md)
+- [7.4.4](7.4/7.4.4/CHANGELOG.md)
+- [7.4.3](7.4/7.4.3/CHANGELOG.md)
+- [7.4.2](7.4/7.4.2/CHANGELOG.md)
+- [7.4.1](7.4/7.4.1/CHANGELOG.md)
+- [7.4.0](7.4/7.4.0/CHANGELOG.md)
 
 ### Consolidated Fields
 
-| File |
-|------|
-| [traffic_fields](7.4/fields/traffic_fields.csv) |
-| [event_fields](7.4/fields/event_fields.csv) |
-| [utm_fields](7.4/fields/utm_fields.csv) |
-| [action_descriptions](7.4/fields/action_descriptions.csv) |
+- [traffic_fields](7.4/fields/traffic_fields.csv)
+- [event_fields](7.4/fields/event_fields.csv)
+- [utm_fields](7.4/fields/utm_fields.csv)
+- [action_descriptions](7.4/fields/action_descriptions.csv)
 
 ### ECS
 
-| File |
-|------|
-| [traffic_ecs](7.4/ECS/traffic_ecs.csv) |
-| [event_ecs](7.4/ECS/event_ecs.csv) |
-| [utm_ecs](7.4/ECS/utm_ecs.csv) |
+- [traffic_ecs](7.4/ECS/traffic_ecs.csv)
+- [event_ecs](7.4/ECS/event_ecs.csv)
+- [utm_ecs](7.4/ECS/utm_ecs.csv)
+
+### Field Occurrence Matrix
+
+- **7.4.11** — [traffic](7.4/7.4.11/traffic_matrix.csv) · [event](7.4/7.4.11/event_matrix.csv) · [utm](7.4/7.4.11/utm_matrix.csv)
+- **7.4.10** — [traffic](7.4/7.4.10/traffic_matrix.csv) · [event](7.4/7.4.10/event_matrix.csv) · [utm](7.4/7.4.10/utm_matrix.csv)
+- **7.4.9** — [traffic](7.4/7.4.9/traffic_matrix.csv) · [event](7.4/7.4.9/event_matrix.csv) · [utm](7.4/7.4.9/utm_matrix.csv)
+- **7.4.8** — [traffic](7.4/7.4.8/traffic_matrix.csv) · [event](7.4/7.4.8/event_matrix.csv) · [utm](7.4/7.4.8/utm_matrix.csv)
+- **7.4.7** — [traffic](7.4/7.4.7/traffic_matrix.csv) · [event](7.4/7.4.7/event_matrix.csv) · [utm](7.4/7.4.7/utm_matrix.csv)
+- **7.4.6** — [traffic](7.4/7.4.6/traffic_matrix.csv) · [event](7.4/7.4.6/event_matrix.csv) · [utm](7.4/7.4.6/utm_matrix.csv)
+- **7.4.5** — [traffic](7.4/7.4.5/traffic_matrix.csv) · [event](7.4/7.4.5/event_matrix.csv) · [utm](7.4/7.4.5/utm_matrix.csv)
+- **7.4.4** — [traffic](7.4/7.4.4/traffic_matrix.csv) · [event](7.4/7.4.4/event_matrix.csv) · [utm](7.4/7.4.4/utm_matrix.csv)
+- **7.4.3** — [traffic](7.4/7.4.3/traffic_matrix.csv) · [event](7.4/7.4.3/event_matrix.csv) · [utm](7.4/7.4.3/utm_matrix.csv)
+- **7.4.2** — [traffic](7.4/7.4.2/traffic_matrix.csv) · [event](7.4/7.4.2/event_matrix.csv) · [utm](7.4/7.4.2/utm_matrix.csv)
+- **7.4.1** — [traffic](7.4/7.4.1/traffic_matrix.csv) · [event](7.4/7.4.1/event_matrix.csv) · [utm](7.4/7.4.1/utm_matrix.csv)
+- **7.4.0** — [traffic](7.4/7.4.0/traffic_matrix.csv) · [event](7.4/7.4.0/event_matrix.csv) · [utm](7.4/7.4.0/utm_matrix.csv)
 
 ---
 
@@ -77,38 +90,49 @@
 
 ### Changelog
 
-| Version |
-|---------|
-| [7.2.13](7.2/7.2.13/analysis/CHANGELOG.md) |
-| [7.2.12](7.2/7.2.12/analysis/CHANGELOG.md) |
-| [7.2.11](7.2/7.2.11/analysis/CHANGELOG.md) |
-| [7.2.10](7.2/7.2.10/analysis/CHANGELOG.md) |
-| [7.2.9](7.2/7.2.9/analysis/CHANGELOG.md) |
-| [7.2.8](7.2/7.2.8/analysis/CHANGELOG.md) |
-| [7.2.7](7.2/7.2.7/analysis/CHANGELOG.md) |
-| [7.2.6](7.2/7.2.6/analysis/CHANGELOG.md) |
-| [7.2.5](7.2/7.2.5/analysis/CHANGELOG.md) |
-| [7.2.4](7.2/7.2.4/analysis/CHANGELOG.md) |
-| [7.2.3](7.2/7.2.3/analysis/CHANGELOG.md) |
-| [7.2.2](7.2/7.2.2/analysis/CHANGELOG.md) |
-| [7.2.1](7.2/7.2.1/analysis/CHANGELOG.md) |
-| [7.2.0](7.2/7.2.0/analysis/CHANGELOG.md) |
+- [7.2.13](7.2/7.2.13/CHANGELOG.md)
+- [7.2.12](7.2/7.2.12/CHANGELOG.md)
+- [7.2.11](7.2/7.2.11/CHANGELOG.md)
+- [7.2.10](7.2/7.2.10/CHANGELOG.md)
+- [7.2.9](7.2/7.2.9/CHANGELOG.md)
+- [7.2.8](7.2/7.2.8/CHANGELOG.md)
+- [7.2.7](7.2/7.2.7/CHANGELOG.md)
+- [7.2.6](7.2/7.2.6/CHANGELOG.md)
+- [7.2.5](7.2/7.2.5/CHANGELOG.md)
+- [7.2.4](7.2/7.2.4/CHANGELOG.md)
+- [7.2.3](7.2/7.2.3/CHANGELOG.md)
+- [7.2.2](7.2/7.2.2/CHANGELOG.md)
+- [7.2.1](7.2/7.2.1/CHANGELOG.md)
+- [7.2.0](7.2/7.2.0/CHANGELOG.md)
 
 ### Consolidated Fields
 
-| File |
-|------|
-| [traffic_fields](7.2/fields/traffic_fields.csv) |
-| [event_fields](7.2/fields/event_fields.csv) |
-| [utm_fields](7.2/fields/utm_fields.csv) |
-| [action_descriptions](7.2/fields/action_descriptions.csv) |
+- [traffic_fields](7.2/fields/traffic_fields.csv)
+- [event_fields](7.2/fields/event_fields.csv)
+- [utm_fields](7.2/fields/utm_fields.csv)
+- [action_descriptions](7.2/fields/action_descriptions.csv)
 
 ### ECS
 
-| File |
-|------|
-| [traffic_ecs](7.2/ECS/traffic_ecs.csv) |
-| [event_ecs](7.2/ECS/event_ecs.csv) |
-| [utm_ecs](7.2/ECS/utm_ecs.csv) |
+- [traffic_ecs](7.2/ECS/traffic_ecs.csv)
+- [event_ecs](7.2/ECS/event_ecs.csv)
+- [utm_ecs](7.2/ECS/utm_ecs.csv)
+
+### Field Occurrence Matrix
+
+- **7.2.13** — [traffic](7.2/7.2.13/traffic_matrix.csv) · [event](7.2/7.2.13/event_matrix.csv) · [utm](7.2/7.2.13/utm_matrix.csv)
+- **7.2.12** — [traffic](7.2/7.2.12/traffic_matrix.csv) · [event](7.2/7.2.12/event_matrix.csv) · [utm](7.2/7.2.12/utm_matrix.csv)
+- **7.2.11** — [traffic](7.2/7.2.11/traffic_matrix.csv) · [event](7.2/7.2.11/event_matrix.csv) · [utm](7.2/7.2.11/utm_matrix.csv)
+- **7.2.10** — [traffic](7.2/7.2.10/traffic_matrix.csv) · [event](7.2/7.2.10/event_matrix.csv) · [utm](7.2/7.2.10/utm_matrix.csv)
+- **7.2.9** — [traffic](7.2/7.2.9/traffic_matrix.csv) · [event](7.2/7.2.9/event_matrix.csv) · [utm](7.2/7.2.9/utm_matrix.csv)
+- **7.2.8** — [traffic](7.2/7.2.8/traffic_matrix.csv) · [event](7.2/7.2.8/event_matrix.csv) · [utm](7.2/7.2.8/utm_matrix.csv)
+- **7.2.7** — [traffic](7.2/7.2.7/traffic_matrix.csv) · [event](7.2/7.2.7/event_matrix.csv) · [utm](7.2/7.2.7/utm_matrix.csv)
+- **7.2.6** — [traffic](7.2/7.2.6/traffic_matrix.csv) · [event](7.2/7.2.6/event_matrix.csv) · [utm](7.2/7.2.6/utm_matrix.csv)
+- **7.2.5** — [traffic](7.2/7.2.5/traffic_matrix.csv) · [event](7.2/7.2.5/event_matrix.csv) · [utm](7.2/7.2.5/utm_matrix.csv)
+- **7.2.4** — [traffic](7.2/7.2.4/traffic_matrix.csv) · [event](7.2/7.2.4/event_matrix.csv) · [utm](7.2/7.2.4/utm_matrix.csv)
+- **7.2.3** — [traffic](7.2/7.2.3/traffic_matrix.csv) · [event](7.2/7.2.3/event_matrix.csv) · [utm](7.2/7.2.3/utm_matrix.csv)
+- **7.2.2** — [traffic](7.2/7.2.2/traffic_matrix.csv) · [event](7.2/7.2.2/event_matrix.csv) · [utm](7.2/7.2.2/utm_matrix.csv)
+- **7.2.1** — [traffic](7.2/7.2.1/traffic_matrix.csv) · [event](7.2/7.2.1/event_matrix.csv) · [utm](7.2/7.2.1/utm_matrix.csv)
+- **7.2.0** — [traffic](7.2/7.2.0/traffic_matrix.csv) · [event](7.2/7.2.0/event_matrix.csv) · [utm](7.2/7.2.0/utm_matrix.csv)
 
 ---
