@@ -1,5 +1,7 @@
 # FortiGate 7.4.0 — Analysis
 
+[← 7.4 Index](../INDEX.md)
+
 **Traffic**
 
 | Category | Fields | LOGIDs |
