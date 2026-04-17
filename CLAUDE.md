@@ -84,6 +84,8 @@ All new code must follow the conventions established in `generate_changelog.py`:
 
 For internal design, data flow diagrams, and full method documentation, see `DEVELOPERS_GUIDE.md`.
 
+Update it afeter every code change or refactoring.
+
 ## Dependencies
 
 ```bash
