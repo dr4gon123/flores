@@ -2,6 +2,7 @@
 
 # FortiOS versions to scrape
 versions:
+  - "8.0.0"
   - "7.6.0"
   - "7.6.1"
   - "7.6.2"

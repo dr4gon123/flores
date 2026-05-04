@@ -1,0 +1,32 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+action,,string,65,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+auditreporttype,,string,20,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+audittime,,uint64,20,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+criticalcount,,int32,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+date,Date,string,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+devid,Device ID,string,16,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+durationtotal,,string,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+endtime,,uint64,16,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+eventtime,Event time,uint64,20,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+highcount,,int32,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+level,Log Level,string,11,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+logdesc,Log Description,string,4096,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+logid,Log ID,string,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+lowcount,,int32,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+mediumcount,,int32,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+membytes,,uint64,16,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+memchange,,int32,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+passedcount,,int32,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+reason,Reason,string,256,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+remote,IP Address of the PPP Remote end,ip,39,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+rss,,uint32,16,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+starttime,,uint64,16,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+status,Status,string,23,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+subtask,,string,256,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+subtype,Log Subtype,string,20,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+task,,uint16,5,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+time,Time,string,8,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+totalsession,Total Number of Sessions,uint32,10,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+type,Log Type,string,16,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+tz,Time zone,string,5,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0
+vd,Virtual Domain Name,string,32,47400 - LOG_ID_WEB_SVC_MEMORY_PROFILE,47400,LOG_ID_WEB_SVC_MEMORY_PROFILE,Memory profiling for web-svc task.,Event,web-svc,Information,8.0.0

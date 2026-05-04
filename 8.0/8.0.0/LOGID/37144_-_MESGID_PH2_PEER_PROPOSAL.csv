@@ -1,0 +1,30 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+action,Policy Action,string,65,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+advpnsc,,uint8,3,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+assignip,IPsec VPN tunnel assigned IP address,ip,39,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+cookies,Cookie,string,64,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+date,Date,string,10,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+devid,Device ID,string,16,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+eapauthgroup,,string,128,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+eapuser,,string,256,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+eventtime,Event time,uint64,20,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+fctuid,,string,32,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+group,User group Name,string,512,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+level,Log Level,string,11,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+locip,IPsec VPN local gateway IP address,ip,39,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+locport,Local Port,uint16,5,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+logdesc,Log Description,string,4096,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+logid,Log ID,string,10,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+msg,Log Message,string,4096,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+outintf,IPsec VPN binding interface,string,32,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+remip,IPsec VPN remote gateway IP address,ip,39,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+remport,Remote Port,uint16,5,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+status,Status,string,23,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+subtype,Log Subtype,string,20,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+time,Time,string,8,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+type,Log Type,string,16,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+tz,Time zone,string,5,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+user,User name of authenticated user,string,256,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+useralt,,string,256,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+vd,Virtual Domain Name,string,32,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
+vpntunnel,IPsec VPN Tunnel Name,string,128,37144 - MESGID_PH2_PEER_PROPOSAL,37144,MESGID_PH2_PEER_PROPOSAL,Phase 2 peer proposal details,Event,vpn,Information,8.0.0
