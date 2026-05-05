@@ -53,6 +53,7 @@ analyticscksum,string,64,The checksum of the file submitted for analytics
 analyticssubmit,string,10,The flag for analytics submission
 antiphishdc,string,64,
 antiphishrule,string,64,
+apn,string,128,Access Point Name
 app,string,96,Application name
 appcat,string,64,Application category name
 appid,uint32,10,Application ID
@@ -74,6 +75,13 @@ Virus: Server used to authenticate the involved user"
 banword,string,128,Banned word
 botnetdomain,string,256,Botnet domain name
 botnetip,ip,39,Botnet IP address
+c-bytes,uint64,20,Control Plane Data Bytes
+c-ggsn,ip,39,Control Plane GGSN IP Address
+c-ggsn-teid,uint32,10,Control Plane GGSN Tunnel Endpoint Identifier
+c-gsn,ip,39,Control Plane GSN
+c-pkts,uint64,20,Control Plane Packets
+c-sgsn,ip,39,Control Plane SGSN IP Address
+c-sgsn-teid,uint32,10,Control Plane SGSN Tunnel Endpoint Identifier
 call_id,string,64,"Ex: call_id=""1-22011@10.6.30.11"""
 cat,uint8,3,"DNS: DNS category ID
 
@@ -86,11 +94,16 @@ ccertissuer,string,64,
 cdrcontent,string,256,
 certdesc,string,64,
 certhash,string,40,
+cfseid,string,20,
+cfseidaddr,ip,39,
+cggsn6,ip,39,
+cgsn6,ip,39,
 channeltype,string,15,"Type of Channel:
  x11, shell, exec, tcp-fprward, tun-forward, sftp. scp"
 checksum,string,16,The checksum of the scanned file
 chgheaders,string,1024,Change headers
 cipher,string,6,
+clashtunnelidx,uint32,10,
 cloudaction,string,32,Action performed by cloud application
 clouddevice,string,256,
 clouduser,string,256,User login ID detected by the Deep Application Control feature
@@ -104,6 +117,18 @@ contenttype,string,64,Content Type from HTTP header
 count,uint32,10,"Anomaly: Count
 
 VoIP: Session count"
+cpaddr,ip,39,Control Plane Address (either downlink or uplink)
+cpaddr6,ip,39,
+cpdladdr,ip,39,Control Plane Downlink IP Address
+cpdladdr6,ip,39,
+cpdlisraddr,ip,39,Control Plane ISR Downlink IP Address
+cpdlisraddr6,ip,39,
+cpdlisrteid,uint32,10,control plane ISR downlink tunnel endpoint identifier
+cpdlteid,uint32,10,control plane downlink tunnel endpoint identifier
+cpteid,uint32,10,Control Plane teid (either downlink or uplink)
+cpuladdr,ip,39,control plane uplink IP address
+cpuladdr6,ip,39,
+cpulteid,uint32,10,control plane uplink teid
 craction,uint32,10,"APP-CTRL/Anomaly/Webfilter: Client Reputation Action
 
 IPS: Action performed by Threat Weight
@@ -115,12 +140,14 @@ Virus: Threat Weight Level"
 crscore,uint32,10,"APP-CTRL/Anomaly/IPS/Webfilter: Client Reputation Score
 
 Virus: Threat Weight Score"
-date,string,10,"APP-CTRL/Anomaly/DLP/DNS/IPS/SSH/Virus/WAF/Webfilter: Date
+csgsn6,ip,39,
+date,string,10,"APP-CTRL/Anomaly/DLP/DNS/GTP/IPS/SSH/Virus/WAF/Webfilter: Date
 
 VoIP: Day, month, and year when the log message was recorded."
+deny_cause,string,25,Deny Cause
 devid,string,16,"APP-CTRL/Anomaly/IPS: Deivce ID
 
-DLP/DNS/SSH/WAF/Webfilter: Device ID
+DLP/DNS/GTP/SSH/WAF/Webfilter: Device ID
 
 VoIP: Serial number of the device for the traffic's origin."
 dir,string,16,Destination Interface
@@ -153,8 +180,13 @@ Virus/WAF: Destination IP Address"
 dstport,uint16,5,Destination Port
 dstuser,string,256,
 dstuuid,string,37,
+dtlexp,string,64,Detailed Explanation
 dtype,string,32,Data type for virus category
-duration,uint32,10,Duration of the session. Ex: 180 (in seconds)
+duration,uint32,10,"GTP: Tunnel duration
+
+VoIP: Duration of the session. Ex: 180 (in seconds)"
+end-usr-address,ip,39,End user IP Address
+endusraddress6,ip,39,
 epoch,uint32,10,"DLP: Epoch used for locating file
 
 VoIP: Epoch"
@@ -173,6 +205,8 @@ Anomaly/IPS/Virus: Time when detection occured
 DLP: Event Time, time when DLP event detected.
 
 DNS: Event Timestamp
+
+GTP: Event time line
 
 VoIP: Time when event occured
 
@@ -220,11 +254,14 @@ fortiguardresp,string,512,
 forwardedfor,string,128,"APP-CTRL/DLP: Forwarded For
 
 IPS/Webfilter: X-Forwarded-For HTTP header"
-from,string,128,"DLP/Virus: Email address from the Email Headers (IMAP/POP3/SMTP)
+from,"ip,string",128,"DLP/Virus: Email address from the Email Headers (IMAP/POP3/SMTP)
+
+GTP: From
 
 VoIP: Where call was originated from
 
 Webfilter: MMS-only - From/To headers from the email"
+from6,ip,39,
 fsaaction,string,7,
 fsafileid,uint64,20,
 fsafiletype,string,10,
@@ -237,8 +274,10 @@ SSH: Group name for authentication
 
 Virus: Group name (authentication)"
 handshake,string,11,
+headerteid,uint32,10,Tunnel Endpoint ID Header
 hostkeystatus,string,15,
 hostname,string,256,The host name of a URL
+hseid,string,20,
 httpmethod,string,20,
 icmpcode,string,6,"Anomaly: ICMP code
 
@@ -249,6 +288,9 @@ IPS: Source port of the ICMP message"
 icmptype,string,6,"Anomaly: ICMP Type
 
 IPS: The type of ICMP message"
+ietype,uint8,3,Malformed GTP IE number
+imei-sv,string,32,IMEI(International Mobile Equipment Identity) Software Version
+imsi,string,16,International mobile subscriber ID
 incidentserialno,uint32,10,Incident serial number
 infectedfilelevel,uint32,10,"Infected File Level (Critical,Warning etc)"
 infectedfilename,string,256,Infected File Name
@@ -266,9 +308,10 @@ kxcurve,string,32,
 kxproto,string,7,
 level,string,11,Log Level
 line,string,128,SIP header line
+linked-nsapi,uint8,3,Linked Netscape Server Application Programming Interface
 locip,ip,39,Local IP
 locport,uint16,5,Local Port
-logid,string,10,"APP-CTRL/Anomaly/DLP/DNS/IPS/SSH/Virus/WAF/Webfilter: Log ID
+logid,string,10,"APP-CTRL/Anomaly/DLP/DNS/GTP/IPS/SSH/Virus/WAF/Webfilter: Log ID
 
 VoIP: Unique Log ID"
 login,string,128,SSH login Name
@@ -282,9 +325,14 @@ mitm,string,3,
 msg,string,"512,518,4096","APP-CTRL/Anomaly/DNS/Virus/WAF/Webfilter: Log message
 
 IPS: Log message for the attack"
+msg-type,uint8,3,Message Type
+msgtypename,string,50,
+msisdn,string,16,Mobile Subscriber Integrated Services Digital Network-Number (telephone # to a SIM card)
+nai,string,128,
 name,string,64,Method or custom signature name
 notafter,string,20,
 notbefore,string,20,
+nsapi,uint8,3,Netscape Server Application Programming Interface
 parameters,string,512,
 pathname,string,256,
 pdstport,uint16,5,
@@ -297,6 +345,8 @@ poluuid,string,37,
 profile,string,"36,64","DLP: DLP profile name
 
 DNS: Profile name for DNS filter
+
+GTP: Profile Name
 
 IPS: Profile name for IPS
 
@@ -323,6 +373,8 @@ quotaexceeded,string,3,Quota has been exceeded
 quotamax,uint64,20,Maximum quota allowed - in seconds if time-based - in bytes if traffic-based
 quotatype,string,16,Quota type
 quotaused,uint64,20,Quota used - in seconds if time-based - in bytes if traffic-based
+rai,string,32,Routing Area Identifier
+rat-type,string,7,Radio Access Technology type
 ratemethod,string,"6,4096",
 rawdata,string,1024,"APP-CTRL/IPS/Webfilter: Extended logging data including HTTP method, URL, client content type, server content type, user agent, referer, x-forwarded-for
 
@@ -346,9 +398,11 @@ request_name,string,64,"Name of request. Ex: request_name=""INVITE"" or ""NOTIFY
 san,string,448,
 scertcname,string,64,server certificate name
 scertissuer,string,64,server certificate issuer
+selection,string,14,"APN selection, which is one IE in gtp packet"
 sender,string,128,Email address from the SMTP envelope
 sensitivity,string,36,Sensitivity for document fingerprint
 sentbyte,uint64,20,Sent Bytes
+seqnum,uint32,10,GTP packet sequence number
 service,string,"5,36,80","APP-CTRL/DLP/IPS/WAF/Webfilter: Service name
 
 Anomaly: Name of Service
@@ -367,6 +421,7 @@ sharename,string,256,
 size,string,16,
 ski,string,64,
 sn,string,40,
+snetwork,string,64,"Source Network, it's a IE type in GTPv2 packet"
 sni,string,256,
 src_int,string,16,"Name of the source interface. Ex: src_int=""port1"""
 src_port,uint16,5,Port number of the traffic's origin. Ex: srcport=40772
@@ -385,25 +440,31 @@ srcmac,string,17,MAC address associated with the Source IP
 srcport,uint16,5,Source Port
 srcuuid,string,37,
 sscname,string,256,Safe Search CNAME
-status,string,23,"Status. Ex: status=""blocked"" , status= ""start"""
+status,string,23,"GTP: Status
+
+VoIP: Status. Ex: status=""blocked"" , status= ""start"""
 subject,string,256,The subject title of the email message
 subservice,string,16,
-subtype,string,20,"APP-CTRL/Anomaly/DLP/DNS/IPS/SSH/WAF/Webfilter: Log subtype
+subtype,string,20,"APP-CTRL/Anomaly/DLP/DNS/GTP/IPS/SSH/WAF/Webfilter: Log subtype
 
 Virus: Subtype of the virus log
 
 VoIP: Subtype"
 switchid,string,32,
 switchproto,string,128,Protocol used on the switch
-time,string,8,"APP-CTRL/Anomaly/DLP/DNS/IPS/SSH/Virus/WAF/Webfilter: Time
+time,string,8,"APP-CTRL/Anomaly/DLP/DNS/GTP/IPS/SSH/Virus/WAF/Webfilter: Time
 
 VoIP: Hour clock when the log message was recorded."
+timeoutdelete,uint8,3,
 tlsver,string,8,
-to,string,512,"DLP/Virus: Email address(es) from the Email Headers (IMAP/POP3/SMTP)
+to,"ip,string",512,"DLP/Virus: Email address(es) from the Email Headers (IMAP/POP3/SMTP)
+
+GTP: To
 
 VoIP: Destination address
 
 Webfilter: MMS-only - From/To headers from the email"
+to6,ip,39,
 transid,uint32,10,Transaction ID
 translationid,uint32,10,
 trueclntip,ip,39,"APP-CTRL: True-Client-IP
@@ -411,12 +472,28 @@ trueclntip,ip,39,"APP-CTRL: True-Client-IP
 DLP: True client's IP
 
 IPS/Webfilter: True-Client-IP HTTP header"
-type,string,16,"APP-CTRL/Anomaly/DLP/DNS/IPS/SSH/Virus/WAF/Webfilter: Log type
+tunnel-idx,uint32,10,"Tunnel serial number, internally assigned"
+type,string,16,"APP-CTRL/Anomaly/DLP/DNS/GTP/IPS/SSH/Virus/WAF/Webfilter: Log type
 
 VoIP: Type of log. Ex: type=""utm"""
 tz,string,5,Time Zone
+u-bytes,uint64,20,User Plane Data Bytes
+u-ggsn,ip,39,User plane ggsn IP address
+u-ggsn-teid,uint32,10,User plane ggsn teid
+u-gsn,ip,39,User Plane GSN
+u-pkts,uint64,20,User Plane Packets
+u-sgsn,ip,39,User plane sgsn IP address
+u-sgsn-teid,uint32,10,User plane sgsn tunnel endpoint identifier
+ufseid,string,20,
+ufseidaddr,ip,39,
+uggsn6,ip,39,
+ugsn6,ip,39,
+uli,string,120,User Location Information
+ulimcc,uint16,3,
+ulimnc,uint16,3,
 unauthuser,string,66,Unauthenticated user
 unauthusersource,string,66,Unauthenticated user source
+upteid,uint32,10,
 url,string,512,"APP-CTRL/DLP/IPS/Virus/Webfilter: The URL address
 
 WAF: URL"
@@ -431,11 +508,14 @@ Anomaly: User
 SSH: User name for authentication
 
 Virus: Username (authentication)"
-vd,string,32,"APP-CTRL/Anomaly/DLP/DNS/IPS/SSH/WAF/Webfilter: Virtual domain name
+user_data,string,256,User traffic content inside GTP-U tunnel
+usgsn6,ip,39,
+vd,string,32,"APP-CTRL/Anomaly/DLP/DNS/GTP/IPS/SSH/WAF/Webfilter: Virtual domain name
 
 Virus: VDOM name
 
 VoIP: Name of the virtual domain in which the log message was recorded."
+version,uint32,64,Version
 videocategoryid,uint32,10,
 videocategoryname,string,256,
 videochannelid,string,512,
