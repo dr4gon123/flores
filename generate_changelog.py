@@ -5,6 +5,7 @@ Run from repo root: python3 generate_changelog.py
 """
 from __future__ import annotations
 
+import logging
 import re
 from collections import Counter, defaultdict
 from itertools import groupby
@@ -12,6 +13,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 MAJOR_RE = re.compile(r'^\d+\.\d+$')
 MINOR_RE = re.compile(r'^\d+\.\d+\.\d+$')
@@ -189,11 +192,7 @@ def _utm_types(version_dict: dict[str, pd.DataFrame]) -> set[str]:
 
 
 def _cell_desc(text: str) -> str:
-    """Render a description for a Markdown table cell.
-
-    Preserves the full text — replaces all line-ending variants with HTML <br>
-    so the cell displays as multi-line without breaking the table structure.
-    """
+    """Render a description for a Markdown table cell, replacing line endings with <br>."""
     if not text:
         return '*(empty)*'
     lines = text.splitlines()
@@ -225,13 +224,7 @@ def _aggregate_bucket(
     bucket: str,
     bucket_diffs: dict[str, tuple[str, 'LogidDiff']],
 ) -> tuple[dict, dict, dict, dict, dict]:
-    """Aggregate field-level changes across all LOGIDs in a bucket.
-
-    Traffic: category is excluded from the key — all Traffic LOGIDs for the same
-    field are merged into one row regardless of subcategory.
-    Event/UTM: extra value (Category / UTM-subtype) is included so per-subtype rows
-    remain distinct.
-    """
+    """Aggregate field-level changes across all LOGIDs in a bucket (Traffic merges across categories)."""
     use_extra = bucket != 'Traffic'
 
     adds: dict[str, dict[tuple, list[str]]] = defaultdict(lambda: defaultdict(list))
@@ -528,11 +521,7 @@ def _render_conflict_rows(
     bucket: str,
     conflict_labels: list[str] | None = None,
 ) -> list[str]:
-    """Render the field heading, optional conflict-type labels, and table for one field.
-
-    Rows sharing the same (desc, dtype, length) are collapsed into a single
-    table row with <br>-separated categories and LOGID lists.
-    """
+    """Render the field heading, optional conflict-type labels, and table for one field."""
     lines = [f'`{field}`', '']
     if conflict_labels:
         lines += conflict_labels + ['']
@@ -668,13 +657,7 @@ def _build_field_matrix(
     type_filter: str | None,
     group_col: str,
 ) -> pd.DataFrame:
-    """Build a field × category/type occurrence matrix for one minor version.
-
-    Rows are field names, columns are categories (Traffic/Event) or types (UTM).
-    The first row (index '_total') holds the total LOGID count per column.
-    Cell values are the number of distinct LOGIDs containing that field.
-    Returns an empty DataFrame if no rows match the filter.
-    """
+    """Build a field × category/type occurrence matrix (with a _total row) for one minor version."""
     pieces = [
         df.assign(_stem=stem)
         for stem, df in version_dict.items()
@@ -729,7 +712,7 @@ def _write_minor_analysis(
             content_parts.append(_render_version_pair(prev_label, minor_dir.name, diff))
         changelog_path = minor_dir / 'CHANGELOG.md'
         changelog_path.write_text('\n'.join(content_parts) + '\n', encoding='utf-8')
-        print(f'Written: {changelog_path} ({changelog_path.stat().st_size:,} bytes)')
+        logger.info(f'Written: {changelog_path} ({changelog_path.stat().st_size:,} bytes)')
 
     if do_matrices:
         specs = [
@@ -744,7 +727,7 @@ def _write_minor_analysis(
             path = minor_dir / filename
             matrix.to_csv(path)
             n_fields = len(matrix) - 1  # exclude _total row
-            print(f'Written: {path} ({n_fields} fields × {len(matrix.columns)} columns)')
+            logger.info(f'Written: {path} ({n_fields} fields × {len(matrix.columns)} columns)')
 
 
 def _normalize_desc(text: str) -> str:
@@ -780,12 +763,7 @@ def _consolidate_fields(
     type_filter: str | None,
     group_col: str,
 ) -> pd.DataFrame:
-    """Consolidate field definitions across all minor versions for one log type.
-
-    Returns a DataFrame with columns: Log Field Name, Data Type, Length, Description.
-    Data Type and Length list all distinct raw values (comma-separated).
-    Description uses subtype-labeled format when meanings differ across subtypes.
-    """
+    """Consolidate field definitions (Log Field Name, Data Type, Length, Description) across all minor versions for one log type."""
     pieces = [
         df.assign(_stem=stem)
         for stem, df in all_stems.items()
@@ -886,13 +864,13 @@ def _write_major_fields(major_dir: Path, all_stems: dict[str, pd.DataFrame]) -> 
             continue
         path = fields_dir / filename
         df.to_csv(path, index=False)
-        print(f'Written: {path} ({len(df)} fields)')
+        logger.info(f'Written: {path} ({len(df)} fields)')
 
     action_df = _consolidate_action_descriptions(all_stems)
     if not action_df.empty:
         path = fields_dir / 'action_descriptions.csv'
         action_df.to_csv(path, index=False)
-        print(f'Written: {path} ({len(action_df.columns)} subtypes)')
+        logger.info(f'Written: {path} ({len(action_df.columns)} subtypes)')
 
 
 def _write_changelog_index(root: Path, version_groups: list[tuple[str, list[Path]]]) -> None:
@@ -980,14 +958,15 @@ def _write_changelog_index(root: Path, version_groups: list[tuple[str, list[Path
         major_lines.extend(_major_section(major_label, minor_dirs, prefix="", include_matrices=True))
         major_out = root / major_label / "INDEX.md"
         major_out.write_text("\n".join(major_lines))
-        print(f"Written: {major_out}")
+        logger.info(f"Written: {major_out}")
 
     out = root / "INDEX.md"
     out.write_text("\n".join(root_lines))
-    print(f"Written: {out}")
+    logger.info(f"Written: {out}")
 
 
 def main() -> None:
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     import argparse
     parser = argparse.ArgumentParser(description='Generate FortiGate log field changelogs and field matrices.')
     parser.add_argument('--changelog', action='store_true', help='Generate only per-minor-version CHANGELOG.md files')
@@ -1005,7 +984,7 @@ def main() -> None:
     version_groups = discover_versions(root)
 
     if not version_groups:
-        print('No version directories found. Run fortigate_scraper.py first.')
+        logger.info('No version directories found. Run fortigate_scraper.py first.')
         return
 
     for major_label, minor_dirs in version_groups:

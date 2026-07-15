@@ -13,7 +13,7 @@ All scraped data and generated outputs are already committed to this repository 
 To add a new FortiOS version or regenerate outputs:
 
 ```bash
-pip install requests beautifulsoup4 pandas lxml pyyaml
+pip install httpx[http2] beautifulsoup4 pandas lxml pyyaml
 python3 fortigate_scraper.py       # scrape Fortinet docs
 python3 generate_changelog.py      # changelogs, field matrices, consolidated CSVs, INDEX.md
 python3 generate_ecs_mappings.py   # ECS mapping CSVs
@@ -96,8 +96,9 @@ Edit `fortigate_scraper_config.yaml` to customize behaviour:
 | `base_delay` | `1.0` | Seconds between HTTP requests (rate limiting) |
 | `max_retries` | `3` | Additional attempts per URL after an error (`0` = no retries) |
 | `retry_backoff` | `2.0` | Exponential backoff multiplier: `base_delay × (backoff ^ attempt)` |
+| `concurrency` | `5` | Max parallel LOGID fetches per version (`asyncio.Semaphore`) |
 | `force_rescrape` | `false` | Re-scrape versions that already exist locally |
-| `dry_run` | `false` | Print scrape plan without fetching any pages |
+| `dry_run` | `false` | Log scrape plan without fetching any pages |
 | `output_dir` | `"."` | Root directory for all output |
 
 ## Adding a New FortiOS Version
