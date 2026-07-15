@@ -6,6 +6,7 @@
 
 ### Changelog
 
+- [7.4.12](7.4.12/CHANGELOG.md)
 - [7.4.11](7.4.11/CHANGELOG.md)
 - [7.4.10](7.4.10/CHANGELOG.md)
 - [7.4.9](7.4.9/CHANGELOG.md)
@@ -34,6 +35,7 @@
 
 ### Field Occurrence Matrix
 
+- **7.4.12** — [traffic](7.4.12/traffic_matrix.csv) · [event](7.4.12/event_matrix.csv) · [utm](7.4.12/utm_matrix.csv)
 - **7.4.11** — [traffic](7.4.11/traffic_matrix.csv) · [event](7.4.11/event_matrix.csv) · [utm](7.4.11/utm_matrix.csv)
 - **7.4.10** — [traffic](7.4.10/traffic_matrix.csv) · [event](7.4.10/event_matrix.csv) · [utm](7.4.10/utm_matrix.csv)
 - **7.4.9** — [traffic](7.4.9/traffic_matrix.csv) · [event](7.4.9/event_matrix.csv) · [utm](7.4.9/utm_matrix.csv)

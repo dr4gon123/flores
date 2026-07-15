@@ -271,7 +271,7 @@ result,string,31,IPsec VPN negotiation result
 retransample,uint16,5,
 role,string,9,"IPsec peer role, initator or responder"
 rss,uint32,16,
-rssi,uint8,3,The value of Received signal strength indicator
+rssi,int8,4,The value of Received signal strength indicator
 rsso_key,string,64,RADIUS SSO attribute value
 rttsample,uint16,5,
 saddr,string,80,Source Address IP

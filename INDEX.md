@@ -28,6 +28,7 @@
 
 ### Changelog
 
+- [7.6.7](7.6/7.6.7/CHANGELOG.md)
 - [7.6.6](7.6/7.6.6/CHANGELOG.md)
 - [7.6.5](7.6/7.6.5/CHANGELOG.md)
 - [7.6.4](7.6/7.6.4/CHANGELOG.md)
@@ -51,6 +52,7 @@
 
 ### Field Occurrence Matrix
 
+- **7.6.7** — [traffic](7.6/7.6.7/traffic_matrix.csv) · [event](7.6/7.6.7/event_matrix.csv) · [utm](7.6/7.6.7/utm_matrix.csv)
 - **7.6.6** — [traffic](7.6/7.6.6/traffic_matrix.csv) · [event](7.6/7.6.6/event_matrix.csv) · [utm](7.6/7.6.6/utm_matrix.csv)
 - **7.6.5** — [traffic](7.6/7.6.5/traffic_matrix.csv) · [event](7.6/7.6.5/event_matrix.csv) · [utm](7.6/7.6.5/utm_matrix.csv)
 - **7.6.4** — [traffic](7.6/7.6.4/traffic_matrix.csv) · [event](7.6/7.6.4/event_matrix.csv) · [utm](7.6/7.6.4/utm_matrix.csv)
@@ -65,6 +67,7 @@
 
 ### Changelog
 
+- [7.4.12](7.4/7.4.12/CHANGELOG.md)
 - [7.4.11](7.4/7.4.11/CHANGELOG.md)
 - [7.4.10](7.4/7.4.10/CHANGELOG.md)
 - [7.4.9](7.4/7.4.9/CHANGELOG.md)
@@ -93,6 +96,7 @@
 
 ### Field Occurrence Matrix
 
+- **7.4.12** — [traffic](7.4/7.4.12/traffic_matrix.csv) · [event](7.4/7.4.12/event_matrix.csv) · [utm](7.4/7.4.12/utm_matrix.csv)
 - **7.4.11** — [traffic](7.4/7.4.11/traffic_matrix.csv) · [event](7.4/7.4.11/event_matrix.csv) · [utm](7.4/7.4.11/utm_matrix.csv)
 - **7.4.10** — [traffic](7.4/7.4.10/traffic_matrix.csv) · [event](7.4/7.4.10/event_matrix.csv) · [utm](7.4/7.4.10/utm_matrix.csv)
 - **7.4.9** — [traffic](7.4/7.4.9/traffic_matrix.csv) · [event](7.4/7.4.9/event_matrix.csv) · [utm](7.4/7.4.9/utm_matrix.csv)

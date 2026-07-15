@@ -2,15 +2,15 @@ Log Field Name,Data Type,Length,Description
 accessctrl,string,80,
 accessproxy,string,80,
 action,string,16,"The status of the session:
- deny - Session was denied
- accept - Allowed Forward session
- start - Session starts (log message was created when the session was created)
- dns - DNS query return error
- ip-conn - Failed connection attempts
- close - Local-traffic session allowed
- timeout - Allowed session was timeout
- client-rst - Session reset by client
- server-rst - Session reset by server"
+  deny - Session was denied
+  accept - Allowed Forward session
+  start - Session starts (log message was created when the session was created)
+  dns - DNS query return error
+  ip-conn - Failed connection attempts
+  close - Session closed by client or server with a TCP FIN
+  timeout - Allowed session was timeout
+  client-rst - Session reset by client
+  server-rst - Session reset by server"
 agent,string,1024,"User agent - eg. agent=""Mozilla/5.0"""
 ap,string,36,Access Point name
 app,string,96,Application name
