@@ -5,25 +5,29 @@ Scrapes all log message reference tables from Fortinet documentation
 for different FortiOS versions and saves them as CSV files.
 
 Requirements:
-    pip install requests beautifulsoup4 pandas lxml pyyaml
+    pip install httpx[http2] beautifulsoup4 pandas lxml pyyaml
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 import random
 import re
-import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urljoin
 
+import httpx
 import pandas as pd
-import requests
 import yaml
 from bs4 import BeautifulSoup
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+USER_AGENT = (
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+    '(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+)
 
 
 @dataclass
@@ -34,19 +38,13 @@ class ScrapeResult:
 
 class FortiGateLogScraper:
     def __init__(self, config_file: str = 'fortigate_scraper_config.yaml'):
-        """Initialize the scraper from config file."""
         config = self._load_config(config_file)
         settings = config.get('settings', {})
-
-        self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-                          '(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        })
 
         self.base_delay: float = settings.get('base_delay', 1.0)
         self.max_retries: int = settings.get('max_retries', 3)
         self.retry_backoff: float = settings.get('retry_backoff', 2.0)
+        self.concurrency: int = settings.get('concurrency', 5)
         self.output_dir: Path = Path(settings.get('output_dir', Path.cwd()))
         self.force_rescrape: bool = settings.get('force_rescrape', False)
         self.dry_run: bool = settings.get('dry_run', False)
@@ -63,10 +61,9 @@ class FortiGateLogScraper:
         logger.info(f'Max retries: {self.max_retries}, retry backoff: {self.retry_backoff}')
 
     def _load_config(self, config_file: str) -> dict:
-        """Load and return YAML configuration from the script's directory."""
         config_path = Path(__file__).parent / config_file
         try:
-            with open(config_path) as f:
+            with config_path.open() as f:
                 config = yaml.safe_load(f)
             logger.info(f'Successfully loaded configuration from {config_path}')
             return config
@@ -78,50 +75,46 @@ class FortiGateLogScraper:
             raise
 
     def get_version_directories(self, version: str) -> tuple[Path, Path]:
-        """Return (major_dir, minor_dir) for a version string like '7.6.4'."""
         parts = version.split('.')
         major = f'{parts[0]}.{parts[1]}' if len(parts) >= 2 else version
         major_dir = self.output_dir / major
         return major_dir, major_dir / version
 
     def get_version_url(self, version: str) -> str:
-        """Return the Fortinet docs URL for a given FortiOS version."""
         return (f'https://docs.fortinet.com/document/fortigate/{version}'
                 f'/fortios-log-message-reference/1/log-messages')
 
-    def get_page_content(self, url: str) -> BeautifulSoup | None:
-        """Fetch and parse a web page with configurable retry and exponential backoff."""
+    async def get_page_content(self, url: str) -> BeautifulSoup | None:
         for attempt in range(self.max_retries + 1):
             try:
                 logger.info(f'Fetching: {url}')
-                response = self.session.get(url, timeout=30)
+                response = await self.client.get(url)
 
                 if response.status_code == 429:
                     wait = int(response.headers.get(
                         'Retry-After', self.base_delay * (self.retry_backoff ** attempt)))
                     logger.warning(f'Rate limited (429). Waiting {wait}s '
                                    f'(attempt {attempt + 1}/{self.max_retries + 1})')
-                    time.sleep(wait)
+                    await asyncio.sleep(wait)
                     continue
 
                 response.raise_for_status()
-                time.sleep(self.base_delay)
+                await asyncio.sleep(self.base_delay)
                 return BeautifulSoup(response.content, 'html.parser')
 
-            except requests.exceptions.RequestException as e:
+            except httpx.HTTPError as e:
                 if attempt < self.max_retries:
                     wait = self.base_delay * (self.retry_backoff ** attempt) + random.uniform(0, 1)
                     logger.warning(f'Error fetching {url}: {e}. '
                                    f'Retrying in {wait:.1f}s '
                                    f'(attempt {attempt + 1}/{self.max_retries + 1})')
-                    time.sleep(wait)
+                    await asyncio.sleep(wait)
                 else:
                     logger.error(f'Failed to fetch {url} after {self.max_retries + 1} attempts: {e}')
 
         return None
 
     def extract_logid_links(self, soup: BeautifulSoup, base_url: str) -> dict[str, str]:
-        """Return {description: full_url} for all LOGID links found on the page."""
         url_pattern = r'/(\d{1,6})-(logid|log-id|mesgid)-[^/]*$'
         logid_links = {}
         for link in soup.find_all('a', href=True):
@@ -136,7 +129,6 @@ class FortiGateLogScraper:
         return logid_links
 
     def extract_log_metadata(self, soup: BeautifulSoup) -> dict[str, str]:
-        """Extract log metadata (Message ID, Type, Category, Severity, etc.) from a LOGID page."""
         metadata: dict[str, str] = {
             'Message_ID': '',
             'Message_Description': '',
@@ -178,7 +170,6 @@ class FortiGateLogScraper:
         return metadata
 
     def extract_log_table(self, soup: BeautifulSoup, logid: str) -> pd.DataFrame | None:
-        """Extract the log field table and metadata from a LOGID page."""
         metadata = self.extract_log_metadata(soup)
         expected_headers = ['field', 'description', 'type', 'length', 'data type', 'field name']
 
@@ -221,8 +212,7 @@ class FortiGateLogScraper:
         logger.warning(f'No suitable table or metadata found for {logid}')
         return None
 
-    def scrape_version(self, version: str) -> ScrapeResult:
-        """Scrape all log tables for one FortiOS version and return the result."""
+    async def scrape_version(self, version: str) -> ScrapeResult:
         logger.info(f'Starting scrape for FortiOS version {version}')
         result = ScrapeResult()
 
@@ -232,7 +222,7 @@ class FortiGateLogScraper:
         logid_dir = minor_dir / 'LOGID'
         logid_dir.mkdir(exist_ok=True)
 
-        soup = self.get_page_content(self.get_version_url(version))
+        soup = await self.get_page_content(self.get_version_url(version))
         if not soup:
             logger.error(f'Failed to fetch main page for version {version}')
             return result
@@ -253,40 +243,43 @@ class FortiGateLogScraper:
         else:
             logger.info(f'Version {version}: {len(logid_links)} LOGIDs total (force_rescrape=true)')
 
-        for logid_description, url in logid_links.items():
-            filepath = logid_dir / (re.sub(r'[^\w\-_\.]', '_', str(logid_description)) + '.csv')
+        semaphore = asyncio.Semaphore(self.concurrency)
 
+        async def _scrape_one(logid_description: str, url: str) -> None:
+            filepath = logid_dir / (re.sub(r'[^\w\-_\.]', '_', str(logid_description)) + '.csv')
             if not self.force_rescrape and filepath.exists():
                 logger.info(f'Skipping {logid_description} (already exists)')
                 result.successful += 1
-                continue
+                return
 
-            logger.info(f'Processing LOGID: {logid_description}')
+            async with semaphore:
+                logger.info(f'Processing LOGID: {logid_description}')
+                logid_soup = await self.get_page_content(url)
+                if not logid_soup:
+                    result.failed.append((version, logid_description, 'fetch_failed'))
+                    return
 
-            logid_soup = self.get_page_content(url)
-            if not logid_soup:
-                result.failed.append((version, logid_description, 'fetch_failed'))
-                continue
+                df = self.extract_log_table(logid_soup, logid_description)
+                if df is None:
+                    result.failed.append((version, logid_description, 'no_table_found'))
+                    return
 
-            df = self.extract_log_table(logid_soup, logid_description)
-            if df is None:
-                result.failed.append((version, logid_description, 'no_table_found'))
-                continue
+                df['Version'] = version
 
-            df['Version'] = version
+                try:
+                    df.to_csv(filepath, index=False)
+                    logger.info(f'Saved {len(df)} rows to {filepath}')
+                    result.successful += 1
+                except Exception as e:
+                    logger.error(f'Error saving {filepath}: {e}')
+                    result.failed.append((version, logid_description, f'save_failed: {e}'))
 
-            try:
-                df.to_csv(filepath, index=False)
-                logger.info(f'Saved {len(df)} rows to {filepath}')
-                result.successful += 1
-            except Exception as e:
-                logger.error(f'Error saving {filepath}: {e}')
-                result.failed.append((version, logid_description, f'save_failed: {e}'))
-
+        # Fetch all LOGIDs concurrently (bounded by the semaphore) but write
+        # results in the original dict order so output and logs stay deterministic.
+        await asyncio.gather(*(_scrape_one(d, u) for d, u in logid_links.items()))
         return result
 
     def _log_summary(self, successful: int, failed: list[tuple[str, str, str]]) -> None:
-        """Log the final scraping summary."""
         total = successful + len(failed)
         logger.info('=' * 60)
         logger.info('SCRAPING SUMMARY')
@@ -304,8 +297,7 @@ class FortiGateLogScraper:
                 logger.info(f'  Version: {version} | LOGID: {logid} | Reason: {reason}')
         logger.info('=' * 60)
 
-    def run(self, specific_versions: list[str] | None = None) -> None:
-        """Run the complete scraping process for all configured (or specified) versions."""
+    async def run(self, specific_versions: list[str] | None = None) -> None:
         versions_to_scrape = specific_versions or self.versions
         logger.info(f'Will check {len(versions_to_scrape)} versions for missing LOGIDs')
 
@@ -325,22 +317,29 @@ class FortiGateLogScraper:
         total_successful = 0
         all_failed: list[tuple[str, str, str]] = []
 
-        for version in versions_to_scrape:
-            try:
-                result = self.scrape_version(version)
-                total_successful += result.successful
-                all_failed.extend(result.failed)
-                logger.info(f'Completed version {version} — {result.successful} LOGIDs processed, '
-                            f'{len(result.failed)} failed')
-                time.sleep(2)
-            except Exception as e:
-                logger.error(f'Error processing version {version}: {e}')
+        async with httpx.AsyncClient(
+            headers={'User-Agent': USER_AGENT},
+            follow_redirects=True,
+            timeout=30,
+        ) as client:
+            self.client = client
+            for version in versions_to_scrape:
+                try:
+                    result = await self.scrape_version(version)
+                    total_successful += result.successful
+                    all_failed.extend(result.failed)
+                    logger.info(f'Completed version {version} — {result.successful} LOGIDs processed, '
+                                f'{len(result.failed)} failed')
+                    await asyncio.sleep(2)
+                except Exception as e:
+                    logger.error(f'Error processing version {version}: {e}')
 
         self._log_summary(total_successful, all_failed)
 
 
 def main() -> None:
-    FortiGateLogScraper().run()
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    asyncio.run(FortiGateLogScraper().run())
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ This guide documents the internal design, data flow, and key implementation deci
 
 ## Architecture Overview
 
-FLORES is a two-script pipeline. The scraper fetches raw HTML and emits CSVs; `generate_changelog.py` consumes those CSVs and produces all downstream outputs.
+FLORES is a three-script pipeline. The scraper (`fortigate_scraper.py`) fetches raw HTML and emits CSVs; `generate_changelog.py` consumes those CSVs and produces changelogs, matrices, and consolidated field CSVs; `generate_ecs_mappings.py` cross-references the consolidated fields to ECS.
 
 ```
 fortigate_scraper_config.yaml
@@ -50,8 +50,8 @@ fortigate_scraper_config.yaml
         ▼
 FortiGateLogScraper.__init__()
   ├─ _load_config()          — YAML → dict
-  ├─ requests.Session()      — shared HTTP session with browser User-Agent
-  └─ sets: versions, output_dir, base_delay, max_retries, retry_backoff, force_rescrape, dry_run
+  ├─ httpx.AsyncClient()     — shared async HTTP client with browser User-Agent (created in run())
+  └─ sets: versions, output_dir, base_delay, max_retries, retry_backoff, concurrency, force_rescrape, dry_run
         │
         ▼
 run()
@@ -64,7 +64,7 @@ run()
           scrape_version(version)
             ├─ get_version_dirs()      → (major_dir, minor_dir)
             ├─ get_version_url()       → docs.fortinet.com URL
-            ├─ get_page_content(url)   → BeautifulSoup (with rate limit sleep)
+            ├─ get_page_content(url)   → BeautifulSoup (async; rate limit via semaphore + sleep)
             ├─ extract_logid_links()   → {description: full_url}
             │     regex: r'/(\d{1,6})-(logid|log-id|mesgid)-[^/]*$'
             └─ for each LOGID link:
@@ -126,14 +126,15 @@ Fetches the Fortinet Log Message Reference for each configured FortiOS version, 
 | `settings.max_retries` | `3` | Number of additional attempts per URL after an error (0 = no retries) |
 | `settings.retry_backoff` | `2.0` | Exponential backoff multiplier: wait = `base_delay × (retry_backoff ^ attempt)` + jitter |
 | `settings.force_rescrape` | `false` | If true, re-scrape versions that already have CSV files |
-| `settings.dry_run` | `false` | If true, print the plan without making any HTTP requests |
+| `settings.dry_run` | `false` | If true, log the plan without making any HTTP requests |
+| `settings.concurrency` | `5` | Max parallel LOGID fetches per version, bounded by `asyncio.Semaphore` |
 | `settings.output_dir` | `"."` | Root output directory for scraped data |
 
 The config file is located relative to the script file, not the working directory. `_load_config()` uses `Path(__file__).parent` to find it.
 
 ### Class: FortiGateLogScraper
 
-Single-class design — all scraping logic lives here. A `requests.Session` is reused across all requests for HTTP connection pooling and shared headers. Rate limiting is enforced inside `get_page_content()` via `time.sleep(self.base_delay)` after every successful fetch.
+Single-class design — all scraping logic lives here. A shared `httpx.AsyncClient` is created in `run()` as a context manager and reused across all requests for HTTP connection pooling and shared headers. Rate limiting is enforced inside `get_page_content()` via `await asyncio.sleep(self.base_delay)` after every successful fetch, with concurrency bounded by an `asyncio.Semaphore(self.concurrency)` so the politeness delay holds inside the critical section.
 
 ### Rate Limiting and Retry Behavior
 
@@ -142,7 +143,7 @@ Single-class design — all scraping logic lives here. A `requests.Session` is r
 - **Retry loop**: `max_retries + 1` total attempts per URL. Set `max_retries: 0` to disable retries entirely.
 - **429 Rate Limited**: If the server responds with HTTP 429, the scraper reads the `Retry-After` response header (if present) or falls back to `base_delay × (retry_backoff ^ attempt)`. It then retries without counting this as an error.
 - **Other HTTP / network errors**: On each failure before the last attempt, the scraper waits `base_delay × (retry_backoff ^ attempt) + random.uniform(0, 1)` seconds (jitter prevents thundering-herd on parallel runs). On the final attempt, the error is logged and `None` is returned.
-- **Successful fetch**: `time.sleep(base_delay)` is applied before returning to pace requests regardless of retry history.
+- **Successful fetch**: `await asyncio.sleep(base_delay)` is applied before returning to pace requests regardless of retry history. Requests run concurrently up to `concurrency`, with the politeness sleep held inside the semaphore so the effective rate is bounded.
 
 ### LOGID-Level Resume
 
@@ -199,17 +200,17 @@ Each entry in `failed` is `(version, logid_description, reason)`.
 
 | Method | What it does |
 |--------|-------------|
-| `__init__()` | Loads config, creates `requests.Session`, sets all instance state |
+| `__init__()` | Loads config, sets all instance state (no network client created here) |
 | `_load_config()` | Reads YAML from `Path(__file__).parent`; raises on missing file or parse error |
 | `get_version_directories()` | Splits `"7.6.4"` into `(Path(".../7.6"), Path(".../7.6/7.6.4"))` |
 | `get_version_url()` | Returns the Fortinet docs URL for a given FortiOS version |
-| `get_page_content()` | Fetches URL → BeautifulSoup with retry/backoff (up to `max_retries`); handles 429; returns `None` after all attempts fail |
+| `get_page_content()` | Async fetch via the shared client → BeautifulSoup with retry/backoff (up to `max_retries`); handles 429; returns `None` after all attempts fail |
 | `extract_logid_links()` | Finds all `<a href>` matching the LOGID URL pattern; returns `dict[str, str]` |
 | `extract_log_metadata()` | Regexes page text for Message ID, Type, Category, Severity, etc. |
 | `extract_log_table()` | Finds `<table>` with log-field headers; returns DataFrame with metadata columns appended |
-| `scrape_version()` | Orchestrates one version: get index, iterate LOGIDs, save CSVs; returns `ScrapeResult` |
+| `scrape_version()` | Async; orchestrates one version: get index, fetch LOGIDs concurrently (semaphore), save CSVs in deterministic order; returns `ScrapeResult` |
 | `_log_summary()` | Logs the final scraping summary (totals, success rate, failed LOGID list) |
-| `run()` | Top-level entry point; handles dry-run, version filtering, per-version loop |
+| `run()` | Top-level async entry point; creates the shared `httpx.AsyncClient`, handles dry-run, version filtering, per-version loop |
 
 ### HTML Table Detection
 

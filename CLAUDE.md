@@ -33,8 +33,9 @@ python3 generate_changelog.py --index      # root INDEX.md + per-major {major}/I
 - `settings.base_delay` — seconds between HTTP requests (default: `1.0`)
 - `settings.max_retries` — additional attempts per URL after an error (default: `3`; `0` = no retries)
 - `settings.retry_backoff` — exponential backoff multiplier: `base_delay × (backoff ^ attempt)` (default: `2.0`)
+- `settings.concurrency` — max parallel LOGID fetches per version via `asyncio.Semaphore` (default: `5`)
 - `settings.force_rescrape` — re-scrape versions that already have output (default: `false`)
-- `settings.dry_run` — preview which versions would be scraped without fetching (default: `false`)
+- `settings.dry_run` — log which versions would be scraped without fetching (default: `false`)
 - `settings.output_dir` — root output directory (default: `"."`, i.e. repo root)
 
 ## Output Structure
@@ -73,7 +74,9 @@ All new code must follow the conventions established in `generate_changelog.py`:
 
 - **`from __future__ import annotations`** at the top of every script
 - **Type hints on all functions** — use built-in generics (`list[str]`, `dict[str, str]`, `X | None`); no `typing` module imports
-- **`pathlib.Path` for all file operations** — no `os.path`, `os.makedirs`, or `glob.glob`
+- **`pathlib.Path` for all file operations** — no `os.path`, `os.makedirs`, or `glob.glob`; use `Path.open()`, `Path.read_text()`, `Path.write_text()` rather than builtin `open()` with string paths
+- **Async HTTP with `httpx.AsyncClient`** — one shared client created in `run()` as a context manager and passed to callers; all network functions are `async def`; concurrency bounded per version by `asyncio.Semaphore(self.concurrency)`. Never `requests` or `ThreadPoolExecutor`
+- **Logging via `logging.getLogger(__name__)`** in every module — never `print()`. `logging.basicConfig` is called only in `main()`, never at module level
 - **Dataclasses for structured results** — use `@dataclass` instead of raw dicts or untyped tuples
 - **Vectorized pandas** — no `iterrows()`; use `groupby`, boolean indexing, and `map` with scalar functions
 - **No defensive `.copy()`** unless an in-place mutation follows
@@ -89,5 +92,5 @@ Update it afeter every code change or refactoring.
 ## Dependencies
 
 ```bash
-pip install requests beautifulsoup4 pandas lxml pyyaml
+pip install httpx[http2] beautifulsoup4 pandas lxml pyyaml
 ```

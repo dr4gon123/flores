@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -461,10 +464,7 @@ def _targets_to_row(targets: list[EcsTarget]) -> tuple[str, str, str, str]:
 
 
 def apply_mappings(df: pd.DataFrame, lookup: dict[str, list[EcsTarget]]) -> pd.DataFrame:
-    """Left-join ECS columns onto a fields DataFrame.
-
-    Uses vectorized Series.map; fields without a mapping get empty ECS columns.
-    """
+    """Left-join ECS columns onto a fields DataFrame using vectorized Series.map."""
     row_map: dict[str, tuple[str, str, str, str]] = {
         fgt_field: _targets_to_row(targets)
         for fgt_field, targets in lookup.items()
@@ -502,6 +502,7 @@ def write_ecs_csv(path: Path, df: pd.DataFrame) -> None:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     root = Path(__file__).parent
     major_dirs = sorted(
         (d for d in root.iterdir() if d.is_dir() and d.name.replace(".", "").isdigit() and d.name.count(".") == 1),
@@ -515,7 +516,7 @@ def main() -> None:
 
             df = load_fields_csv(src)
             if df.empty:
-                print(f"Skipped (no source): {src}")
+                logger.info(f"Skipped (no source): {src}")
                 continue
 
             lookup = build_lookup(mappings)
@@ -523,7 +524,7 @@ def main() -> None:
             write_ecs_csv(dst, result)
 
             mapped = result["ECS Field"].astype(bool).sum()
-            print(f"Written: {dst} ({len(result)} fields, {mapped} mapped)")
+            logger.info(f"Written: {dst} ({len(result)} fields, {mapped} mapped)")
 
 
 if __name__ == "__main__":
