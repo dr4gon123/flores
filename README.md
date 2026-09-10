@@ -113,6 +113,27 @@ versions:
 FLORES will skip versions that already exist locally unless `force_rescrape: true`.
 
 
+## Automated Release Tracking
+
+A scheduled GitHub Action (`.github/workflows/check-fortios-releases.yml`) checks
+docs.fortinet.com every Monday at 06:00 UTC for FortiOS Log Message Reference
+releases missing from the config, adds them, runs the full pipeline, and pushes
+the result directly to `main`. It can also be triggered manually via
+*Actions → Check FortiOS releases → Run workflow*.
+
+Only branches at or above `MIN_TRACKED_MAJOR` in `check_new_versions.py`
+(default `7.4`) are discovered — 7.2 and lower are never auto-added. To check
+manually without modifying the config:
+
+```bash
+python3 check_new_versions.py                # report only
+python3 check_new_versions.py --update-config  # also add new versions
+```
+
+Note: the repo setting *Settings → Actions → General → Workflow permissions*
+must allow write access so the workflow can push.
+
+
 ## FortiGate Documentation Notes
 
 FortiGate's log schema is structurally heterogeneous in ways that complicate normalization

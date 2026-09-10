@@ -379,6 +379,28 @@ To add a new FortiOS version:
 2. Run `fortigate_scraper.py` — existing versions are skipped automatically
 3. Re-run `generate_changelog.py` — it reprocesses all versions, so the new version's data is incorporated into all outputs
 
+### Automated Release Tracking
+
+`check_new_versions.py` automates this: it fetches `docs.fortinet.com/product/fortigate`
+to list branches, then fetches each branch page at or above `MIN_TRACKED_MAJOR`
+(default `7.4`) and extracts every version linked to a
+`fortios-log-message-reference` document. Versions missing from the config are
+new releases. A page that parses to zero versions raises an error, so layout
+changes fail loudly instead of silently reporting "no new releases".
+
+The `.github/workflows/check-fortios-releases.yml` workflow runs this check
+weekly (cron `0 6 * * 1`, or manually via `workflow_dispatch`). When new
+versions are found it inserts them into `fortigate_scraper_config.yaml`
+(preserving comments and branch grouping), runs the full three-step pipeline,
+and commits the result to `main` as
+`Scrape <versions>; regenerate changelogs, fields, and ECS mappings`.
+
+CLI flags:
+
+- `--update-config` — insert discovered versions into the scraper config (without it, only reports)
+- `--min-major X.Y` — override the discovery floor (default `7.4`)
+- `--github-output` — write `count`, `new_versions` (JSON), and `display` to `$GITHUB_OUTPUT` for the workflow
+
 ---
 
 ## Code Conventions

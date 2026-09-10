@@ -1,0 +1,67 @@
+name: Check FortiOS releases
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: check-fortios-releases
+  cancel-in-progress: false
+
+jobs:
+  check-and-scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check for new FortiOS releases
+        id: check
+        run: python3 check_new_versions.py --update-config --github-output
+
+      - name: Run scraper pipeline
+        if: steps.check.outputs.count != '0'
+        run: |
+          python3 fortigate_scraper.py
+          python3 generate_changelog.py
+          python3 generate_ecs_mappings.py
+
+      - name: Commit and push
+        if: steps.check.outputs.count != '0'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Scrape ${{ steps.check.outputs.display }}; regenerate changelogs, fields, and ECS mappings"
+          git push
+
+      - name: Write job summary
+        if: always()
+        run: |
+          if [ "${{ steps.check.outcome }}" != "success" ]; then
+            echo "Release check failed — see logs." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          count='${{ steps.check.outputs.count }}'
+          if [ "$count" = "0" ]; then
+            echo "No new FortiOS releases found." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### New FortiOS releases scraped" >> "$GITHUB_STEP_SUMMARY"
+            echo '${{ steps.check.outputs.new_versions }}' \
+              | python3 -c 'import json, sys; [print(f"- FortiOS {v}") for v in json.load(sys.stdin)]' \
+              >> "$GITHUB_STEP_SUMMARY"
+          fi
