@@ -118,8 +118,10 @@ FLORES will skip versions that already exist locally unless `force_rescrape: tru
 A scheduled GitHub Action (`.github/workflows/check-fortios-releases.yml`) checks
 docs.fortinet.com every Monday at 06:00 UTC for FortiOS Log Message Reference
 releases missing from the config, adds them, runs the full pipeline, and pushes
-the result directly to `main`. It can also be triggered manually via
-*Actions → Check FortiOS releases → Run workflow*.
+the result directly to `main`. On the 1st of each month (and on manual runs) the
+full pipeline also runs when nothing is new, backfilling pages that failed in
+earlier runs — commits are only made when files actually changed. It can also be
+triggered manually via *Actions → Check FortiOS releases → Run workflow*.
 
 Only branches at or above `MIN_TRACKED_MAJOR` in `check_new_versions.py`
 (default `7.4`) are discovered — 7.2 and lower are never auto-added. To check

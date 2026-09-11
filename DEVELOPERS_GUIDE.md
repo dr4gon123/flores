@@ -395,6 +395,14 @@ versions are found it inserts them into `fortigate_scraper_config.yaml`
 and commits the result to `main` as
 `Scrape <versions>; regenerate changelogs, fields, and ECS mappings`.
 
+Because the scrapers log per-page failures but exit 0, a run whose fetches
+partially failed would otherwise commit incomplete data forever — the check
+only triggers scraping for versions new to the config. To self-heal, the
+workflow also runs the full pipeline on a monthly cron (`0 7 1 * *`) and on
+manual dispatches regardless of the check result; the scraper's disk-based
+resume refetches anything missing, and a commit is only made when files
+actually changed (`Backfill missing scraped pages; ...`).
+
 CLI flags:
 
 - `--update-config` — insert discovered versions into the scraper config (without it, only reports)

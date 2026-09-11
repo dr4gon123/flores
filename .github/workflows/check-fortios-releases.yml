@@ -2,7 +2,8 @@ name: Check FortiOS releases
 
 on:
   schedule:
-    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+    - cron: "0 6 * * 1" # Weekly check: Mondays 06:00 UTC
+    - cron: "0 7 1 * *" # Monthly full pass: 1st of the month 07:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -34,19 +35,29 @@ jobs:
         run: python3 check_new_versions.py --update-config --github-output
 
       - name: Run scraper pipeline
-        if: steps.check.outputs.count != '0'
+        # Full pass on the monthly schedule and manual dispatches so pages that
+        # failed in earlier runs get backfilled; weekly runs scrape new releases only.
+        if: steps.check.outputs.count != '0' || github.event.schedule == '0 7 1 * *' || github.event_name == 'workflow_dispatch'
         run: |
           python3 fortigate_scraper.py
           python3 generate_changelog.py
           python3 generate_ecs_mappings.py
 
       - name: Commit and push
-        if: steps.check.outputs.count != '0'
+        if: steps.check.outputs.count != '0' || github.event.schedule == '0 7 1 * *' || github.event_name == 'workflow_dispatch'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Nothing to commit — no missing pages found." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           git add -A
-          git commit -m "Scrape ${{ steps.check.outputs.display }}; regenerate changelogs, fields, and ECS mappings"
+          if [ '${{ steps.check.outputs.count }}' != '0' ]; then
+            git commit -m "Scrape ${{ steps.check.outputs.display }}; regenerate changelogs, fields, and ECS mappings"
+          else
+            git commit -m "Backfill missing scraped pages; regenerate changelogs, fields, and ECS mappings"
+          fi
           git push
 
       - name: Write job summary
