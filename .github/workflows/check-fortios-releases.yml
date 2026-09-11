@@ -58,6 +58,8 @@ jobs:
           else
             git commit -m "Backfill missing scraped pages; regenerate changelogs, fields, and ECS mappings"
           fi
+          # The run may take ~20 min; rebase in case main moved meanwhile.
+          git pull --rebase origin main
           git push
 
       - name: Write job summary
