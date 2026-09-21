@@ -6,6 +6,7 @@
 
 ### Changelog
 
+- [8.0.1](8.0/8.0.1/CHANGELOG.md)
 - [8.0.0](8.0/8.0.0/CHANGELOG.md)
 
 ### Consolidated Fields
@@ -17,9 +18,13 @@
 
 ### ECS
 
+- [traffic_ecs](8.0/ECS/traffic_ecs.csv)
+- [event_ecs](8.0/ECS/event_ecs.csv)
+- [utm_ecs](8.0/ECS/utm_ecs.csv)
 
 ### Field Occurrence Matrix
 
+- **8.0.1** — [traffic](8.0/8.0.1/traffic_matrix.csv) · [event](8.0/8.0.1/event_matrix.csv) · [utm](8.0/8.0.1/utm_matrix.csv)
 - **8.0.0** — [traffic](8.0/8.0.0/traffic_matrix.csv) · [event](8.0/8.0.0/event_matrix.csv) · [utm](8.0/8.0.0/utm_matrix.csv)
 
 ---

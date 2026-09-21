@@ -1,0 +1,13 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+date,,string,10,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+devid,,string,16,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+eventtime,,uint64,20,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+identifier,,uint16,5,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+level,,string,11,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+logid,,string,10,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+msg,,string,4096,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+subtype,,string,20,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+time,,string,8,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+type,,string,16,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+tz,,string,5,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1
+vd,,string,32,65290 - LOG_ID_DEBUG_PRINT,65290,LOG_ID_DEBUG_PRINT,(null),Debug,debug,Information,8.0.1

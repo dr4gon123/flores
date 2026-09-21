@@ -194,8 +194,6 @@ modem,string,3,
 module,string,32,Configuration Module Name
 monitor-name,string,35,Health Monitor Type
 monitor-type,string,32,Health Monitor Name
-moscodec,string,24,
-mosvalue,string,24,
 mpsk,string,33,Multiple pre-shared keys
 msg,string,4096,Log Message
 mtu,uint32,10,Max Transmission Unit Value
@@ -254,6 +252,7 @@ product,string,64,
 profile,string,64,Profile Name
 proto,uint8,3,Protocol Number
 protocol,string,128,
+proxytype,string,32,
 radioband,string,64,The operating radio band
 radioid,uint8,3,The operating radio ID
 radioidclosest,uint8,3,The radio ID on the AP closest with the detected rogue ap
@@ -277,7 +276,7 @@ result,string,31,IPsec VPN negotiation result
 retransample,uint16,5,
 role,string,9,"IPsec peer role, initator or responder"
 rss,uint32,16,
-rssi,uint8,3,The value of Received signal strength indicator
+rssi,int8,4,The value of Received signal strength indicator
 rsso_key,string,64,RADIUS SSO attribute value
 rttsample,uint16,5,
 saddr,string,80,Source Address IP
