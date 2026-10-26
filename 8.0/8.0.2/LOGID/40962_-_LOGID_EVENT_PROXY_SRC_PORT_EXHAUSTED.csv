@@ -1,0 +1,16 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+date,Date,string,10,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+devid,Device ID,string,16,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+dstip,Destination IP,ip,39,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+dstport,Destination Protocol Port,uint16,5,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+eventtime,Event time,uint64,20,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+level,Log Level,string,11,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+logdesc,Log Description,string,4096,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+logid,Log ID,string,10,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+msg,Log Message,string,4096,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+srcip,Source IP,ip,39,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+subtype,Log Subtype,string,20,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+time,Time,string,8,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+type,Log Type,string,16,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+tz,Time zone,string,5,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2
+vd,Virtual Domain Name,string,32,40962 - LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,40962,LOGID_EVENT_PROXY_SRC_PORT_EXHAUSTED,Proxy source port exhausted,Event,webproxy,Notice,8.0.2

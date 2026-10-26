@@ -1,0 +1,33 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+appid,,uint32,10,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+date,Date,string,10,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+devid,Device ID,string,16,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+eventtime,Event time,uint64,20,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+eventtype,,string,48,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+interface,Interface,string,32,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+jitter,,string,24,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+latency,,string,24,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+level,Log Level,string,11,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+logdesc,Log Description,string,4096,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+logid,Log ID,string,10,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+msg,Log Message,string,4096,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+networktransfertime,,string,24,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+originjitter,,string,24,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+originpktloss,,string,24,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+originreset,,uint64,20,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+originretransmission,,uint64,20,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+packetloss,,string,24,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+replyjitter,,string,24,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+replypktloss,,string,24,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+replyreset,,uint64,20,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+replyretransmission,,uint64,20,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+retransample,,uint16,5,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+rttsample,,uint16,5,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+serverresponsetime,,string,24,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+subtype,Log Subtype,string,20,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+synackretransmission,,uint64,20,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+synretransmission,,uint64,20,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+time,Time,string,8,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+type,Log Type,string,16,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+tz,Time zone,string,5,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2
+vd,Virtual Domain Name,string,32,22941 - LOG_ID_EVENT_VWL_PASS_APP_PERF,22941,LOG_ID_EVENT_VWL_PASS_APP_PERF,SD-WAN application performance metrics via kernel,Event,sdwan,Information,8.0.2

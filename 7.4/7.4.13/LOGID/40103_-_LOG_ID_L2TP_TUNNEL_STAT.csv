@@ -1,0 +1,20 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+action,Policy Action,string,65,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+date,Date,string,10,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+devid,Device ID,string,16,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+eventtime,Event time,uint64,20,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+group,User group Name,string,512,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+level,Log Level,string,11,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+logdesc,Log Description,string,4096,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+logid,Log ID,string,10,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+msg,Log Message,string,4096,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+remip,IPsec VPN remote gateway IP address,ip,39,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+subtype,Log Subtype,string,20,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+time,Time,string,8,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+tunnelid,IPsec VPN tunnel ID,uint32,10,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+tunnelip,IPsec VPN tunnel IP address,ip,39,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+tunneltype,IPsec VPN tunnel type,string,64,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+type,Log Type,string,16,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+tz,Time zone,string,5,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+user,User name of authenticated user,string,256,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13
+vd,Virtual Domain Name,string,32,40103 - LOG_ID_L2TP_TUNNEL_STAT,40103,LOG_ID_L2TP_TUNNEL_STAT,L2TP tunnel status,Event,vpn,Information,7.4.13

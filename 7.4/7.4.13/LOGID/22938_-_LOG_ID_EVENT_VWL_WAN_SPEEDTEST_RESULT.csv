@@ -1,0 +1,22 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+date,Date,string,10,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+devid,Device ID,string,16,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+downbandwidthmeasured,,string,24,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+eventtime,Event time,uint64,20,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+eventtype,,string,48,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+interface,Interface,string,32,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+latency,,string,24,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+level,Log Level,string,11,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+logdesc,Log Description,string,4096,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+logid,Log ID,string,10,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+mode,Mode,string,32,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+msg,Log Message,string,4096,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+protocol,,string,128,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+speedtestserver,,string,80,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+subtype,Log Subtype,string,20,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+time,Time,string,8,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+timestamp,,string,24,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+type,Log Type,string,16,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+tz,Time zone,string,5,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+upbandwidthmeasured,,string,24,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13
+vd,Virtual Domain Name,string,32,22938 - LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,22938,LOG_ID_EVENT_VWL_WAN_SPEEDTEST_RESULT,SD-WAN Bandwidth monitoring result,Event,sdwan,Information,7.4.13

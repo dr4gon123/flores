@@ -1,0 +1,16 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+action,Policy Action,string,65,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+daemon,Daemon Name,string,32,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+date,Date,string,10,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+devid,Device ID,string,16,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+eventtime,Event time,uint64,20,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+level,Log Level,string,11,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+logdesc,Log Description,string,4096,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+logid,Log ID,string,10,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+msg,Log Message,string,4096,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+pid,Process ID,uint32,10,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+subtype,Log Subtype,string,20,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+time,Time,string,8,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+type,Log Type,string,16,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+tz,Time zone,string,5,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13
+vd,Virtual Domain Name,string,32,20204 - LOG_ID_DAEMON_START,20204,LOG_ID_DAEMON_START,Daemon started,Event,system,Information,7.4.13

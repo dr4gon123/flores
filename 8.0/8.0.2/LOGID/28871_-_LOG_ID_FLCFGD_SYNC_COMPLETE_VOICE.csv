@@ -1,0 +1,17 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+date,Date,string,10,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+devid,Device ID,string,16,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+eventtime,Event time,uint64,20,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+level,Log Level,string,11,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+logdesc,Log Description,string,4096,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+logid,Log ID,string,10,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+msg,Log Message,string,4096,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+name,,string,128,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+sn,,string,64,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+subtype,Log Subtype,string,20,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+time,Time,string,8,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+type,Log Type,string,16,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+tz,Time zone,string,5,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+ui,,string,64,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+user,User name of authenticated user,string,256,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2
+vd,Virtual Domain Name,string,32,28871 - LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,28871,LOG_ID_FLCFGD_SYNC_COMPLETE_VOICE,Voice-Controller Voice Sync Complete,Event,voice-controller,Information,8.0.2

@@ -6,6 +6,7 @@
 
 ### Changelog
 
+- [7.6.8](7.6.8/CHANGELOG.md)
 - [7.6.7](7.6.7/CHANGELOG.md)
 - [7.6.6](7.6.6/CHANGELOG.md)
 - [7.6.5](7.6.5/CHANGELOG.md)
@@ -30,6 +31,7 @@
 
 ### Field Occurrence Matrix
 
+- **7.6.8** — [traffic](7.6.8/traffic_matrix.csv) · [event](7.6.8/event_matrix.csv) · [utm](7.6.8/utm_matrix.csv)
 - **7.6.7** — [traffic](7.6.7/traffic_matrix.csv) · [event](7.6.7/event_matrix.csv) · [utm](7.6.7/utm_matrix.csv)
 - **7.6.6** — [traffic](7.6.6/traffic_matrix.csv) · [event](7.6.6/event_matrix.csv) · [utm](7.6.6/utm_matrix.csv)
 - **7.6.5** — [traffic](7.6.5/traffic_matrix.csv) · [event](7.6.5/event_matrix.csv) · [utm](7.6.5/utm_matrix.csv)

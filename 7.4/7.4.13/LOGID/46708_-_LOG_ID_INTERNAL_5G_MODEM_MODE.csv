@@ -1,0 +1,15 @@
+Log Field Name,Description,Data Type,Length,LOGID,Message_ID,Message_Description,Message_Meaning,Type,Category,Severity,Version
+date,Date,string,10,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+devid,Device ID,string,16,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+eventtime,Event time,uint64,20,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+level,Log Level,string,11,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+logdesc,Log Description,string,4096,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+logid,Log ID,string,10,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+mode,Mode,string,32,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+modem,,string,3,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+msg,Log Message,string,4096,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+subtype,Log Subtype,string,20,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+time,Time,string,8,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+type,Log Type,string,16,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+tz,Time zone,string,5,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
+vd,Virtual Domain Name,string,32,46708 - LOG_ID_INTERNAL_5G_MODEM_MODE,46708,LOG_ID_INTERNAL_5G_MODEM_MODE,5G modem changed operation mode,Event,system,Information,7.4.13
